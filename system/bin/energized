@@ -46,7 +46,7 @@ if [ -f $FILTER ]; then
 		echo "---------------------"
 	else
 	
-		eecho "-----------------------"
+		echo "-----------------------"
 		echo "[+] No update available."
 		echo "------------------------"
 	fi
