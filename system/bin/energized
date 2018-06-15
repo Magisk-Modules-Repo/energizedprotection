@@ -1,0 +1,199 @@
+if [ ! -d /sbin/.core/mirror/bin ]; then
+  mkdir -p /sbin/.core/mirror/bin
+  mount -o bind /data/adb/magisk /sbin/.core/mirror/bin
+fi
+echo "-----------~------------"
+echo "  Energized Protection  "
+echo "-----------~------------"
+echo "ad.porn.malware blocking."
+echo "Let's make an annoyance free better open internet, altogether!"
+
+alias wget="/sbin/.core/busybox/wget"
+alias grep="/sbin/.core/busybox/grep"
+HOST=/sbin/.core/img/.core/hosts
+TREADME=/cache/energizedreadme
+FILTER=/sbin/.core/img/energizedprotection/filter
+WHITELIST=/sdcard/whitelist
+BLACKLIST=/sdcard/blacklist
+TEMP=/cache/energizedtemp
+COUNT=1
+id="$(id)"; id="${id#*=}"; id="${id%%\(*}"; id="${id%% *}"
+if [ "$id" != "0" ] && [ "$id" != "root" ]; then
+root="\e[1;31mDENIED\e[0m";
+else
+root="\e[1;32mGRANTED\e[0m";
+fi;
+
+update="\e[1;36m`busybox date -r /system/etc/hosts`\e[0m"
+busybox="\e[1;33m`busybox | head -1 | cut -f 2 -d ' '`\e[0m"
+size="\e[1;35m`ls -lah /system/etc/hosts | awk '{print $5}'`\e[0m"
+
+[ -f /system/etc/hosts ];
+if busybox grep -q adblocker /system/etc/hosts; then
+	adblocker="\e[1;32mENABLED\e[0m"
+else
+	adblocker="\e[1;31mDISABLED\e[0m"
+	fi
+	echo "\n[+] Checking Update..."
+wget -q -O $TREADME http://ador.chorompotro.com/Magisk.txt
+grep "Updated" $TREADME
+if [ -f $FILTER ]; then
+	CURRENT=$(grep "Updated" $TREADME)
+	LAST_UPDATED=$(sed '1q;d' $FILTER)
+	if [ "$LAST_UPDATED" != "$CURRENT" ]; then
+	    echo "---------------------"
+		echo -e "\033[33;5;7m[+] Update available!\033[0m"
+		echo "---------------------"
+	else
+	
+		eecho "-----------------------"
+		echo "[+] No update available."
+		echo "------------------------"
+	fi
+else
+	touch $FILTER
+	echo "[+] No hosts file yet applied."
+fi
+while true
+do
+	INPUT=$(eval "echo \$$COUNT")
+	if [ ! "$INPUT" ]; then
+		if [ "$1" ]; then
+			rm -f $TREADME
+			exit 0
+		fi
+		
+		echo -e -n "[+] Energized All-In-One Magisk Module
+[+] Version: 1.0
+[+] Author: Team Boltz (Energized Protection)
+ 
+[+] Checking Root & Busybox..
+[+] ROOT: $root
+[+] BUSYBOX: $busybox
+
+[+] Checking Hosts...
+[+] ADBLOCK STATUS: $adblocker
+[+] SIZE: $size
+[+] LAST UPDATED: $update
+
+[+] NOTE: Data connection is required to download the hosts."
+		echo "\n[+] Select an option below:"
+		echo "---------------~-----------------"
+		echo "[1] for Energized Ad Protection"
+		echo "[2] for Energized Malware Protection"
+		echo "[3] for Energized Porn Protection"
+		echo "[4] for Energized Blu Protection"
+		echo "[5] for Energized Blu go Protection"
+		echo "[6] for Energized Lite Protection"
+		echo "[7] for Energized Porn Lite Protection"
+		echo "[8] for Energized Ultimate Protection"
+		echo "[9] for Energized Unified Protection"
+		echo "[b] to add blacklist"
+		echo "[w] to add whitelist (search for exact strings)"
+		echo "[wr] to add whitelist (use regex - needed for wildcards)"
+		echo "[q] to quit."
+		echo "[-] To disable, just toggle the enable systemless hosts in magisk manager." 
+		echo -n "[+] Your Input (1-9, b, w, wr & q) - "
+		read -r INPUT
+		if [ "$INPUT" != "m" ]; then
+			INPUT="$(echo "$INPUT" | sed 's/m//g')"
+		fi
+		DIR=""
+	fi
+	case "$INPUT" in
+		1) DIR="master/EnergizedAd/energized/hosts"
+		;;
+		2) DIR="master/EnergizedMalware/energized/hosts"
+		;;
+		3) DIR="master/EnergizedPorn/energized/hosts"
+		;;
+		4) DIR="master/EnergizedBlu/energized/blu"
+		;;
+		5) DIR="master/EnergizedBlugo/energized/blu_go"
+		;;
+		6) DIR="master/EnergizedLite/energized/hosts"
+		;;
+		7) DIR="master/EnergizedPornLite/energized/hosts"
+		;;
+		8) DIR="master/EnergizedUltimate/energized/hosts"
+		;;
+		9) DIR="master/EnergizedUnified/energized/hosts"
+		;;
+		w)  if [ ! -f $WHITELIST ]; then
+				echo ""
+				echo "*No Whitelist detected*"
+				echo "Copy your whilelist to /sdcard"
+		    else
+				if [ -f "$HOST" ]; then
+					echo ""
+					echo "Applying Whitelist"
+					grep -Fvxf $WHITELIST $HOST > $TEMP
+					mv $TEMP $HOST
+				else
+					echo ""
+					echo "No hosts file detected"
+					echo "Apply a hosts file first"
+				fi
+		    fi
+		;;
+		wr)  if [ ! -f $WHITELIST ]; then
+				echo ""
+				echo "*No Whitelist detected*"
+				echo "Copy your whilelist to /sdcard"
+		    else
+				if [ -f "$HOST" ]; then
+					echo ""
+					echo "Applying Whitelist (regex)"
+					grep -vxf $WHITELIST $HOST > $TEMP
+					mv $TEMP $HOST
+				else
+					echo ""
+					echo "No hosts file detected"
+					echo "Apply a hosts file first"
+				fi
+		    fi
+		;;
+		b)	if [ ! -f $BLACKLIST ]; then
+				echo ""
+				echo "*No Blacklist detected*"
+				echo "Copy your blacklist to /sdcard"
+			else
+				if [ -f "$HOST" ]; then
+					if [ -s $BLACKLIST ]; then
+						echo ""
+						echo "Applying Blacklist"
+						NEWFILTERS="$(cat $BLACKLIST)"
+						printf '%s\n' "$NEWFILTERS" | while IFS= read -r linenew
+						do
+						  if [ ! "$(grep -Fx "$linenew" $HOST)" ]; then
+							sed -i -e "\$a0.0.0.0 $linenew" $HOST
+						  fi
+						done
+					else
+						echo ""
+						echo "Blacklist file is empty"
+						echo "No new filter rules added"
+					fi
+				else
+					echo ""
+					echo "No hosts file detected"
+					echo "Apply a hosts file first"
+				fi
+		    fi
+			;;
+		q) break
+		;;
+		*)  echo ""
+			echo "Invalid input. Don't use any spaces between letters."
+		;;
+	esac
+	if [ $DIR ]; then
+		echo ""
+		wget -O $HOST https://raw.githubusercontent.com/EnergizedProtection/EnergizedHosts/$DIR
+		grep "Updated" $TREADME > $FILTER
+	fi
+	DIR=""
+	COUNT=$((COUNT+1))
+done
+rm -f $TREADME
+echo "[+] Done!"
