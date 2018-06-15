@@ -86,6 +86,10 @@
 
 ## Changelog
 
+v1.1
+ - Fixed Permission Denied Issue.
+ - Fixed Config Prints.
+
 v1.0
  - Initial release.
  
