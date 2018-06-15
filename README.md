@@ -4,8 +4,8 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-1.0-blue.svg?longCache=true&style=flat-square"
-      alt="18.06.164" />
+    <img src="https://img.shields.io/badge/Version-1.1-blue.svg?longCache=true&style=flat-square"
+      alt="Version" />
   <!-- Last Updated -->
     <img src="https://img.shields.io/badge/Updated-Jun 15, 2018-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
