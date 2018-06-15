@@ -49,10 +49,12 @@ LATESTARTSERVICE=false
 # Set what you want to show when installing your mod
 
 print_modname() {
-  ui_print "*******************************"
-  ui_print "     Unified Hosts Adblock     "
-  ui_print "          (Zackptg5)           "
-  ui_print "*******************************"
+  ui_print "--------------------------------"
+  ui_print "      Energized Protection      "
+  ui_print "--------------------------------"
+  ui_print "    ad.porn.malware blocking.   "
+  ui_print "        Magisk All-In-One       "
+  ui_print "--------------------------------"
 }
 
 ##########################################################################################
