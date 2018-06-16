@@ -86,6 +86,10 @@
 
 ## Changelog
 
+v1.2
+ - Fixed Few Issues.
+ - Version Bumped.
+
 v1.1
  - Fixed Permission Denied Issue.
  - Fixed Config Prints.

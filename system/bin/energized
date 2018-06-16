@@ -46,13 +46,13 @@ if [ -f $FILTER ]; then
 		echo "---------------------"
 	else
 	
-		echo "-----------------------"
+		echo "------------------------"
 		echo "[+] No update available."
 		echo "------------------------"
 	fi
 else
 	touch $FILTER
-	echo "[+] No hosts file yet applied."
+	echo "[+] No hosts file from this module yet applied!"
 fi
 while true
 do
