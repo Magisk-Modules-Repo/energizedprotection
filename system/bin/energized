@@ -64,7 +64,7 @@ do
 		fi
 		
 		echo -e -n "[+] Energized All-In-One Magisk Module
-[+] Version: 1.1
+[+] Version: 1.2
 [+] Author: Team Boltz (Energized Protection)
  
 [+] Checking Root & Busybox..
