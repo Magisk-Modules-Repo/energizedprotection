@@ -23,8 +23,8 @@ fi
 alias wget="/sbin/.core/busybox/wget"
 alias grep="/sbin/.core/busybox/grep"
 HOST=/sbin/.core/img/.core/hosts
-TREADME=/sdcard/EnergizedProtection/readme
-FILTER=/sdcard/EnergizedProtection/filter
+TREADME=/cache/energizedreadme
+FILTER=/sbin/.core/img/energizedprotection/filter
 WHITELIST=/sdcard/EnergizedProtection/whitelist
 BLACKLIST=/sdcard/EnergizedProtection/blacklist
 TEMP=/cache/energizedtemp
@@ -76,7 +76,7 @@ do
 		fi
 		
 		echo -e -n "\n[+] Energized All-In-One Magisk Module
-[+] Version: 1.5
+[+] Version: 1.6
 [+] Author: Energized Protection
  
 [+] Checking Root & Busybox..
