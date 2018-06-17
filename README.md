@@ -4,7 +4,7 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-1.5-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-1.6-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Last Updated -->
     <img src="https://img.shields.io/badge/Updated-Jun 17, 2018-orange.svg?longCache=true&style=flat-square"
