@@ -21,15 +21,6 @@
   Energized consolidates several reputable <code>hosts</code> files, and merges them into a unified hosts file with duplicates removed.  A variety of tailored hosts files are provided.
 </div>
 
-## Download
-<div align="center">
-  <h3>
-    <a href="https://elbo.in/energizedmagisk">
-     Magisk Module
-    </a>
-  </h3>
-</div>
-
 <br />
 
 <div align="center">
@@ -60,6 +51,15 @@
   <sub>The Best Yet Energized Protection! Built with ❤︎ by
     <a href="https://adroitadorkhan.github.io"><strong>Ador</strong></a> in <strong>Bangladesh</strong>.
   </a>
+</div>
+
+## Download
+<div align="center">
+  <h3>
+    <a href="https://elbo.in/energizedmagisk">
+     Magisk Module
+    </a>
+  </h3>
 </div>
 
 ## Features
