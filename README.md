@@ -4,10 +4,10 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-1.1-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-1.5-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Last Updated -->
-    <img src="https://img.shields.io/badge/Updated-Jun 15, 2018-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Updated-Jun 17, 2018-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
   <!-- Status -->
     <img src="https://img.shields.io/badge/Status-beta-orange.svg?longCache=true&style=flat-square"
@@ -19,6 +19,15 @@
 </div>
 <div align="center">
   Energized consolidates several reputable <code>hosts</code> files, and merges them into a unified hosts file with duplicates removed.  A variety of tailored hosts files are provided.
+</div>
+
+## Download
+<div align="center">
+  <h3>
+    <a href="https://elbo.in/energizedmagisk">
+     Magisk Module
+    </a>
+  </h3>
 </div>
 
 <br />
@@ -67,22 +76,24 @@
 
  - First Enable Systemless Hosts in Magisk Manager
  - Open terminal then type:  
- `su`  
- `energized`
+ ```
+ su  
+ energized
+ ```
  - Then follow the prompts to install host file of choice
 
 #### Whitelist Instructions:
- - Create a text file on sdcard called "whitelist"
- - Either add exact lines you want remove to it -> Run hosts script and choose whitelist option
+ - Find text file on sdcard called `whitelist` in `sdcard/EnergizedProtection/`
+ - Add the domain with redirecting IP to whitelist the exact domain. Ex. `0.0.0.0 abcd.com` -> Run hosts script and choose whitelist option
  - Or add regex for lines you want removed -> Run hosts script and choose whitelist regex option
 
 #### Blacklist Instructions:
- - Create a text file on sdcard called "blacklist"
- - Add exact lines you want to remove it (do not include the 0.0.0.0 -> so for example: "facebook.com")
+ - Find text file on sdcard called `blacklist` in `sdcard/EnergizedProtection/`
+ - Add exact lines you want to remove it (do not include the `0.0.0.0` -> so for example: `abcd.com`)
  - Run hosts script and choose blacklist option
  
 #### To Remove Whitelist/Blacklist:
- - Just run hosts script and reinstall host file of choice.
+ - Just run hosts script and reinstall host file of choice without selecting whitelist/blacklist.
 
 ## Changelog
 
