@@ -23,8 +23,8 @@ fi
 alias wget="/sbin/.core/busybox/wget"
 alias grep="/sbin/.core/busybox/grep"
 HOST=/sbin/.core/img/.core/hosts
-TREADME=/cache/energizedreadme
-FILTER=/sbin/.core/img/energizedprotection/filter
+TREADME=/sdcard/EnergizedProtection/readme
+FILTER=/sdcard/EnergizedProtection/filter
 WHITELIST=/sdcard/EnergizedProtection/whitelist
 BLACKLIST=/sdcard/EnergizedProtection/blacklist
 TEMP=/cache/energizedtemp
