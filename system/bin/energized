@@ -2,19 +2,31 @@ if [ ! -d /sbin/.core/mirror/bin ]; then
   mkdir -p /sbin/.core/mirror/bin
   mount -o bind /data/adb/magisk /sbin/.core/mirror/bin
 fi
+if [ ! -d /sdcard/EnergizedProtection ]; then
+  mkdir -p /sdcard/EnergizedProtection;
+fi
 echo "-----------~------------"
-echo "  Energized Protection  "
+echo "  \033[1;33mEnergized Protection\033[0m  "
 echo "-----------~------------"
 echo "ad.porn.malware blocking."
 echo "Let's make an annoyance free better open internet, altogether!"
+
+if [ ! -f /sdcard/EnergizedProtection/blacklist ]; then
+  echo "\n[+] Creating Blacklist.\n";
+  touch /sdcard/EnergizedProtection/blacklist
+fi
+if [ ! -f /sdcard/EnergizedProtection/whitelist ]; then
+  echo "[+] Creating Whitelist.";
+  touch /sdcard/EnergizedProtection/whitelist
+fi
 
 alias wget="/sbin/.core/busybox/wget"
 alias grep="/sbin/.core/busybox/grep"
 HOST=/sbin/.core/img/.core/hosts
 TREADME=/cache/energizedreadme
 FILTER=/sbin/.core/img/energizedprotection/filter
-WHITELIST=/sdcard/whitelist
-BLACKLIST=/sdcard/blacklist
+WHITELIST=/sdcard/EnergizedProtection/whitelist
+BLACKLIST=/sdcard/EnergizedProtection/blacklist
 TEMP=/cache/energizedtemp
 COUNT=1
 id="$(id)"; id="${id#*=}"; id="${id%%\(*}"; id="${id%% *}"
@@ -24,7 +36,7 @@ else
 root="\e[1;32mGRANTED\e[0m";
 fi;
 
-update="\e[1;36m`busybox date -r /system/etc/hosts`\e[0m"
+update="\e[1;36m`busybox date -r /sbin/.core/img/.core/hosts`\e[0m"
 busybox="\e[1;33m`busybox | head -1 | cut -f 2 -d ' '`\e[0m"
 size="\e[1;35m`ls -lah /system/etc/hosts | awk '{print $5}'`\e[0m"
 
@@ -63,9 +75,9 @@ do
 			exit 0
 		fi
 		
-		echo -e -n "[+] Energized All-In-One Magisk Module
-[+] Version: 1.2
-[+] Author: Team Boltz (Energized Protection)
+		echo -e -n "\n[+] Energized All-In-One Magisk Module
+[+] Version: 1.5
+[+] Author: Energized Protection
  
 [+] Checking Root & Busybox..
 [+] ROOT: $root
@@ -77,6 +89,7 @@ do
 [+] LAST UPDATED: $update
 
 [+] NOTE: Data connection is required to download the hosts."
+        echo "\n\033[33;5;7m[+] PLEASE READ ABOUT THE PACKAGE DETAILS FROM GITHUB or XDA TO CHOOSE THE BEST PACKAGE FOR YOUR DEVICE!\033[0m"
 		echo "\n[+] Select an option below:"
 		echo "---------------~-----------------"
 		echo "[1] for Energized Ad Protection"
@@ -102,82 +115,108 @@ do
 	fi
 	case "$INPUT" in
 		1) DIR="master/EnergizedAd/energized/hosts"
+		echo "\033[1;33m[+] Applying Energized Ad\033[0m"
 		;;
 		2) DIR="master/EnergizedMalware/energized/hosts"
+		echo "\033[1;33m[+] Applying Energized Malware\033[0m"
 		;;
 		3) DIR="master/EnergizedPorn/energized/hosts"
+		echo "\033[1;33m[+] Applying Energized Porn\033[0m"
 		;;
 		4) DIR="master/EnergizedBlu/energized/blu"
+		echo "\033[1;33m[+] Applying Energized Blu\033[0m"
 		;;
 		5) DIR="master/EnergizedBlugo/energized/blu_go"
+		echo "\033[1;33m[+] Applying Energized Blu go\033[0m"
 		;;
 		6) DIR="master/EnergizedLite/energized/hosts"
+		echo "\033[1;33m[+] Applying Energized Lite\033[0m"
 		;;
 		7) DIR="master/EnergizedPornLite/energized/hosts"
+		echo "\033[1;33m[+] Applying Energized Porn Lite\033[0m"
 		;;
 		8) DIR="master/EnergizedUltimate/energized/hosts"
+		echo "\033[1;33m[+] Applying Energized Ultimate\033[0m"
 		;;
 		9) DIR="master/EnergizedUnified/energized/hosts"
+		echo "\033[1;33m[+] Applying Energized Unified\033[0m"
 		;;
 		w)  if [ ! -f $WHITELIST ]; then
 				echo ""
-				echo "*No Whitelist detected*"
-				echo "Copy your whilelist to /sdcard"
+				echo "[-] No Whitelist detected"
+				sleep 1
+				echo "[+] Copy your whilelist to /sdcard/EnergizedProtection"
+				sleep 2
 		    else
 				if [ -f "$HOST" ]; then
-					echo ""
-					echo "Applying Whitelist"
+					echo "\n\033[32;5;7m[+] Whitelist Found!\033[0m"
+					echo "[+] Applying Whitelist"
+					sleep 2
 					grep -Fvxf $WHITELIST $HOST > $TEMP
 					mv $TEMP $HOST
+					echo "\033[36;5;7m[-] Returning to the main screen.\033[0m\n"
+					sleep 3 
 				else
 					echo ""
-					echo "No hosts file detected"
-					echo "Apply a hosts file first"
+					echo "[-] No hosts file detected"
+					sleep 1
+					echo "[+] Apply a hosts file first"
+					sleep 2
 				fi
 		    fi
 		;;
 		wr)  if [ ! -f $WHITELIST ]; then
 				echo ""
-				echo "*No Whitelist detected*"
-				echo "Copy your whilelist to /sdcard"
+				echo "\033[31;5;7m[-] No Whitelist detected.\033[0m"
+				echo "[+] Copy your whilelist to /sdcard/EnergizedProtection"
 		    else
 				if [ -f "$HOST" ]; then
-					echo ""
-					echo "Applying Whitelist (regex)"
+					echo "\n\033[32;5;7m[+] Whitelist Found!\033[0m"
+					echo "[+] Applying Whitelist (regex)"
+					sleep 2
 					grep -vxf $WHITELIST $HOST > $TEMP
 					mv $TEMP $HOST
+					echo "\033[36;5;7m[-] Returning to the main screen.\033[0m\n"
+					sleep 3 
 				else
-					echo ""
-					echo "No hosts file detected"
-					echo "Apply a hosts file first"
+					echo "\033[31;5;7m[-] No hosts file detected\033[0m"
+					sleep 1
+					echo "[+] Apply a hosts file first"
+					sleep 2
 				fi
 		    fi
 		;;
 		b)	if [ ! -f $BLACKLIST ]; then
 				echo ""
-				echo "*No Blacklist detected*"
-				echo "Copy your blacklist to /sdcard"
+				echo "\033[31;5;7m[-] No Blacklist detected.\033[0m"
+				echo "[+] Copy your blacklist to /sdcard/EnergizedProtection"
 			else
 				if [ -f "$HOST" ]; then
 					if [ -s $BLACKLIST ]; then
 						echo ""
-						echo "Applying Blacklist"
+						echo "[+] Applying Blacklist..."
+						sleep 2
 						NEWFILTERS="$(cat $BLACKLIST)"
 						printf '%s\n' "$NEWFILTERS" | while IFS= read -r linenew
 						do
 						  if [ ! "$(grep -Fx "$linenew" $HOST)" ]; then
 							sed -i -e "\$a0.0.0.0 $linenew" $HOST
+							echo "\033[36;5;7m[-] Returning to the main screen.\033[0m\n"
+						sleep 3 
 						  fi
 						done
 					else
-						echo ""
-						echo "Blacklist file is empty"
-						echo "No new filter rules added"
+						echo "\033[31;5;7m[-] Blacklist file is empty!\033[0m"
+						sleep 2
+						echo "\n[-] NO NEW FILTER ADDED!\n"
+						echo "\033[36;5;7m[-] Returning to the main screen\033[0m\n"
+						sleep 3 
 					fi
 				else
-					echo ""
-					echo "No hosts file detected"
-					echo "Apply a hosts file first"
+					echo "\033[31;5;7m[-] No hosts file detected\033[0m"
+					sleep 1
+					echo "[+] Apply a hosts file first"
+					sleep 2
 				fi
 		    fi
 			;;
@@ -190,10 +229,15 @@ do
 	if [ $DIR ]; then
 		echo ""
 		wget -O $HOST https://raw.githubusercontent.com/EnergizedProtection/EnergizedHosts/$DIR
+		echo "\n\033[32;5;7m[+] Done Applying!\033[0m"
+		sleep 3
 		grep "Updated" $TREADME > $FILTER
+		sleep 3
+		echo "\033[37;5;7m[+] Returning to main screen in 3 seconds...\033[0m\n"
 	fi
 	DIR=""
 	COUNT=$((COUNT+1))
 done
 rm -f $TREADME
 echo "[+] Done!"
+echo "\033[1;33m-~- Stay Energized Buddy! -~-\033[0m"
