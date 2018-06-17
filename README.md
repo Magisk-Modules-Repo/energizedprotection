@@ -97,6 +97,11 @@
 
 ## Changelog
 
+v1.5
+ - Now Creates Energized Directory in '/sdcard/EnergizedProtection'
+ - More Detailed Applying Info.
+ - Improved Error Detection.
+
 v1.2
  - Fixed Few Issues.
  - Version Bumped.
