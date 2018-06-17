@@ -97,6 +97,10 @@
 
 ## Changelog
 
+v1.6
+ - Fixed 'No Hosts Applied' issue after every update.
+ - Stores Files to '/sdcard/EnergizedProtection' now.
+
 v1.5
  - Now Creates Energized Directory in '/sdcard/EnergizedProtection'
  - More Detailed Applying Info.
