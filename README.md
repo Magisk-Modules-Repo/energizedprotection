@@ -115,7 +115,6 @@ v2.0
  - Read more about the packages typing `i` and it will open up readme in browser.
  - It will warn, if any other adblocker is installed to avoid any conflict.
  - Now shows the Energized Pack you are using.
- - Stores Files to '/sdcard/EnergizedProtection' now.
 
 v1.6
  - Fixed 'No Hosts Applied' issue after every update.
