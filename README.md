@@ -4,10 +4,10 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-1.6-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-2.0-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Last Updated -->
-    <img src="https://img.shields.io/badge/Updated-Jun 17, 2018-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Updated-Jun 18, 2018-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
   <!-- Status -->
     <img src="https://img.shields.io/badge/Status-beta-orange.svg?longCache=true&style=flat-square"
@@ -82,20 +82,40 @@
  ```
  - Then follow the prompts to install host file of choice
 
-#### Whitelist Instructions:
+#### Whitelist (0.0.0.0) Instructions:
  - Find text file on sdcard called `whitelist` in `sdcard/EnergizedProtection/`
- - Add the domain with redirecting IP to whitelist the exact domain. Ex. `0.0.0.0 abcd.com` -> Run hosts script and choose whitelist option
- - Or add regex for lines you want removed -> Run hosts script and choose whitelist regex option
+ - Add the domain with redirecting IP to whitelist the exact domain. Ex. `0.0.0.0 abcd.com`
+ - Run hosts script and choose whitelist `w` option.
+ 
+#### Whitelist (DOMAIN) Instructions:
+ - Find text file on sdcard called `whitelist` in `sdcard/EnergizedProtection/`
+ - Add the domain name only, to the whitelist. Ex. `abcd.com`
+ - Run hosts script and choose whitelist `d` option.
+
+#### Whitelist (REGEX) Instructions:
+ - Find text file on sdcard called `whitelist` in `sdcard/EnergizedProtection/`
+ - Add the regex to whitelist. Ex. `.*abcd.*` and now all domains with `abcd` in it will be whitelisted.
+ - Run hosts script and choose whitelist `r` option.
 
 #### Blacklist Instructions:
  - Find text file on sdcard called `blacklist` in `sdcard/EnergizedProtection/`
  - Add exact lines you want to remove it (do not include the `0.0.0.0` -> so for example: `abcd.com`)
- - Run hosts script and choose blacklist option
+ - Run hosts script and choose blacklist `b` option.
  
 #### To Remove Whitelist/Blacklist:
  - Just run hosts script and reinstall host file of choice without selecting whitelist/blacklist.
 
 ## Changelog
+
+v2.0
+ - Added Systemless Hosts Warning. If systemless hosts is disabled, script will exit!
+ - Added one more whitelist support. Now it is possible to whitelist domains only using `d`.
+ - Changed whitelisting regex input to `r`.
+ - Hosts can be cleared using `c` to default.
+ - Read more about the packages typing `i` and it will open up readme in browser.
+ - It will warn, if any other adblocker is installed to avoid any conflict.
+ - Now shows the Energized Pack you are using.
+ - Stores Files to '/sdcard/EnergizedProtection' now.
 
 v1.6
  - Fixed 'No Hosts Applied' issue after every update.
