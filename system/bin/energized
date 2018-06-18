@@ -26,7 +26,7 @@ else
     echo "\033[32;1m\n[+] Systemless Hosts Enabled!\033[0m"
 fi
 # Check if Other Adblocker is installed Ex. Adaway
-if [ -d /data/data/org.adawa/ ]; then
+if [ -d /data/data/org.adaway/ ]; then
     echo "\n\033[33;5;7m[-] Other adblocker is detected!\033[0m"
     sleep 1
 elif [ -d /data/data/ru.dixl0f0s.unifiedhostsmanager ]; then
