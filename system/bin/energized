@@ -29,6 +29,8 @@ fi
 if [ -d /data/data/org.adaway/ ]; then
     echo "\n\033[33;5;7m[-] Other adblocker is detected!\033[0m"
     sleep 1
+    echo "\033[36;5;7m[+] Make sure to disable them, to avoid any issue using Energized!\033[0m"
+    sleep 1
 elif [ -d /data/data/ru.dixl0f0s.unifiedhostsmanager ]; then
     echo "\n\033[33;5;7m[-] Other adblocker is detected!\033[0m"
     sleep 1
