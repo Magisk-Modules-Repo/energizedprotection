@@ -56,6 +56,8 @@ FILTER=/sdcard/EnergizedProtection/filter
 WHITELIST=/sdcard/EnergizedProtection/whitelist
 BLACKLIST=/sdcard/EnergizedProtection/blacklist
 TEMP=/cache/energizedtemp
+PTEMP=/cache/energizedporntemp
+STEMP=/cache/energizedsocialtemp
 COUNT=1
 # Check if Root was granted or not
 id="$(id)"; id="${id#*=}"; id="${id%%\(*}"; id="${id%% *}"
@@ -107,7 +109,7 @@ else
 fi
 # Check if Hosts Update is available
 echo "\n[+] Checking Update..."
-echo "\n[+] NOTE: Data connection is required to download the hosts."
+echo "[+] NOTE: Data connection is required to download the hosts."
 wget -q -O $TREADME http://ador.chorompotro.com/Magisk.txt
 grep "Updated" $TREADME
 if [ -f $FILTER ]; then
@@ -137,7 +139,7 @@ do
 		fi
 # Starts Screen Echos
 echo -e -n "\n[+] Energized All-In-One Magisk Module
-[+] Version: 2.2 beta
+[+] Version: 2.5
 [+] Author: Energized Protection
  
 [+] Checking Root & Busybox..
@@ -148,7 +150,7 @@ echo -e -n "\n[+] Energized All-In-One Magisk Module
 [+] ENERGIZED: $eonoff - $echeck
 [+] ADBLOCK STATUS: $adblocker
 [+] SIZE: $size
-[+] LAST UPDATED: $update"
+[+] LAST UPDATED: $update \n"
 		
         echo "\n\033[33;1m[+] Select an option below:\033[0m"
 		echo "---------------~-----------------"
@@ -162,17 +164,20 @@ echo -e -n "\n[+] Energized All-In-One Magisk Module
 		echo "[8] Energized Ultimate Protection"
 		echo "[9] Energized Unified Protection"
 		
+		echo "\n\033[33;1m[+] Extensions:\033[0m"
+		echo "---------------~-----------------"
+		echo "[p] Add Porn Blocking to current host."
+		echo "[s] Add Social Blocking to current host."
+		
 		echo "\n\033[33;1m[+] Other Options:\033[0m"
 		echo "---------------~-----------------"
 		echo "[i] Info About The Packs (Opens in Browser)"
 		echo "[c] Clear Hosts File"
 		echo "[b] Apply Blacklist"
-		echo "[w] Apply Whitelist (Ex. 0.0.0.0 domain.com)"
-		echo "[d] Apply Whitelist (Ex. domain.com)"
-		echo "[r] Apply Whitelist Buse regex - needed for wildcards)"
+		echo "[w] Apply Whitelist"
 		echo "[q] Quit."
 		echo "[-] To disable, just toggle the enable systemless hosts in magisk manager." 
-		echo -n "[+] Your Input (1-9, i, b, w, r, d & q) - "
+		echo -n "[+] Your Input (1-9, p, s, i, b & w) - "
 		read -r INPUT
 		if [ "$INPUT" != "m" ]; then
 			INPUT="$(echo "$INPUT" | sed 's/m//g')"
@@ -338,6 +343,22 @@ EOF
         echo "[+] Done Clearing Hosts!"
         sleep 1
         ;;
+        p)  wget -O $PTEMP https://raw.githubusercontent.com/EnergizedProtection/EnergizedHosts/master/EnergizedPornLite/energized/hosts
+			echo "[+] Applying Porn Hosts to current hosts."
+            mv $HOST $TEMP
+			cat $TEMP $PTEMP > $HOST
+			awk '!a[$0]++' $HOST > $PTEMP && mv -f $PTEMP $HOST
+			rm -f $TEMP $PTEMP
+			echo "[+] Done applying!"
+		;;
+		s)  wget -O $STEMP https://raw.githubusercontent.com/Sinfonietta/hostfiles/master/social-hosts
+			echo "[+] Applying Social Hosts to current hosts."
+            mv $HOST $TEMP
+			cat $TEMP $STEMP > $HOST
+			awk '!a[$0]++' $HOST > $STEMP && mv -f $STEMP $HOST
+			rm -f $TEMP $STEMP
+			echo "[+] Done applying!"
+		;;
 		*)  echo ""
 			echo "Invalid input. Don't use any spaces between letters."
 		;;
