@@ -177,7 +177,7 @@ echo -e -n "\n[+] Energized All-In-One Magisk Module
 		echo "[w] Apply Whitelist"
 		echo "[q] Quit."
 		echo "[-] To disable, just toggle the enable systemless hosts in magisk manager." 
-		echo -n "[+] Your Input (1-9, p, s, i, b & w) - "
+		echo -n "[+] Your Input (1-9, p, s, i, c, b, w & q) - "
 		read -r INPUT
 		if [ "$INPUT" != "m" ]; then
 			INPUT="$(echo "$INPUT" | sed 's/m//g')"
@@ -222,7 +222,7 @@ echo -e -n "\n[+] Energized All-In-One Magisk Module
 				if [ -f "$HOST" ]; then
 					echo "\n\033[32;5;7m[+] Whitelist Found!\033[0m"
 					echo "[+] Applying Whitelist"
-					sleep 2
+					sleep 1
 					grep -Fvxf $WHITELIST $HOST > $TEMP
 					mv $TEMP $HOST
 					sleep 1
@@ -233,13 +233,13 @@ echo -e -n "\n[+] Energized All-In-One Magisk Module
 					mv $TEMP $HOST
 					sleep 1
 					echo "\033[36;5;7m[-] Returning to the main screen.\033[0m\n"
-					sleep 3 
+					sleep 1
 				else
 					echo ""
 					echo "[-] No hosts file detected"
 					sleep 1
 					echo "[+] Apply a hosts file first"
-					sleep 2
+					sleep 1
 				fi
 		    fi
 		;;
