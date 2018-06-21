@@ -229,7 +229,7 @@ echo -e -n "\n[+] Energized All-In-One Magisk Module
 					grep -Fvf $WHITELIST $HOST > $TEMP
 					mv $TEMP $HOST
 					sleep 1
-					grep -Fvf $WHITELIST $HOST > $TEMP
+					grep -vxf $WHITELIST $HOST > $TEMP
 					mv $TEMP $HOST
 					sleep 1
 					echo "\033[36;5;7m[-] Returning to the main screen.\033[0m\n"
