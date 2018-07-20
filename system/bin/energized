@@ -1,3 +1,21 @@
+#!/system/bin/sh
+#
+# Energized Protection 
+# Magisk Module 
+# Copyright (C) 2018 | Energized Protection | Nayem Ador - nayemador.com
+# Colors
+#
+BL='\e[01;90m' > /dev/null 2>&1; # Black
+R='\e[01;91m' > /dev/null 2>&1; # Red
+G='\e[01;92m' > /dev/null 2>&1; # Green
+Y='\e[01;93m' > /dev/null 2>&1; # Yellow
+B='\e[01;94m' > /dev/null 2>&1; # Blue
+P='\e[01;95m' > /dev/null 2>&1; # Purple
+C='\e[01;96m' > /dev/null 2>&1; # Cyan
+W='\e[01;97m' > /dev/null 2>&1; # White
+N='\e[0m' > /dev/null 2>&1; # Null
+# Divider
+divider="-------------------------------------------------"
 # Mount Magisk
 if [ ! -d /sbin/.core/mirror/bin ]; then
     mkdir -p /sbin/.core/mirror/bin
@@ -7,45 +25,120 @@ fi
 if [ ! -d /sdcard/EnergizedProtection ]; then
     mkdir -p /sdcard/EnergizedProtection;
 fi
-# Main Screen Starts
-echo "-----------~------------"
-echo "  \033[1;33mEnergized Protection\033[0m  "
-echo "-----------~------------"
-echo "ad.porn.malware blocking."
-echo "Let's make an annoyance free better open internet, altogether!"
+# Versioning
+version=$Y'3.2'$N > /dev/null 2>&1
+released=$G'Jul 20, 2018'$N > /dev/null 2>&1
+saythanks='https://saythanks.io/to/AdroitAdorKhan' > /dev/null 2>&1
+# Start Echos
+clear
+echo ''
+echo -e $Y"      _____  _________  _____________  _______  "$N
+echo -e $Y"     / __/ |/ / __/ _ \/ ___/  _/_  / / __/ _ \ "$N
+echo -e $Y"    / _//    / _// , _/ (_ // /  / /_/ _// // / "$N
+echo -e $Y"   /___/_/|_/___/_/|_|\___/___/ /___/___/____/  "$N
+echo ''
+echo -e $Y'      P   R   O   T   E   C   T   I   O   N'$N 
+sleep 0.1
+echo "$divider" 
+echo "     Version: $version | Updated: $released"
+sleep 0.1
+echo "$divider"
+sleep 0.1
+echo ""
+sleep 0.1
+echo -e $Y'             nayemador.com/energized'$N
+echo ""
+sleep 0.1
+echo "             ©Team Boltz | Energized"
+echo ''
+sleep 0.5
+echo -n -e $Y'                        •'$N; sleep 0.2; 
+echo -n -e $Y'•'$N; sleep 0.3;
+echo -n -e $Y'•'$N; sleep 0.2;
+sleep 2
+clear
+# Disclaimer
+echo -e "$divider"
+echo -e $R'DISCLAIMER'$N
+echo -e "$divider"
+echo -e $R"THIS IS SIMPLY A MODULE TO CHANGE YOUR SYSTEMLESS"$N
+echo -e $R"HOSTS FILE. IF YOU DON'T KNOW WHAT YOU ARE DOING,"$N
+echo -e $R"THEN PLEASE DON'T PROCEED. I WON'T BE RESPONSIBLE"$N
+echo -e $R"FOR THE MESS YOU CREATE."$N
+echo -e "$divider"
+sleep 5
+# Check Systemless Support
+echo "[+] Checking Systemless Support"; sleep 0.2; clear
+echo "[+] Checking Systemless Support."; sleep 0.2; clear
+echo "[+] Checking Systemless Support.."; sleep 0.2; clear
+echo "[+] Checking Systemless Support..."; sleep 0.5; clear
+echo "[+] Checking Systemless Support.."; sleep 0.2; clear
+echo "[+] Checking Systemless Support."; sleep 0.2; clear
+echo "[+] Checking Systemless Support"; sleep 0.2; clear
 # Check if the Systemless Hosts is enabled or not
 if [ ! -f /sbin/.core/img/.core/hosts ]; then
-    echo "\n\033[33;5;7m[-] Systemless Hosts isn't enabled!\033[0m"
-    echo "\033[37;5;7m[+] Enable it in 'Magisk Manager > Settings > Systemless Hosts'\033[0m"
-    sleep 1
-    echo "\033[36;5;7m[+] Re-run script after enabling Systemless Hosts!\033[0m"
-    echo "\033[31;5;7m[-] Exiting!\033[0m"
+clear
+	sleep 0.1
+	echo "$divider"
+	echo ''
+	sleep 0.1
+	echo "\n\033[33;5;7m[-] Systemless Hosts isn't enabled!\033[0m"
+	sleep 0.1
+	echo "\033[37;5;7m[+] Enable it in 'Magisk Manager > Settings > Systemless Hosts'\033[0m"
+	sleep 0.1
+	echo "\033[36;5;7m[+] Re-run script after enabling Systemless Hosts!\033[0m"
+	sleep 0.2
+	echo "\033[31;5;7m[-] Quitting Script!\033[0m"
+	echo ''
+	sleep 0.1
+	echo "$divider"
     sleep 3
     exit 0
 else
-    echo "\033[32;1m\n[+] Systemless Hosts Enabled!\033[0m"
+    clear
+	sleep 0.1
+	echo "$divider"
+	echo ''
+	echo "\033[37;5;7m[+] Superb Dude! Systemless Hosts is enabled! ^_^\033[0m"
+	echo ''
+	sleep 0.1
+	echo "$divider"
+	sleep 3
 fi
+clear
 # Check if Other Adblocker is installed Ex. Adaway
 if [ -d /data/data/org.adaway/ ]; then
+    clear
     echo "\n\033[33;5;7m[-] Other adblocker is detected!\033[0m"
-    sleep 1
+    sleep 0.3
+    echo ''
     echo "\033[36;5;7m[+] Make sure to disable them, to avoid any issue using Energized!\033[0m"
-    sleep 1
+    sleep 4
 elif [ -d /data/data/ru.dixl0f0s.unifiedhostsmanager ]; then
+    clear
     echo "\n\033[33;5;7m[-] Other adblocker is detected!\033[0m"
-    sleep 1
+    sleep 0.3
+    echo ''
     echo "\033[36;5;7m[+] Make sure to disable them, to avoid any issue using Energized!\033[0m"
-    sleep 1
+    sleep 2
 fi
+# Check Energized Directory
+echo "[+] Checking Energized Directory."; sleep 0.2; clear
+echo "[+] Checking Energized Directory.."; sleep 0.2; clear
+echo "[+] Checking Energized Directory..."; sleep 0.4; clear
 # Check if the Whitelist is there, else creates
 if [ ! -f /sdcard/EnergizedProtection/blacklist ]; then
+   clear
    echo "\n[+] Creating Blacklist.\n";
    touch /sdcard/EnergizedProtection/blacklist
+   sleep 1
 fi
 # Check if the Blacklist is there, else creates 
 if [ ! -f /sdcard/EnergizedProtection/whitelist ]; then
+   clear
    echo "[+] Creating Whitelist.";
    touch /sdcard/EnergizedProtection/whitelist
+   sleep 1
 fi
 # Aliases, Grep, Wget Variables
 alias wget="/sbin/.core/busybox/wget"
@@ -58,72 +151,86 @@ BLACKLIST=/sdcard/EnergizedProtection/blacklist
 TEMP=/cache/energizedtemp
 PTEMP=/cache/energizedporntemp
 STEMP=/cache/energizedsocialtemp
+busybox='/sbin/.core/mirror/bin/busybox' 2>/dev/null
 COUNT=1
 # Check if Root was granted or not
 id="$(id)"; id="${id#*=}"; id="${id%%\(*}"; id="${id%% *}"
 if [ "$id" != "0" ] && [ "$id" != "root" ]; then
-    root="\e[1;31mDENIED\e[0m";
+    root="\e[1;31m[×]\e[0m";
 else
-    root="\e[1;32mGRANTED\e[0m";
+    root="\e[1;32m[✓]\e[0m";
 fi;
 # Other Variables
 update="\e[1;36m`busybox date -r /sbin/.core/img/.core/hosts`\e[0m"
-busybox="\e[1;33m`busybox | head -1 | cut -f 2 -d ' '`\e[0m"
+bboxname="\e[1;36m`busybox | head -1 | cut -f 2 -d ' '`\e[0m"
 size="\e[1;35m`ls -lah /sbin/.core/img/.core/hosts | awk '{print $5}'`\e[0m"
 # Check if System's Adblocker is enabled or not
    [ -f /sbin/.core/img/.core/hosts ];
 if busybox grep -q adblocker /sbin/.core/img/.core/hosts; then
-	adblocker="\e[1;32mENABLED\e[0m"
+	adblocker="\e[1;32m[✓]\e[0m"
 else
-	adblocker="\e[1;31mDISABLED\e[0m"
+	adblocker="\e[1;31m[×]\e[0m"
 fi
 # Check if Energized is applied or not
 	[ -f /sbin/.core/img/.core/hosts ];
-if busybox grep -q adroitadorkhan.github.io /sbin/.core/img/.core/hosts; then
-	eonoff="\e[1;32mENABLED\e[0m"
+if busybox grep -q nayemador.com /sbin/.core/img/.core/hosts; then
+	eonoff="\e[1;32m[✓]\e[0m"
 else
-	eonoff="\e[1;31mDISABLED\e[0m"
+	eonoff="\e[1;31m[×]\e[0m"
 fi
 # If Energized is enabled, which pack it is
 	[ -f /system/etc/hosts ];
-if busybox grep -q "Energized Ad" /sbin/.core/img/.core/hosts; then
-	echeck="\e[1;32mAd Protection\e[0m"	
-elif busybox grep -q "Energized Malware" /sbin/.core/img/.core/hosts; then
-	echeck="\e[1;32mMalware Protection\e[0m"
-elif busybox grep -q "Energized Porn" /sbin/.core/img/.core/hosts; then
-	echeck="\e[1;32mPorn Protection\e[0m"
-elif busybox grep -q "Energized Blu" /sbin/.core/img/.core/hosts; then
+if busybox grep -q "E84S1C-P" /sbin/.core/img/.core/hosts; then
+	echeck="\e[1;32mBasic Protection\e[0m"	
+elif busybox grep -q "E8LU-P" /sbin/.core/img/.core/hosts; then
 	echeck="\e[1;32mBlu Protection\e[0m"
-elif busybox grep -q "Energized go" /sbin/.core/img/.core/hosts; then
-	echeck="\e[1;32mBlu go Protection\e[0m"
-elif busybox grep -q "EnergizedLite" /sbin/.core/img/.core/hosts; then
-	echeck="\e[1;32mLite Protection\e[0m"
-elif busybox grep -q "EnergizedPornLite" /sbin/.core/img/.core/hosts; then
-	echeck="\e[1;32mPorn Lite Protection\e[0m"
-elif busybox grep -q "Energized Ultimate" /sbin/.core/img/.core/hosts; then
+elif busybox grep -q "E8LUG0-P" /sbin/.core/img/.core/hosts; then
+	echeck="\e[1;32mBlu Go Protection\e[0m"
+elif busybox grep -q "EP0R9-P" /sbin/.core/img/.core/hosts; then
+	echeck="\e[1;32mPorn Protection\e[0m"
+elif busybox grep -q "EUL71M473-P" /sbin/.core/img/.core/hosts; then
 	echeck="\e[1;32mUltimate Protection\e[0m"
-elif busybox grep -q "Energized Unified" /sbin/.core/img/.core/hosts; then
+elif busybox grep -q "EU91F13D-P" /sbin/.core/img/.core/hosts; then
 	echeck="\e[1;32mUnified Protection\e[0m"
 else
 	echeck="\e[1;31mNo Pack Detected!\e[0m"
 fi
 # Check if Hosts Update is available
-echo "\n[+] Checking Update..."
-echo "[+] NOTE: Data connection is required to download the hosts."
-wget -q -O $TREADME http://ador.chorompotro.com/Magisk.txt
-grep "Updated" $TREADME
+echo "[+] Checking Hosts Update"; sleep 0.2; clear
+echo "[+] Checking Hosts Update."; sleep 0.2; clear
+echo "[+] Checking Hosts Update.."; sleep 0.3; clear
+echo "[+] Checking Hosts Update.."; sleep 0.5; clear
+echo "[+] Checking Hosts Update.."; sleep 0.3; clear
+echo "[+] Checking Hosts Update."; sleep 0.2; clear
+echo "[+] Checking Hosts Update"; sleep 0.2; clear
+echo "[+] NOTE: Data connection is required to download the hosts."; sleep 2; clear
+wget -q -O $TREADME http://nayemador.com/magisk.txt
+EUPDATE=$(grep "Updated" $TREADME)
 if [ -f $FILTER ]; then
 	CURRENT=$(grep "Updated" $TREADME)
 	LAST_UPDATED=$(sed '1q;d' $FILTER)
 	if [ "$LAST_UPDATED" != "$CURRENT" ]; then
-	    echo "\033[33;1m---------------------\033[0m"
-		echo -e "\033[33;5;7m[+] Update available!\033[0m"
-		echo "\033[33;1m---------------------\033[0m"
+	clear
+	    echo "\033[33;1m-------------------------------\033[0m"
+	    echo ""
+	    sleep 0.1
+		echo -e "\033[33;5;7m[+] New Hosts Update available!\033[0m"
+		sleep 0.1
+		echo ""
+		echo "\033[33;1m-------------------------------\033[0m"
+		
+		sleep 5
 	else
-	
-		echo "\033[33;1m------------------------\033[0m"
-		echo "[+] No update available."
-		echo "\033[33;1m------------------------\033[0m"
+	clear
+		echo "\033[33;1m----------------------------\033[0m"
+		echo ""
+		sleep 0.1
+		echo "[+] No new update available."
+		sleep 0.1
+		echo ""
+		echo "\033[33;1m----------------------------\033[0m"
+		sleep 2
+		clear
 	fi
 else
 	touch $FILTER
@@ -131,6 +238,7 @@ else
 fi
 while true
 do
+busybox clear
 	INPUT=$(eval "echo \$$COUNT")
 	if [ ! "$INPUT" ]; then
 		if [ "$1" ]; then
@@ -138,243 +246,477 @@ do
 			exit 0
 		fi
 # Starts Screen Echos
-echo -e -n "\n[+] Energized All-In-One Magisk Module
-[+] Version: 2.5
-[+] Author: Energized Protection
- 
-[+] Checking Root & Busybox..
-[+] ROOT: $root
-[+] BUSYBOX: $busybox
-
-[+] Checking Hosts...
-[+] ENERGIZED: $eonoff - $echeck
-[+] ADBLOCK STATUS: $adblocker
-[+] SIZE: $size
-[+] LAST UPDATED: $update \n"
-		
-        echo "\n\033[33;1m[+] Select an option below:\033[0m"
-		echo "---------------~-----------------"
-		echo "[1] Energized Ad Protection"
-		echo "[2] Energized Malware Protection"
-		echo "[3] Energized Porn Protection"
-		echo "[4] Energized Blu Protection"
-		echo "[5] Energized Blu go Protection"
-		echo "[6] Energized Lite Protection"
-		echo "[7] Energized Porn Lite Protection"
-		echo "[8] Energized Ultimate Protection"
-		echo "[9] Energized Unified Protection"
-		
-		echo "\n\033[33;1m[+] Extensions:\033[0m"
-		echo "---------------~-----------------"
-		echo "[p] Add Porn Blocking to current host."
-		echo "[s] Add Social Blocking to current host."
-		
-		echo "\n\033[33;1m[+] Other Options:\033[0m"
-		echo "---------------~-----------------"
-		echo "[i] Info About The Packs (Opens in Browser)"
-		echo "[c] Clear Hosts File"
-		echo "[b] Apply Blacklist"
-		echo "[w] Apply Whitelist"
-		echo "[q] Quit."
-		echo "[-] To disable, just toggle the enable systemless hosts in magisk manager." 
-		echo -n "[+] Your Input (1-9, p, s, i, c, b, w & q) - "
+echo ''
+echo ''
+echo -e $Y"      _____  _________  _____________  _______  "$N; sleep 0.1;
+echo -e $Y"     / __/ |/ / __/ _ \/ ___/  _/_  / / __/ _ \ "$N; sleep 0.1;
+echo -e $Y"    / _//    / _// , _/ (_ // /  / /_/ _// // / "$N; sleep 0.1;
+echo -e $Y"   /___/_/|_/___/_/|_|\___/___/ /___/___/____/  "$N; sleep 0.1;
+echo '' 
+sleep 0.1
+echo -e $Y'      P   R   O   T   E   C   T   I   O   N'$N 
+echo ''
+sleep 0.1
+echo -e $W'       Energized All-In-One Magisk Module'$N
+echo "     Version: $version | Updated: $released\n"
+sleep 0.1
+echo -e $Y"$divider"$N
+sleep 0.1
+echo -e $Y'[+] ROOT, BUSYBOX & HOSTS INFO:'$N
+sleep 0.1
+echo -e $Y"$divider"$N
+sleep 0.1
+echo -e $W"$root ROOT             [+] BUSYBOX: $bboxname"$N
+sleep 0.1
+echo -e $W"$eonoff ENERGIZED        [+] PACK: $echeck"$N
+sleep 0.1
+echo -e $W"$adblocker ADBLOCKING       [+] SIZE: $size"$N
+sleep 0.1
+echo -e $W"[+] LAST UPDATED: $update"$N
+sleep 0.1
+echo -e $Y"$divider"$N
+sleep 0.1
+# Options Echo
+		echo -e $Y'[+] SELECT AN ENERGIZED PACK BELOW:'$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $W'[1] Basic Protection      [4] Porn Protection'$N
+		sleep 0.1
+		echo -e $W'[2] Blu Protection        [5] Ultimate Protection'$N
+		sleep 0.1
+		echo -e $W'[3] Blu Go Protection     [6] Unified Protection'$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $Y'[+] EXTENSIONS:'$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $W'[p] Porn Lite Blocking    [s] Social Blocking'$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $Y'[+] OPTIONS:'$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $W'[c] Clear Hosts           [ip] Redirection IP'$N
+		sleep 0.1
+		echo -e $W'[w] Apply Whitelist       [iw] Instant Whitelist'$N
+		sleep 0.1
+		echo -e $W'[b] Apply Blacklist       [ib] Instant Blacklist'$N
+		sleep 0.1
+		echo -e $W'[i] Info About The Packs (Opens in Browser)'$N
+		sleep 0.1
+		echo -e $R'[q] Quit.'$N
+		sleep 0.1
+		echo -e $W'[#] To disable, just toggle the enable systemless\nhosts in Magisk Manager.'$N
+		sleep 0.1
+		echo -n "\033[33;1m[+] Your Input (1-6, p, s, i, ip, b & w)\033[0m - "
 		read -r INPUT
 		if [ "$INPUT" != "m" ]; then
 			INPUT="$(echo "$INPUT" | sed 's/m//g')"
+			clear
 		fi
 		DIR=""
 	fi
 	case "$INPUT" in
-		1) DIR="master/EnergizedAd/energized/hosts"
-		echo "\033[1;33m[+] Applying Energized Ad\033[0m"
+		1) DIR="master/basic/formats/hosts"
+		clear
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $Y'[+] Applying Energized Basic Protection'$N
 		;;
-		2) DIR="master/EnergizedMalware/energized/hosts"
-		echo "\033[1;33m[+] Applying Energized Malware\033[0m"
+		2) DIR="master/blu/formats/hosts"
+		clear
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $Y'[+] Applying Energized Blu Protection'$N
+		echo -e $Y"$divider"$N
 		;;
-		3) DIR="master/EnergizedPorn/energized/hosts"
-		echo "\033[1;33m[+] Applying Energized Porn\033[0m"
+		3) DIR="master/bluGo/formats/hosts"
+		clear
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $Y'[+] Applying Energized Blu Go Protection'$N
+		echo -e $Y"$divider"$N
 		;;
-		4) DIR="master/EnergizedBlu/energized/blu"
-		echo "\033[1;33m[+] Applying Energized Blu\033[0m"
+		4) DIR="master/porn/formats/hosts"
+		clear
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $Y'[+] Applying Porn Protection'$N
+		echo -e $Y"$divider"$N
 		;;
-		5) DIR="master/EnergizedBlugo/energized/blu_go"
-		echo "\033[1;33m[+] Applying Energized Blu go\033[0m"
+		5) DIR="master/ultimate/formats/hosts"
+		clear
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $Y'[+] Applying Energized Ultimate Protection'$N
+		echo -e $Y"$divider"$N
 		;;
-		6) DIR="master/EnergizedLite/energized/hosts"
-		echo "\033[1;33m[+] Applying Energized Lite\033[0m"
+		6) DIR="master/unified/formats/hosts"
+		clear
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $Y'[+] Applying Energized Unified Protection'$N
+		echo -e $Y"$divider"$N
 		;;
-		7) DIR="master/EnergizedPornLite/energized/hosts"
-		echo "\033[1;33m[+] Applying Energized Porn Lite\033[0m"
-		;;
-		8) DIR="master/EnergizedUltimate/energized/hosts"
-		echo "\033[1;33m[+] Applying Energized Ultimate\033[0m"
-		;;
-		9) DIR="master/EnergizedUnified/energized/hosts"
-		echo "\033[1;33m[+] Applying Energized Unified\033[0m"
-		;;
-		w)  if [ ! -f $WHITELIST ]; then
+		w) clear
+		echo -e $Y"$divider"$N
+		echo -e $Y'[+] WHITELISTING'$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo ""
+		# Begins
+		if [ ! -f $WHITELIST ]; then
 				echo ""
-				echo "[-] No Whitelist detected"
-				sleep 1
-				echo "[+] Copy your whilelist to /sdcard/EnergizedProtection"
+				echo -e $R'[-] No Whitelist Detected!'$N
+				sleep 0.5
+				echo -e $W'[+] Copy your whilelist to'$N $Y'/sdcard/EnergizedProtection'$N
 				sleep 2
 		    else
 				if [ -f "$HOST" ]; then
-					echo "\n\033[32;5;7m[+] Whitelist Found!\033[0m"
-					echo "[+] Applying Whitelist"
-					sleep 1
+					echo -e $G'[+] Whitelist Found!'$N
+					echo -e $W'[+] Applying Whitelist'$N
+					sleep 0.3
 					grep -Fvxf $WHITELIST $HOST > $TEMP
 					mv $TEMP $HOST
-					sleep 1
+					sleep 0.5
+					grep -Fvf $WHITELIST $HOST > $TEMP
+					mv $TEMP $HOST
+					sleep 0.5
 					grep -Fvf $WHITELIST $HOST > $TEMP
 					mv $TEMP $HOST
 					sleep 1
-					grep -vxf $WHITELIST $HOST > $TEMP
-					mv $TEMP $HOST
-					sleep 1
-					echo "\033[36;5;7m[-] Returning to the main screen.\033[0m\n"
-					sleep 1
+					echo -e $G'[+] Done'$N
+					echo "[+] Returning..."
+					sleep 3 
 				else
 					echo ""
-					echo "[-] No hosts file detected"
+					echo -e $R'[-] No hosts file detected!'$N
 					sleep 1
-					echo "[+] Apply a hosts file first"
-					sleep 1
+					echo -e $Y'[+] Apply a hosts file first'$N
+					sleep 2
 				fi
 		    fi
 		;;
-		d)  if [ ! -f $WHITELIST ]; then
+		d)  clear
+		echo -e $Y"$divider"$N
+		echo -e $Y'[+] WHITELISTING'$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo ""
+		# Begins
+		if [ ! -f $WHITELIST ]; then
 				echo ""
-				echo "[-] No Whitelist detected"
-				sleep 1
-				echo "[+] Copy your whilelist to /sdcard/EnergizedProtection"
+				echo -e $R'[-] No Whitelist Detected!'$N
+				sleep 0.5
+				echo -e $W'[+] Copy your whilelist to'$N $Y'/sdcard/EnergizedProtection'$N
 				sleep 2
 		    else
 				if [ -f "$HOST" ]; then
-					echo "\n\033[32;5;7m[+] Whitelist Found!\033[0m"
-					echo "[+] Applying Whitelist"
+					echo -e $G'[+] Whitelist Found!'$N
+					echo -e $W'[+] Applying Whitelist (DOMAIN)'$N
 					sleep 2
 					grep -Fvf $WHITELIST $HOST > $TEMP
 					mv $TEMP $HOST
-					echo "\033[36;5;7m[-] Returning to the main screen.\033[0m\n"
+					echo -e $G'[+] Done'$N
+					echo "[+] Returning..."
 					sleep 3 
 				else
 					echo ""
-					echo "[-] No hosts file detected"
+					echo -e $R'[-] No hosts file detected!'$N
 					sleep 1
-					echo "[+] Apply a hosts file first"
+					echo -e $Y'[+] Apply a hosts file first'$N
 					sleep 2
 				fi
 		    fi
 		;;
-		r)  if [ ! -f $WHITELIST ]; then
+		r) clear
+		echo "$divider"
+		echo "\033[1;33m[+] WHITELISTING\033[0m"
+		sleep 0.1
+		echo "$divider"
+		sleep 0.1
+		echo ""
+		# Begins
+		if [ ! -f $WHITELIST ]; then
 				echo ""
-				echo "\033[31;5;7m[-] No Whitelist detected.\033[0m"
-				echo "[+] Copy your whilelist to /sdcard/EnergizedProtection"
+				echo -e $R'[-] No Whitelist Detected!'$N
+				sleep 0.5
+				echo -e $W'[+] Copy your whilelist to'$N $Y'/sdcard/EnergizedProtection'$N
+				sleep 2
 		    else
 				if [ -f "$HOST" ]; then
-					echo "\n\033[32;5;7m[+] Whitelist Found!\033[0m"
-					echo "[+] Applying Whitelist (regex)"
+					echo -e $G'[+] Whitelist Found!'$N
+					echo -e $W'[+] Applying Whitelist (REGEX)'$N
 					sleep 2
 					grep -vxf $WHITELIST $HOST > $TEMP
 					mv $TEMP $HOST
-					echo "\033[36;5;7m[-] Returning to the main screen.\033[0m\n"
+					echo -e $G'[+] Done'$N
+					echo "[+] Returning..."
 					sleep 3 
 				else
-					echo "\033[31;5;7m[-] No hosts file detected\033[0m"
+					echo ""
+					echo -e $R'[-] No hosts file detected!'$N
 					sleep 1
-					echo "[+] Apply a hosts file first"
+					echo -e $Y'[+] Apply a hosts file first'$N
 					sleep 2
 				fi
 		    fi
 		;;
-		b)	if [ ! -f $BLACKLIST ]; then
+		b) clear
+		echo -e $Y"$divider"$N
+		echo -e $Y'[+] BLACKLISTING'$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo ""
+		# Begins
+		if [ ! -f $BLACKLIST ]; then
 				echo ""
-				echo "\033[31;5;7m[-] No Blacklist detected.\033[0m"
-				echo "[+] Copy your blacklist to /sdcard/EnergizedProtection"
+				echo -e $R'[-] No Blacklist detected!'$N
+				echo -e $W'[+] Copy your blacklist to'$N $Y'/sdcard/EnergizedProtection'$N
 			else
 				if [ -f "$HOST" ]; then
 					if [ -s $BLACKLIST ]; then
-						echo ""
-						echo "[+] Applying Blacklist..."
+						echo -e $G'[+] Blacklist Found!'$N
+						echo -e $W'[+] Applying Blacklist...'$N
 						sleep 2
 						NEWFILTERS="$(cat $BLACKLIST)"
 						printf '%s\n' "$NEWFILTERS" | while IFS= read -r linenew
 						do
 						  if [ ! "$(grep -Fx "$linenew" $HOST)" ]; then
 							sed -i -e "\$a0.0.0.0 $linenew" $HOST
-							echo "\033[36;5;7m[-] Returning to the main screen.\033[0m\n"
-						sleep 3 
 						  fi
 						done
+						echo -e $G'[+] Done'$N
+						echo "[+] Returning..."
+						sleep 1
 					else
-						echo "\033[31;5;7m[-] Blacklist file is empty!\033[0m"
+						echo -e $R'[-] Blacklist file is empty!'$N
+						sleep 1
+						echo -e $R'[-] NO NEW FILTER ADDED!'$N
+						echo "[+] Returning..."
 						sleep 2
-						echo "\n[-] NO NEW FILTER ADDED!\n"
-						echo "\033[36;5;7m[-] Returning to the main screen\033[0m\n"
-						sleep 3 
 					fi
 				else
-					echo "\033[31;5;7m[-] No hosts file detected\033[0m"
+					echo ""
+					echo -e $R'[-] No hosts file detected!'$N
 					sleep 1
-					echo "[+] Apply a hosts file first"
+					echo -e $Y'[+] Apply a hosts file first'$N
 					sleep 2
 				fi
 		    fi
 			;;
 		q) break
+		clear
+		reset
 		;;
 		i) if [ "$INPUT" -eq i ]; then
-		     am start -a android.intent.action.VIEW -d "https://github.com/EnergizedProtection/EnergizedHosts/blob/master/README.md"
+		     am start -a android.intent.action.VIEW -d "https://github.com/EnergizedProtection/block/blob/master/README.md"
 		   fi
 		;;
-		c) rm -rf /sbin/.core/img/.core/hosts
+		thanks|thx|thnx|thax|thank|thanku|thankyou) am start -a android.intent.action.VIEW -d "$saythanks"
+		;;
+		c) clear
+		echo -e $Y"$divider"$N
+		echo -e $Y'[+] CLEAN HOSTS'$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo "Clean your current hosts to defualt."
+		echo -e $Y"$divider"$N
+		echo ""
+		rm -rf /sbin/.core/img/.core/hosts
 		echo "[+] Clearing Hosts File..."
-		sleep 3
+		sleep 0.3
 		cat >> /sbin/.core/img/.core/hosts <<EOF
 # Energized - ad.porn.malware blocking.
 # A merged collection of hosts from reputable sources.
-# https://ador.chorompotro.com/energized
+# https://nayemador.com/energized
 
 127.0.0.1 localhost
 0.0.0.0   0.0.0.0
 
 EOF
         echo "[+] Done Clearing Hosts!"
-        sleep 1
+        echo "[+] Returning..."
+        sleep 2
         ;;
-        p)  wget -O $PTEMP https://raw.githubusercontent.com/EnergizedProtection/EnergizedHosts/master/EnergizedPornLite/energized/hosts
+        p)  clear
+		echo -e $Y"$divider"$N
+		echo -e $Y'[+] PORN HOSTS EXTENSION'$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo "Add Porn Lite Blocking Pack to current hosts."
+		echo -e $Y"$divider"$N
+		echo ""
+		wget -O $PTEMP https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/formats/ext-porn-hosts.txt
 			echo "[+] Applying Porn Hosts to current hosts."
             mv $HOST $TEMP
 			cat $TEMP $PTEMP > $HOST
 			awk '!a[$0]++' $HOST > $PTEMP && mv -f $PTEMP $HOST
 			rm -f $TEMP $PTEMP
-			echo "[+] Done applying!"
+			echo -e $G'[+] Done!'$N
+			echo "[+] Returning..."
 		;;
-		s)  wget -O $STEMP https://raw.githubusercontent.com/Sinfonietta/hostfiles/master/social-hosts
+		s)  clear
+		echo -e $Y"$divider"$N
+		echo -e $Y'[+] SOCIAL HOSTS EXTENSION'$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo "Add Social Blocking Pack to current hosts."
+		echo -e $Y"$divider"$N
+		echo ""
+		wget -O $STEMP https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/formats/ext-social-hosts.txt
 			echo "[+] Applying Social Hosts to current hosts."
             mv $HOST $TEMP
 			cat $TEMP $STEMP > $HOST
 			awk '!a[$0]++' $HOST > $STEMP && mv -f $STEMP $HOST
 			rm -f $TEMP $STEMP
-			echo "[+] Done applying!"
+			echo -e $G'[+] Done!'$N
+			echo "[+] Returning..."
+		;;
+		ip) clear
+		echo -e $Y"$divider"$N
+		echo -e $Y'[+] CUSTOM REDIRECTION IP'$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e "Add your custom Redirection IP. It must be an IP.\nUsing anything else than IP, may cause issue with\nyour hosts."
+		echo -e $Y"$divider"$N
+		echo ""
+		echo -n -e $W'[+] Enter Redirection IP:'$N $ip
+		read ip
+		echo -e $W'[+] Your Redirection IP'$N $Y"$ip"$N
+		echo -n -e $W'[+] Are you sure?'$N $Y'[Y/N]'$N: $G"$answer"$N
+		read answer
+		if [ "$answer" == "Y" ]; then
+		  echo "[+] Adding $ip as redirection IP..."
+		  mv $HOST $TEMP
+		  sed -e 's/[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}/'"${ip}"'/g' $TEMP > $HOST
+		  rm -f $TEMP
+		  echo -e W$'[+] Done'$N
+		  echo -e $W'[+] Returning...'$N
+		  sleep 1
+		else
+		  clear
+		  echo -n -e $W'[+] RETURNING '$N
+		  echo -n -e $Y'∴'$N; sleep 0.2;
+		  echo -n -e $Y'∵'$N; sleep 0.3;
+		  echo -n -e $Y'∴'$N; sleep 0.2;
+		  sleep 0.1
+		fi
+		;;
+		ib) clear
+		echo -e $Y"$divider"$N
+		echo -e $Y'[+] INSTANT BLACKLIST'$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e "Instant Blacklist will let you add a domain at a\ntime to add to your hosts as blacklisted.\nNote. To Blacklist more domains, use 'b' method."
+		echo -e $Y"$divider"$N
+		echo ""
+		echo -n -e $W'[+] Enter Domain Name Only:'$N $ib
+		read ib
+		echo -e $W'[+] Your Domain(s)'$N $Y"$ib"$N
+		echo -n -e $W'[+] Are you sure?'$N $Y'[Y/N]'$N: $G"$answer"$N
+		read answer
+		if [ "$answer" == "Y" ]; then
+		  echo "[+] Applying $ib as blacklist..."
+		  sed -i -e "\$a0.0.0.0 $ib" $HOST
+		  echo "$ib" >> $BLACKLIST
+		  echo -e W$'[+] Done'$N
+		  echo -e $W'[+] Returning...'$N
+		  sleep 1
+		  clear
+		else
+		  clear
+		  echo -n -e $W'[+] RETURNING '$N
+		  echo -n -e $Y'∴'$N; sleep 0.2;
+		  echo -n -e $Y'∵'$N; sleep 0.3;
+		  echo -n -e $Y'∴'$N; sleep 0.2;
+		  sleep 0.3
+		  fi
+		;;
+		iw) clear
+		echo -e $Y"$divider"$N
+		echo -e $Y'[+] INSTANT WHITELIST'$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e "Instant whitelist will let you add a domain at a\ntime to add to your hosts as whitelisted.\nNote. To Whitelist more domains, use 'w' method."
+		echo -e $Y"$divider"$N
+		echo ""
+		echo -n -e $W'[+] Enter Domain Name Only:'$N $iw
+		read iw
+		echo -e $W'[+] Your Domain'$N $Y"$iw"$N
+		echo -n -e $W'[+] Are you sure?'$N $Y'[Y/N]'$N: $G"$answer"$N
+		read answer
+		if [ "$answer" == "Y" ]; then
+		  echo "[+] Applying $iw as whitelist..."
+		  sed -i "/$iw/d" $HOST
+		  echo "$iw" >> $WHITELIST
+		  echo -e $W'[+] Done'$N
+		  echo -e $W'[+] Returning...'$N
+		  sleep 1
+		else
+		  clear
+		  echo -n -e $W'[+] RETURNING '$N
+		  echo -n -e $Y'∴'$N; sleep 0.2;
+		  echo -n -e $Y'∵'$N; sleep 0.3;
+		  echo -n -e $Y'∴'$N; sleep 0.2;
+		  sleep 0.3
+		fi
 		;;
 		*)  echo ""
-			echo "Invalid input. Don't use any spaces between letters."
+			echo -e $R"Invalid input. Don't use any spaces between letters."$N 
+			sleep 2
 		;;
 	esac
 	if [ $DIR ]; then
 		echo ""
-		wget -O $HOST https://raw.githubusercontent.com/EnergizedProtection/EnergizedHosts/$DIR
+		wget -O $HOST https://raw.githubusercontent.com/EnergizedProtection/block/$DIR
 		echo "\n\033[32;5;7m[+] Done Applying!\033[0m"
-		sleep 3
+		sleep 1
+		echo -e $Y"$divider"$N
 		grep "Updated" $TREADME > $FILTER
-		sleep 3
-		echo "\033[37;5;7m[+] Returning to main screen in 3 seconds...\033[0m\n"
+		sleep 0.5
+		echo -e $W'[+] Returning...'$N
+		sleep 0.3
+		clear
 	fi
 	DIR=""
 	COUNT=$((COUNT+1))
+	clear
+	reset
 done
 rm -f $TREADME
 echo "[+] Done!"
-echo "\033[1;33m-~- Stay Energized Buddy! -~-\033[0m"
+clear 
+sleep 0.3
+echo -e $Y"$divider"$N
+sleep 0.1
+echo -n -e $Y'                   T'$N; sleep 0.1; 
+echo -n -e $Y'H'$N; sleep 0.1;
+echo -n -e $Y'A'$N; sleep 0.1; 
+echo -n -e $Y'N'$N; sleep 0.1; 
+echo -n -e $Y'K '$N; sleep 0.1; 
+echo -n -e $Y'Y'$N; sleep 0.1; 
+echo -n -e $Y'O'$N; sleep 0.1; 
+echo -n -e $Y'U'$N; sleep 0.1; 
+echo -n -e $Y'!'$N; sleep 0.5; 
+echo -n -e $R'<3\n\n'$N
+sleep 0.1
+echo -e $Y'             STAY ENERGIZED BUDDY! :)'$N
+sleep 0.1
+echo -e $Y"$divider"$N
+echo ""
+sleep 3
