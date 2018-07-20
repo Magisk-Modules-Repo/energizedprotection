@@ -1,16 +1,16 @@
-![Cover](https://ador.chorompotro.com/energized_magisk_cover.svg)
+![Cover](https://nayemador.com/assets/covers/energized_magisk_cover.svg)
 
-<h1 align="center">Energized - Magisk ⚡</h1>
+<h1 align="center">Energized Protection - Magisk ⚡</h1>
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-2.5-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-3.2-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Last Updated -->
-    <img src="https://img.shields.io/badge/Updated-Jun 20, 2018-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Updated-Jul 20, 2018-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
   <!-- Status -->
-    <img src="https://img.shields.io/badge/Status-beta-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Status-Stable-green.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
 </div>
 
@@ -25,20 +25,16 @@
 
 <div align="center">
   <h3>
-    <a href="https://ador.chorompotro.com">
+    <a href="https://nayemador.com/energized">
       Website
     </a>
     <span> | </span>
-    <a href="http://adroit.heliohost.org">
-      Backup Server
-    </a>
-    <span> | </span>
-    <a href="https://github.com/AdroitAdorKhan/Energized">
+    <a href="https://github.com/EnergizedProtection/block">
       Energized Repo
     </a>
     <span> | </span>
-    <a href="https://ador.chorompotro.com/energized/secure/">
-      Test Adblock
+    <a href="https://nayemador.com/energized/secure/">
+      Test Energized
     </a>
     <span> | </span>
     <a href="https://t.me/EnergizedProtection">
@@ -49,17 +45,8 @@
 
 <div align="center">
   <sub>The Best Yet Energized Protection! Built with ❤︎ by
-    <a href="https://adroitadorkhan.github.io"><strong>Ador</strong></a> in <strong>Bangladesh</strong>.
+    <a href="https://nayemador.com"><strong>Ador</strong></a> in <strong>Bangladesh</strong>.
   </a>
-</div>
-
-## Download
-<div align="center">
-  <h3>
-    <a href="https://elbo.in/energizedmagisk">
-     Magisk Module
-    </a>
-  </h3>
 </div>
 
 ## Features
@@ -97,15 +84,31 @@
  - Add the regex to whitelist. Ex. `.*abcd.*` and now all domains with `abcd` in it will be whitelisted.
  - Run hosts script and choose whitelist `r` option.
 
+#### Altogether Whitelist
+- `All Three Formats` of whitelisting can be done by `w` only too.
+
 #### Blacklist Instructions:
  - Find text file on sdcard called `blacklist` in `sdcard/EnergizedProtection/`
  - Add exact lines you want to remove it (do not include the `0.0.0.0` -> so for example: `abcd.com`)
  - Run hosts script and choose blacklist `b` option.
- 
+
 #### To Remove Whitelist/Blacklist:
  - Just run hosts script and reinstall host file of choice without selecting whitelist/blacklist.
 
 ## Changelog
+
+v3.2
+ - Added `instant blacklist` and `instant whitelist`.
+ - Re-written Script.
+ - Added Custom `Redirection IP` Support.
+ - Improved Script Quality.
+ - Improved layout.
+ - Improved `sleep` parameters.
+ - Beautified Script and Outputs.
+ - Fixed Blacklisting Issue.
+ - Improved `sleep` parameters.
+ - Improved Energized `pack` detection.
+ - Version Bumped with Newer Energized Setup.
 
 v2.5
  - Added Extension Support. 
@@ -151,7 +154,7 @@ v1.0
 Energized Hosts are basically `hosts` files to block access to domains. If you don't know how it works, then please try this at your own risk. I won't be responsible for any damage or loss. Never forget to make backups.
 
 ## License
-[MIT](https://github.com/EnergizedProtection/EnergizedHosts/blob/master/LICENSE)
+[MIT](https://github.com/EnergizedProtection/block/blob/master/LICENSE)
 
 ---
 
@@ -159,6 +162,6 @@ Energized Hosts are basically `hosts` files to block access to domains. If you d
   <h2>Let's make an annoyance free better open internet, altogether!</h2>
 </div>
 
-<p align="center"><sub>A project by <a href="https://github.com/AdroitAdorKhan" target="_blank">Ador</a> with ❤<p>
+<p align="center"><sub>A project by <a href="https://nayemador.com" target="_blank">Ador</a> with ❤<p>
 
 <p align="center"><a href="https://saythanks.io/to/AdroitAdorKhan" target="_blank"><img src="https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg?longCache=true&style=flat-square"></a><p>

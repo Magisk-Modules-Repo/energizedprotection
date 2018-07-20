@@ -53,7 +53,7 @@ print_modname() {
   ui_print "      Energized Protection       "
   ui_print "---------------------------------"
   ui_print "    ad.porn.malware blocking.    "
-  ui_print "        Magisk All-In-One        "
+  ui_print "           All-In-One            "
   ui_print "---------------------------------"
 }
 
