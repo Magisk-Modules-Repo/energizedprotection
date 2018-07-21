@@ -26,8 +26,8 @@ if [ ! -d /sdcard/EnergizedProtection ]; then
     mkdir -p /sdcard/EnergizedProtection;
 fi
 # Versioning
-version=$Y'3.2'$N > /dev/null 2>&1
-released=$G'Jul 20, 2018'$N > /dev/null 2>&1
+version=$Y'3.3'$N > /dev/null 2>&1
+released=$G'Jul 21, 2018'$N > /dev/null 2>&1
 saythanks='https://saythanks.io/to/AdroitAdorKhan' > /dev/null 2>&1
 # Start Echos
 clear
@@ -204,10 +204,10 @@ echo "[+] Checking Hosts Update.."; sleep 0.3; clear
 echo "[+] Checking Hosts Update."; sleep 0.2; clear
 echo "[+] Checking Hosts Update"; sleep 0.2; clear
 echo "[+] NOTE: Data connection is required to download the hosts."; sleep 2; clear
-wget -q -O $TREADME http://nayemador.com/magisk.txt
-EUPDATE=$(grep "Updated" $TREADME)
+wget -q -O $TREADME https://raw.githubusercontent.com/EnergizedProtection/block/master/VERSION.md
+grep "Version Code" $TREADME
 if [ -f $FILTER ]; then
-	CURRENT=$(grep "Updated" $TREADME)
+	CURRENT=$(grep "Version Code" $TREADME)
 	LAST_UPDATED=$(sed '1q;d' $FILTER)
 	if [ "$LAST_UPDATED" != "$CURRENT" ]; then
 	clear
