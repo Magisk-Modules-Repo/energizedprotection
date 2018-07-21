@@ -54,6 +54,7 @@ print_modname() {
   ui_print "---------------------------------"
   ui_print "    ad.porn.malware blocking.    "
   ui_print "           All-In-One            "
+  ui_print "     nayemador.com/energized     "
   ui_print "---------------------------------"
 }
 

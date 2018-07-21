@@ -4,10 +4,10 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-3.2-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-3.3-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Last Updated -->
-    <img src="https://img.shields.io/badge/Updated-Jul 20, 2018-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Updated-Jul 21, 2018-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
   <!-- Status -->
     <img src="https://img.shields.io/badge/Status-Stable-green.svg?longCache=true&style=flat-square"
@@ -96,6 +96,9 @@
  - Just run hosts script and reinstall host file of choice without selecting whitelist/blacklist.
 
 ## Changelog
+
+v3.3
+ - Fixed Update Checking Issue.
 
 v3.2
  - Added `instant blacklist` and `instant whitelist`.
