@@ -4,10 +4,10 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-3.3-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-3.5-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Last Updated -->
-    <img src="https://img.shields.io/badge/Updated-Jul 21, 2018-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Updated-Jul 22, 2018-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
   <!-- Status -->
     <img src="https://img.shields.io/badge/Status-Stable-green.svg?longCache=true&style=flat-square"
@@ -97,8 +97,9 @@
 
 ## Changelog
 
-v3.3
- - Fixed Update Checking Issue.
+v3.5
+ - Fixed minor Update Checking Issue.
+ - Fixed Whitelisting Issue using `w`.
 
 v3.2
  - Added `instant blacklist` and `instant whitelist`.
