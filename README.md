@@ -4,10 +4,10 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-3.5-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-3.6-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Last Updated -->
-    <img src="https://img.shields.io/badge/Updated-Jul 22, 2018-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Updated-Aug 03, 2018-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
   <!-- Status -->
     <img src="https://img.shields.io/badge/Status-Stable-green.svg?longCache=true&style=flat-square"
@@ -96,6 +96,13 @@
  - Just run hosts script and reinstall host file of choice without selecting whitelist/blacklist.
 
 ## Changelog
+
+v3.6
+ - Added New Energized Pack, `Spark - True Lite Hosts`.
+ - Fixed Minor Issues related to hosts `download`.
+ - Fixed Script `info` Showing. You don't have to re-run script, to check changes.
+ - Improved `sleep` Parameters.
+ - Improved Script.
 
 v3.5
  - Fixed minor Update Checking Issue.
