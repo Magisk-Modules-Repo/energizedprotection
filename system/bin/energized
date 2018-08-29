@@ -15,6 +15,8 @@ C='\e[01;96m' > /dev/null 2>&1; # Cyan
 W='\e[01;97m' > /dev/null 2>&1; # White
 LG='\e[01;37m' > /dev/null 2>&1; # Light Gray
 N='\e[0m' > /dev/null 2>&1; # Null
+# Define Energized Protection directory
+DIRECTORY=/sdcard/EnergizedProtection
 # Divider
 divider="-------------------------------------------------"
 # Mount Magisk
@@ -23,12 +25,12 @@ if [ ! -d /sbin/.core/mirror/bin ]; then
     mount -o bind /data/adb/magisk /sbin/.core/mirror/bin
 fi
 # Create Energized Protection Directory if not available 
-if [ ! -d /sdcard/EnergizedProtection ]; then
-    mkdir -p /sdcard/EnergizedProtection;
+if [ ! -d $DIRECTORY ]; then
+    mkdir -p $DIRECTORY;
 fi
 # Versioning
-version=$Y'3.6'$N > /dev/null 2>&1
-released=$G'Aug 03, 2018'$N > /dev/null 2>&1
+version=$Y'4.0'$N > /dev/null 2>&1
+released=$G'Aug 30, 2018'$N > /dev/null 2>&1
 saythanks='https://saythanks.io/to/AdroitAdorKhan' > /dev/null 2>&1
 # Start Echos
 clear
@@ -66,8 +68,12 @@ echo -e $R"THIS IS SIMPLY A MODULE TO CHANGE YOUR SYSTEMLESS"$N
 echo -e $R"HOSTS FILE. IF YOU DON'T KNOW WHAT YOU ARE DOING,"$N
 echo -e $R"THEN PLEASE DON'T PROCEED. I WON'T BE RESPONSIBLE"$N
 echo -e $R"FOR THE MESS YOU CREATE."$N
+echo ''
+echo -e $Y"ENERGIZED BASIC/PORN/ULTIMATE/UNIFIED PACKS ARE"$N
+echo -e $Y"BIGGER IN SIZE. USE THEM, IF YOUR DEVICE CAN"$N
+echo -e $Y"HANDLE THE LOAD."$N
 echo -e "$divider"
-sleep 5
+sleep 8
 # Check Systemless Support
 clear
 echo "[+] Checking Systemless Support"; sleep 0.2; clear
@@ -138,18 +144,44 @@ clear
 echo "[+] Checking Energized Directory."; sleep 0.1; clear
 echo "[+] Checking Energized Directory.."; sleep 0.2; clear
 echo "[+] Checking Energized Directory..."; sleep 0.1; clear
+# Create Energized Protection Cache Directory if not available 
+if [ ! -d $DIRECTORY/cache ]; then
+    mkdir -p $DIRECTORY/cache;
+    echo -e "\n[+] Setting up working cache directory.\n";
+fi
 # Check if the Whitelist is there, else creates
-if [ ! -f /sdcard/EnergizedProtection/blacklist ]; then
+if [ ! -f $DIRECTORY/blacklist ]; then
    clear
-   echo "\n[+] Creating Blacklist.\n";
-   touch /sdcard/EnergizedProtection/blacklist
+   echo -e "\n[+] Creating Blacklist.\n";
+   touch $DIRECTORY/blacklist
    sleep 0.2
 fi
 # Check if the Blacklist is there, else creates 
-if [ ! -f /sdcard/EnergizedProtection/whitelist ]; then
+if [ ! -f $DIRECTORY/whitelist ]; then
    clear
-   echo "[+] Creating Whitelist.";
-   touch /sdcard/EnergizedProtection/whitelist
+   echo -e "[+] Creating Whitelist.";
+   touch $DIRECTORY/whitelist
+   sleep 0.2
+fi
+# Check if the temporary is there, else creates 
+if [ ! -f $DIRECTORY/cache/energizedtemp ]; then
+   clear
+   echo -e "[+] Creating temporary cache...";
+   touch $DIRECTORY/cache/energizedtemp
+   sleep 0.2
+fi
+# Check if the porn temp is there, else creates 
+if [ ! -f $DIRECTORY/cache/energizedporntemp ]; then
+   clear
+   echo -e "[+] Creating Temp...";
+   touch $DIRECTORY/cache/energizedporntemp
+   sleep 0.2
+fi
+# Check if the social temp is there, else creates 
+if [ ! -f $DIRECTORY/cache/energizedsocialtemp ]; then
+   clear
+   echo -e "[+] Creating Temp...";
+   touch $DIRECTORY/cache/energizedsocialtemp
    sleep 0.2
 fi
 while true
@@ -158,15 +190,34 @@ do
 alias wget="/sbin/.core/busybox/wget"
 alias grep="/sbin/.core/busybox/grep"
 HOST=/sbin/.core/img/.core/hosts
-TREADME=/sdcard/EnergizedProtection/readme
-FILTER=/sdcard/EnergizedProtection/filter
-WHITELIST=/sdcard/EnergizedProtection/whitelist
-BLACKLIST=/sdcard/EnergizedProtection/blacklist
-TEMP=/cache/energizedtemp
-PTEMP=/cache/energizedporntemp
-STEMP=/cache/energizedsocialtemp
+TREADME=$DIRECTORY/readme
+DREADME=$DIRECTORY/deltaReadme
+FILTER=$DIRECTORY/filter
+DFILTER=$DIRECTORY/deltaFilter
+WHITELIST=$DIRECTORY/whitelist
+BLACKLIST=$DIRECTORY/blacklist
+TEMP=$DIRECTORY/cache/energizedtemp
+PTEMP=$DIRECTORY/cache/energizedporntemp
+STEMP=$DIRECTORY/cache/energizedsocialtemp
 busybox='/sbin/.core/mirror/bin/busybox' 2>/dev/null
 COUNT=1
+# Check if Delta Update is available
+wget --no-check-certificate -q -O $DREADME https://raw.githubusercontent.com/AdroitAdorKhan/Energized/master/core/delta-patchset/blacklist
+grep -q "#" $DREADME
+if [ -f $DFILTER ]; then
+	DCURRENT=$(grep "#" $DREADME)
+	DUPDATED=$(sed '1q;d' $DFILTER)
+	if [ "$DUPDATED" != "$DCURRENT" ]; then
+		deltapatch=$G'[dp] Delta Patch'$N
+	else
+	    deltapatch=$W''$N
+	fi
+else
+	touch $DFILTER
+	
+fi
+busybox clear
+	
 # Check if Root was granted or not
 id="$(id)"; id="${id#*=}"; id="${id%%\(*}"; id="${id%% *}"
 if [ "$id" != "0" ] && [ "$id" != "root" ]; then
@@ -180,14 +231,14 @@ bboxname="\e[1;36m`busybox | head -1 | cut -f 2 -d ' '`\e[0m"
 size="\e[1;35m`ls -lah /sbin/.core/img/.core/hosts | awk '{print $5}'`\e[0m"
 # Check if System's Adblocker is enabled or not
    [ -f /sbin/.core/img/.core/hosts ];
-if busybox grep -q adblocker /sbin/.core/img/.core/hosts; then
+if busybox grep -q ads /sbin/.core/img/.core/hosts; then
 	adblocker="\e[1;32m[✓]\e[0m"
 else
 	adblocker="\e[1;31m[×]\e[0m"
 fi
 # Check if Energized is applied or not
 	[ -f /sbin/.core/img/.core/hosts ];
-if busybox grep -q nayemador.com /sbin/.core/img/.core/hosts; then
+if busybox grep -q ads.nayemador.com /sbin/.core/img/.core/hosts; then
 	eonoff="\e[1;32m[✓]\e[0m"
 else
 	eonoff="\e[1;31m[×]\e[0m"
@@ -196,24 +247,32 @@ fi
 	[ -f /system/etc/hosts ];
 if busybox grep -q "E84S1C-P" /sbin/.core/img/.core/hosts; then
 	echeck="\e[1;32mBasic Protection\e[0m"
+	autopack="basic"
 elif busybox grep -q "E5P4RK-P" /sbin/.core/img/.core/hosts; then
-	echeck="\e[1;32mSpark Protection\e[0m"	
+	echeck="\e[1;32mSpark Protection\e[0m"
+	autopack="spark"
 elif busybox grep -q "E8LU-P" /sbin/.core/img/.core/hosts; then
 	echeck="\e[1;32mBlu Protection\e[0m"
+	autopack="blu"
 elif busybox grep -q "E8LUG0-P" /sbin/.core/img/.core/hosts; then
 	echeck="\e[1;32mBlu Go Protection\e[0m"
+	autopack="bluGo"
 elif busybox grep -q "EP0R9-P" /sbin/.core/img/.core/hosts; then
 	echeck="\e[1;32mPorn Protection\e[0m"
+	autopack="porn"
 elif busybox grep -q "EUL71M473-P" /sbin/.core/img/.core/hosts; then
 	echeck="\e[1;32mUltimate Protection\e[0m"
+	autopack="ultimate"
 elif busybox grep -q "EU91F13D-P" /sbin/.core/img/.core/hosts; then
 	echeck="\e[1;32mUnified Protection\e[0m"
+	autopack="unified"
 else
 	echeck="\e[1;31mNo Pack Detected!\e[0m"
+	autopack="null"
 fi
 # Check if Hosts Update is available
 wget --no-check-certificate -q -O $TREADME https://raw.githubusercontent.com/EnergizedProtection/block/master/VERSION.md
-grep "Version Code" $TREADME
+grep -q "Version Code" $TREADME
 if [ -f $FILTER ]; then
 	CURRENT=$(grep "Version Code" $TREADME)
 	LAST_UPDATED=$(sed '1q;d' $FILTER)
@@ -224,7 +283,7 @@ if [ -f $FILTER ]; then
 	fi
 else
 	touch $FILTER
-	eupdate="[+] No hosts file from this module yet applied!"
+	eupdate="[+] Apply the hosts first!"
 fi
 busybox clear
 	INPUT=$(eval "echo \$$COUNT")
@@ -275,7 +334,7 @@ sleep 0.1
 		sleep 0.1
 		echo -e $W'[5] Porn Protection       [6] Ultimate Protection'$N
 		sleep 0.1
-		echo -e $W'[7] Unified Protection'$N
+		echo -e $W"[7] Unified Protection   "$N    $G"$deltapatch"$N
 		sleep 0.1
 		echo -e $Y"$divider"$N
 		sleep 0.1
@@ -297,13 +356,15 @@ sleep 0.1
 		sleep 0.1
 		echo -e $W'[b] Apply Blacklist       [ib] Instant Blacklist'$N
 		sleep 0.1
-		echo -e $W'[i] Info About The Packs (Opens in Browser)'$N
+		echo -e $W'[u] Current-O-Update      [in] Instructions'$N
+		sleep 0.1
+		echo -e $W'[i] Web & Info'$N
 		sleep 0.1
 		echo -e $R'[q] Quit.'$N
 		sleep 0.1
 		echo -e $W'[#] To disable, just toggle the enable systemless\nhosts in Magisk Manager.'$N
 		sleep 0.1
-		echo -n "\033[33;1m[+] Your Input (1-6, p, s, i, ip, b & w)\033[0m - "
+		echo -n "\033[33;1m[+] Your Input\033[0m - "
 		read -r INPUT
 		if [ "$INPUT" != "m" ]; then
 			INPUT="$(echo "$INPUT" | sed 's/m//g')"
@@ -318,11 +379,39 @@ sleep 0.1
 		sleep 0.1
 		echo -e $Y'[+] Applying Energized Spark Protection'$N
 		;;
-		2) DIR="master/basic/formats/hosts"
-		clear
+		2) clear
 		echo -e $Y"$divider"$N
 		sleep 0.1
-		echo -e $Y'[+] Applying Energized Basic Protection'$N
+		echo -e $Y"Hold on a sec!"$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $W"Energized Basic is more than 12MB in size, and"$N
+		sleep 0.1
+		echo -e $W"may slow down your browsing experience (If your"$N
+		sleep 0.1
+		echo -e $W"device can't handle the load.)"$N
+		echo ''
+		sleep 0.1
+		echo -n -e $W'[+] PROCEED?'$N $Y'[Y/N]'$N: $G"$answer"$N
+		read answer
+		if [ "$answer" == "Y" ]; then
+		  echo "[+] Applying Energized Basic..."
+		  DIR="master/basic/formats/hosts"
+		  clear
+		  echo -e $Y"$divider"$N
+		  sleep 0.1
+		  echo -e $Y'[+] Applying Energized Basic Protection'$N
+		  echo -e $Y"$divider"$N
+		  sleep 0.3
+		else
+		  clear
+		  echo -n -e $W'[+] RETURNING '$N
+		  echo -n -e $Y'∴'$N; sleep 0.2;
+		  echo -n -e $Y'∵'$N; sleep 0.3;
+		  echo -n -e $Y'∴'$N; sleep 0.2;
+		  sleep 0.1
+		fi
 		;;
 		3) DIR="master/blu/formats/hosts"
 		clear
@@ -338,26 +427,208 @@ sleep 0.1
 		echo -e $Y'[+] Applying Energized Blu Go Protection'$N
 		echo -e $Y"$divider"$N
 		;;
-		5) DIR="master/porn/formats/hosts"
-		clear
+		5) clear
 		echo -e $Y"$divider"$N
 		sleep 0.1
-		echo -e $Y'[+] Applying Porn Protection'$N
+		echo -e $Y"Hold on a sec!"$N
+		sleep 0.1
 		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $W"Energized Porn is more than 15MB in size, and"$N
+		sleep 0.1
+		echo -e $W"may slow down your browsing experience (If your"$N
+		sleep 0.1
+		echo -e $W"device can't handle the load.)"$N
+		echo ''
+		sleep 0.1
+		echo -n -e $W'[+] PROCEED?'$N $Y'[Y/N]'$N: $G"$answer"$N
+		read answer
+		if [ "$answer" == "Y" ]; then
+		  echo "[+] Applying Energized Porn..."
+		  DIR="master/porn/formats/hosts"
+		  clear
+		  echo -e $Y"$divider"$N
+		  sleep 0.1
+		  echo -e $Y'[+] Applying Energized Porn Protection'$N
+		  echo -e $Y"$divider"$N
+		  sleep 0.3
+		else
+		  clear
+		  echo -n -e $W'[+] RETURNING '$N
+		  echo -n -e $Y'∴'$N; sleep 0.2;
+		  echo -n -e $Y'∵'$N; sleep 0.3;
+		  echo -n -e $Y'∴'$N; sleep 0.2;
+		  sleep 0.1
+		fi
 		;;
-		6) DIR="master/ultimate/formats/hosts"
-		clear
+		6) clear
 		echo -e $Y"$divider"$N
 		sleep 0.1
-		echo -e $Y'[+] Applying Energized Ultimate Protection'$N
+		echo -e $Y"Hold on a sec!"$N
+		sleep 0.1
 		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $W"Energized Ultimate is more than 17MB in size, and"$N
+		sleep 0.1
+		echo -e $W"may slow down your browsing experience (If your"$N
+		sleep 0.1
+		echo -e $W"device can't handle the load.)"$N
+		echo ''
+		sleep 0.1
+		echo -n -e $W'[+] PROCEED?'$N $Y'[Y/N]'$N: $G"$answer"$N
+		read answer
+		if [ "$answer" == "Y" ]; then
+		  echo "[+] Applying Energized Ultimate..."
+		  DIR="master/ultimate/formats/hosts"
+		  clear
+		  echo -e $Y"$divider"$N
+		  sleep 0.1
+		  echo -e $Y'[+] Applying Energized Ultimate Protection'$N
+		  echo -e $Y"$divider"$N
+		  sleep 0.3
+		else
+		  clear
+		  echo -n -e $W'[+] RETURNING '$N
+		  echo -n -e $Y'∴'$N; sleep 0.2;
+		  echo -n -e $Y'∵'$N; sleep 0.3;
+		  echo -n -e $Y'∴'$N; sleep 0.2;
+		  sleep 0.1
+		fi
 		;;
-		7) DIR="master/unified/formats/hosts"
-		clear
+		7) clear
 		echo -e $Y"$divider"$N
 		sleep 0.1
-		echo -e $Y'[+] Applying Energized Unified Protection'$N
+		echo -e $Y"Hold on a sec!"$N
+		sleep 0.1
 		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $W"Energized Unified is more than 30MB in size, and"$N
+		sleep 0.1
+		echo -e $W"may slow down your browsing experience (If your"$N
+		sleep 0.1
+		echo -e $W"device can't handle the load.)"$N
+		echo ''
+		sleep 0.1
+		echo -n -e $W'[+] PROCEED?'$N $Y'[Y/N]'$N: $G"$answer"$N
+		read answer
+		if [ "$answer" == "Y" ]; then
+		  echo "[+] Applying Energized Unified..."
+		  DIR="master/unified/formats/hosts"
+		  clear
+		  echo -e $Y"$divider"$N
+		  sleep 0.1
+		  echo -e $Y'[+] Applying Energized Unified Protection'$N
+		  echo -e $Y"$divider"$N
+		  sleep 0.3
+		else
+		  clear
+		  echo -n -e $W'[+] RETURNING '$N
+		  echo -n -e $Y'∴'$N; sleep 0.2;
+		  echo -n -e $Y'∵'$N; sleep 0.3;
+		  echo -n -e $Y'∴'$N; sleep 0.2;
+		  sleep 0.1
+		fi
+		;;
+		u) clear
+		if [ "$autopack" == "null" ]; then
+		    echo -e $R"[-] No Energized Pack Applied Yet!"$N
+		sleep 3
+		else
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $Y"[+] Applying $echeck"$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		echo ''
+		wget --no-check-certificate -O $HOST https://raw.githubusercontent.com/EnergizedProtection/block/master/$autopack/formats/hosts
+		echo "\n\033[32;5;7m[+] Done Applying!\033[0m"
+		sleep 1
+		echo -e $Y"$divider"$N
+		grep "Version Code" $TREADME > $FILTER
+		sleep 0.3
+		# Whitelisting
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $Y'[+] WHITELISTING'$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		# Begins
+		if [ ! -f $WHITELIST ]; then
+				echo ""
+				echo -e $R'[-] No Whitelist Detected!'$N
+				sleep 0.5
+				echo -e $W'[+] Copy your whilelist to'$N $Y'/sdcard/EnergizedProtection'$N
+				sleep 2
+		    else
+				if [ -f "$HOST" ]; then
+					echo -e $G'[+] Whitelist Found!'$N
+					echo -e $W'[+] Applying Whitelist'$N
+					sleep 0.3
+					grep -Fvxf $WHITELIST $HOST > $TEMP
+					mv $TEMP $HOST
+					sleep 0.5
+					grep -Fvf $WHITELIST $HOST > $TEMP
+					mv $TEMP $HOST
+					sleep 0.5
+					grep -vxf $WHITELIST $HOST > $TEMP
+					mv $TEMP $HOST
+					sleep 0.1
+					echo -e $G'[+] Done'$N
+					sleep 1
+				else
+					echo ""
+					echo -e $R'[-] No hosts file detected!'$N
+					sleep 1
+					echo -e $Y'[+] Apply a hosts file first'$N
+					sleep 2
+				fi
+		    fi
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		# Blacklisting
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $Y'[+] BLACKLISTING'$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		# Begins
+		if [ ! -f $BLACKLIST ]; then
+				echo ""
+				echo -e $R'[-] No Blacklist detected!'$N
+				echo -e $W'[+] Copy your blacklist to'$N $Y'/sdcard/EnergizedProtection'$N
+			else
+				if [ -f "$HOST" ]; then
+					if [ -s $BLACKLIST ]; then
+						echo -e $G'[+] Blacklist Found!'$N
+						echo -e $W'[+] Applying Blacklist...'$N
+						sleep 2
+						NEWFILTERS="$(cat $BLACKLIST)"
+						printf '%s\n' "$NEWFILTERS" | while IFS= read -r linenew
+						do
+						  if [ ! "$(grep -Fx "$linenew" $HOST)" ]; then
+							sed -i -e "\$a0.0.0.0 $linenew" $HOST
+						  fi
+						done
+						echo -e $G'[+] Done'$N
+						sleep 1
+					else
+						echo -e $R'[-] Blacklist file is empty!'$N
+						sleep 1
+						echo -e $R'[-] NO NEW FILTER ADDED!'$N
+						echo "[+] Returning..."
+						sleep 2
+					fi
+				else
+					echo ""
+					echo -e $R'[-] No hosts file detected!'$N
+					sleep 1
+					echo -e $Y'[+] Apply a hosts file first'$N
+					sleep 2
+				fi
+		    fi
+		fi
 		;;
 		w) clear
 		echo -e $Y"$divider"$N
@@ -371,7 +642,7 @@ sleep 0.1
 				echo ""
 				echo -e $R'[-] No Whitelist Detected!'$N
 				sleep 0.5
-				echo -e $W'[+] Copy your whilelist to'$N $Y'/sdcard/EnergizedProtection'$N
+				echo -e $W'[+] Copy your whilelist to'$N $Y'$DIRECTORY'$N
 				sleep 2
 		    else
 				if [ -f "$HOST" ]; then
@@ -411,7 +682,7 @@ sleep 0.1
 				echo ""
 				echo -e $R'[-] No Whitelist Detected!'$N
 				sleep 0.5
-				echo -e $W'[+] Copy your whilelist to'$N $Y'/sdcard/EnergizedProtection'$N
+				echo -e $W'[+] Copy your whilelist to'$N $Y'$DIRECTORY'$N
 				sleep 2
 		    else
 				if [ -f "$HOST" ]; then
@@ -444,7 +715,7 @@ sleep 0.1
 				echo ""
 				echo -e $R'[-] No Whitelist Detected!'$N
 				sleep 0.5
-				echo -e $W'[+] Copy your whilelist to'$N $Y'/sdcard/EnergizedProtection'$N
+				echo -e $W'[+] Copy your whilelist to'$N $Y'$DIRECTORY'$N
 				sleep 2
 		    else
 				if [ -f "$HOST" ]; then
@@ -476,7 +747,7 @@ sleep 0.1
 		if [ ! -f $BLACKLIST ]; then
 				echo ""
 				echo -e $R'[-] No Blacklist detected!'$N
-				echo -e $W'[+] Copy your blacklist to'$N $Y'/sdcard/EnergizedProtection'$N
+				echo -e $W'[+] Copy your blacklist to'$N $Y'$DIRECTORY'$N
 			else
 				if [ -f "$HOST" ]; then
 					if [ -s $BLACKLIST ]; then
@@ -514,7 +785,11 @@ sleep 0.1
 		reset
 		;;
 		i) if [ "$INPUT" -eq i ]; then
-		     am start -a android.intent.action.VIEW -d "https://github.com/EnergizedProtection/block/blob/master/README.md"
+		     am start -a android.intent.action.VIEW -d "https://nayemador.com/energized"
+		   fi
+		;;
+		in) if [ "$INPUT" -eq i ]; then
+		     am start -a android.intent.action.VIEW -d "https://nayemador.com/energized/instructions"
 		   fi
 		;;
 		thanks|thx|thnx|thax|thank|thanku|thankyou) am start -a android.intent.action.VIEW -d "$saythanks"
@@ -529,16 +804,14 @@ sleep 0.1
 		echo -e $Y"$divider"$N
 		echo ""
 		rm -rf /sbin/.core/img/.core/hosts
+		rm -f $FILTER
+		rm -f $DFILTER
+		touch $FILTER
+		touch $DFILTER
 		echo "[+] Clearing Hosts File..."
 		sleep 0.3
 		cat >> /sbin/.core/img/.core/hosts <<EOF
-# Energized - ad.porn.malware blocking.
-# A merged collection of hosts from reputable sources.
-# https://nayemador.com/energized
-
 127.0.0.1 localhost
-0.0.0.0   0.0.0.0
-
 EOF
         echo "[+] Done Clearing Hosts!"
         echo "[+] Returning..."
@@ -579,6 +852,36 @@ EOF
 			rm -f $TEMP $STEMP
 			echo -e $G'[+] Done!'$N
 			echo "[+] Returning..."
+		;;
+		dp)  clear
+		echo -e $Y"$divider"$N
+		echo -e $Y'[+] DELTA PATCHING'$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo "Apply Delta Blacklist and Whitelist."
+		echo -e $Y"$divider"$N
+		echo ""
+		wget --no-check-certificate -O $TEMP https://raw.githubusercontent.com/AdroitAdorKhan/Energized/master/core/delta-patchset/blacklist
+		grep "#" $TEMP > $DFILTER
+		sed -i '/^#/d' $TEMP
+			echo "[+] Applying Delta Blacklist to current hosts."
+			NEWFILTERS="$(cat $TEMP)"
+			printf '%s\n' "$NEWFILTERS" | while IFS= read -r linenew
+			do
+			  if [ ! "$(grep -Fx "$linenew" $HOST)" ]; then
+			   sed -i -e "\$a0.0.0.0 $linenew" $HOST
+			  fi
+			done
+			rm -f $TEMP
+			wget --no-check-certificate -O $STEMP https://raw.githubusercontent.com/AdroitAdorKhan/Energized/master/core/delta-patchset/whitelist
+			echo "[+] Applying Delta Whitelist to current hosts."
+			grep -Fvf $STEMP $HOST > $TEMP
+			mv $TEMP $HOST
+			rm -f $TEMP $STEMP
+			echo -e $G'[+] Done!'$N
+			echo "[+] Returning..."
+			sleep 2
 		;;
 		ip) clear
 		echo -e $Y"$divider"$N
