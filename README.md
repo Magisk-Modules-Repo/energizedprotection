@@ -4,10 +4,10 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-3.6-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-4.0-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Last Updated -->
-    <img src="https://img.shields.io/badge/Updated-Aug 03, 2018-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Updated-Aug 30, 2018-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
   <!-- Status -->
     <img src="https://img.shields.io/badge/Status-Stable-green.svg?longCache=true&style=flat-square"
@@ -33,20 +33,22 @@
       Energized Repo
     </a>
     <span> | </span>
-    <a href="https://nayemador.com/energized/secure/">
-      Test Energized
+    <a href="https://nayemador.com/energized/check/">
+      Check Energized
     </a>
     <span> | </span>
     <a href="https://t.me/EnergizedProtection">
       Telegram
     </a>
+    <span> | </span>
+    <a href="link.nayemador.com/epxdamagisk">
+      XDA
+    </a>
   </h3>
 </div>
 
 <div align="center">
-  <sub>The Best Yet Energized Protection! Built with ❤︎ by
-    <a href="https://nayemador.com"><strong>Ador</strong></a> in <strong>Bangladesh</strong>.
-  </a>
+  <sub>A Trio Project with ❤ from Bangladesh, India & Zanzibar.
 </div>
 
 ## Features
@@ -61,6 +63,27 @@
 
 ## Usage: 
 
+#### Feature Details
+Key(s) | Title | Description 
+------:|:-----:|:----------:|
+`1-7` | Energized Packs | Energized `main` blocking packs. |
+`p/s` | Extensions | Porn Lite and Social Extensions, to apply with the `main` pack. |
+`dp` | Delta Patchset | this will be visible, when any `delta patch` will be available to apply. |
+`c` | Clear Hosts | this will clear your `hosts` file to default hosts. |
+`w` | Apply Whitelist | use this to apply `whitelisted` domains. |
+`b` | Apply Blacklis | use this to apply `blacklisted` domains. |
+`u` | Current-O-Update | this will update your current pack, and auto apply your whitelist and blacklist. Use this when you have to update. |
+`i` | Web & Info | Website and Infos. |
+`ip` | Redirection IP | to change the default `0.0.0.0` ip to your own. |
+`iw` | Instant Whitelist | when you have to instantly whitelist `one` domain. |
+`ib` | Instant Whitelist | when you have to instantly blacklist `one` domain. |
+`in` | Instructions | type for detailed instructions. |
+`q` | Quit | `exit` the script. |
+
+#### Delta Patchset
+This is basically like incremental updates to the whitelist and blacklist. You will be able to apply latest whitelist and blacklist without waiting for full release.
+
+#### Run
  - First Enable Systemless Hosts in Magisk Manager
  - Open terminal then type:  
  ```
@@ -96,6 +119,16 @@
  - Just run hosts script and reinstall host file of choice without selecting whitelist/blacklist.
 
 ## Changelog
+v4.0
+ - Reworked Script.
+ - Added `Delta Patchset` & `Current-O-Update` Features. (Check uppee details for more info)
+ - Improved hosts clearing.
+ - Added warning before applying large hosts.
+ - Moved temp location to `sdcard/EnergizedProtection`.
+ - Patches to fix whitelist and blacklist issues on few devices.
+ - Added `Instructions` and `Web Info` options.
+ - Improved `Instant` Whitelist and Blacklist.
+ - Overall Script Improvements.
 
 v3.6
  - Added New Energized Pack, `Spark - True Lite Hosts`.
@@ -165,7 +198,7 @@ v1.0
 Energized Hosts are basically `hosts` files to block access to domains. If you don't know how it works, then please try this at your own risk. I won't be responsible for any damage or loss. Never forget to make backups.
 
 ## License
-[MIT](https://github.com/EnergizedProtection/block/blob/master/LICENSE)
+[CC BY-NC-SA 4.0](https://github.com/EnergizedProtection/block/blob/master/LICENSE.md)
 
 ---
 

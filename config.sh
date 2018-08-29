@@ -57,8 +57,9 @@ print_modname() {
   ui_print "     nayemador.com/energized     "
   ui_print "---------------------------------"
   ui_print " Instructions:                   "
-  ui_print " - Open Terminal, type su        "
-  ui_print " - Type energized                "
+  ui_print " - Open Terminal                 "
+  ui_print " - Type su & tap enter           "
+  ui_print " - Type energized & tap enter    "
   ui_print " - Follow on screen options.     "
   ui_print "---------------------------------"
 }
