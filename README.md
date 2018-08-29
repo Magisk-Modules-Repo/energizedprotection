@@ -64,21 +64,19 @@
 ## Usage: 
 
 #### Feature Details
-Key(s) | Title | Description 
-------:|:-----:|:----------:|
-`1-7` | Energized Packs | Energized `main` blocking packs. |
-`p/s` | Extensions | Porn Lite and Social Extensions, to apply with the `main` pack. |
-`dp` | Delta Patchset | this will be visible, when any `delta patch` will be available to apply. |
-`c` | Clear Hosts | this will clear your `hosts` file to default hosts. |
-`w` | Apply Whitelist | use this to apply `whitelisted` domains. |
-`b` | Apply Blacklis | use this to apply `blacklisted` domains. |
-`u` | Current-O-Update | this will update your current pack, and auto apply your whitelist and blacklist. Use this when you have to update. |
-`i` | Web & Info | Website and Infos. |
-`ip` | Redirection IP | to change the default `0.0.0.0` ip to your own. |
-`iw` | Instant Whitelist | when you have to instantly whitelist `one` domain. |
-`ib` | Instant Whitelist | when you have to instantly blacklist `one` domain. |
-`in` | Instructions | type for detailed instructions. |
-`q` | Quit | `exit` the script. |
+- `1-7` - Energized Packs - Energized `main` blocking packs.
+- `p/s` - Extensions - Porn Lite and Social Extensions, to apply with the `main` pack.
+- `dp` - Delta Patchset - this will be visible, when any `delta patch` will be available to apply.
+- `c` - Clear Hosts - this will clear your `hosts` file to default hosts.
+- `w` - Apply Whitelist - use this to apply `whitelisted` domains.
+- `b` - Apply Blacklis - use this to apply `blacklisted` domains.
+- `u` - Current-O-Update - this will update your current pack, and auto apply your whitelist and blacklist. Use this when you have to update.
+- `i` - Web & Info - Website and Infos. 
+- `ip` - Redirection IP - to change the default `0.0.0.0` ip to your own.
+- `iw` - Instant Whitelist - when you have to instantly whitelist `one` domain.
+- `ib` - Instant Whitelist - when you have to instantly blacklist `one` domain.
+- `in` - Instructions - type for detailed instructions.
+- `q` - Quit - `exit` the script. 
 
 #### Delta Patchset
 This is basically like incremental updates to the whitelist and blacklist. You will be able to apply latest whitelist and blacklist without waiting for full release.
