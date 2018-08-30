@@ -82,7 +82,8 @@
 This is basically like incremental updates to the whitelist and blacklist. You will be able to apply latest whitelist and blacklist without waiting for full release.
 
 #### Run
- - First Enable Systemless Hosts in Magisk Manager
+ - Install the `Busybox for Android NDK` Module from Magisk Manager.
+ - Now, Enable `Systemless Hosts` in Magisk Manager
  - Open terminal then type:  
  ```
  su  
@@ -119,7 +120,7 @@ This is basically like incremental updates to the whitelist and blacklist. You w
 ## Changelog
 v4.0
  - Reworked Script.
- - Added `Delta Patchset` & `Current-O-Update` Features. (Check uppee details for more info)
+ - Added `Delta Patchset` & `Current-O-Update` Features. (Check upper details for more info)
  - Improved hosts clearing.
  - Added warning before applying large hosts.
  - Moved temp location to `sdcard/EnergizedProtection`.
