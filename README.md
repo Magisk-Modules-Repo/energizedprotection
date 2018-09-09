@@ -4,10 +4,10 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-4.0-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-edamame-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Last Updated -->
-    <img src="https://img.shields.io/badge/Updated-Aug 30, 2018-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Updated-Sep 9, 2018-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
   <!-- Status -->
     <img src="https://img.shields.io/badge/Status-Stable-green.svg?longCache=true&style=flat-square"
@@ -64,17 +64,22 @@
 ## Usage: 
 
 #### Feature Details
-- `1-7` - Energized Packs - Energized `main` blocking packs.
-- `p/s` - Extensions - Porn Lite and Social Extensions, to apply with the `main` pack.
+- `1-6` - Energized Packs - Energized `main` blocking packs.
+- `p/pl/s` - Extensions - Porn, Porn Lite and Social Extensions, to apply with the `main` pack.
 - `dp` - Delta Patchset - this will be visible, when any `delta patch` will be available to apply.
-- `c` - Clear Hosts - this will clear your `hosts` file to default hosts.
+- `c` - Clear Hosts - this will clear your `hosts` file to default hosts. Also, clears filters.
 - `w` - Apply Whitelist - use this to apply `whitelisted` domains.
-- `b` - Apply Blacklis - use this to apply `blacklisted` domains.
+- `iw` - Instant Whitelist - when you have to instantly whitelist `one` domain.
+- `b` - Apply Blacklist - use this to apply `blacklisted` domains.
+- `ib` - Instant Blacklist - when you have to instantly blacklist `one` domain.
+- `re` - Redirect Domains - `redirect` domains in `redirectlist` to an IP.
+- `ir` - Instant Redirect - when you have to instantly redirect `one` domain.
 - `u` - Current-O-Update - this will update your current pack, and auto apply your whitelist and blacklist. Use this when you have to update.
+- `ck` - Check Domain - check a domain whether it's `already` blocked or not!
+- `bp` - Backup Hosts - makes a backup of your `current` hosts.
+- `rs` - Restore Hosts - restores the hosts you made a `backup` before.
 - `i` - Web & Info - Website and Infos. 
 - `ip` - Redirection IP - to change the default `0.0.0.0` ip to your own.
-- `iw` - Instant Whitelist - when you have to instantly whitelist `one` domain.
-- `ib` - Instant Whitelist - when you have to instantly blacklist `one` domain.
 - `in` - Instructions - type for detailed instructions.
 - `q` - Quit - `exit` the script. 
 
@@ -82,8 +87,7 @@
 This is basically like incremental updates to the whitelist and blacklist. You will be able to apply latest whitelist and blacklist without waiting for full release.
 
 #### Run
- - Install the `Busybox for Android NDK` Module from Magisk Manager.
- - Now, Enable `Systemless Hosts` in Magisk Manager
+ - First Enable Systemless Hosts in Magisk Manager
  - Open terminal then type:  
  ```
  su  
@@ -99,28 +103,70 @@ This is basically like incremental updates to the whitelist and blacklist. You w
 #### Whitelist (DOMAIN) Instructions:
  - Find text file on sdcard called `whitelist` in `sdcard/EnergizedProtection/`
  - Add the domain name only, to the whitelist. Ex. `abcd.com`
- - Run hosts script and choose whitelist `d` option.
+ - Run hosts script and choose whitelist `w` option.
 
 #### Whitelist (REGEX) Instructions:
  - Find text file on sdcard called `whitelist` in `sdcard/EnergizedProtection/`
  - Add the regex to whitelist. Ex. `.*abcd.*` and now all domains with `abcd` in it will be whitelisted.
- - Run hosts script and choose whitelist `r` option.
+ - Run hosts script and choose whitelist `w` option.
 
 #### Altogether Whitelist
 - `All Three Formats` of whitelisting can be done by `w` only too.
+
+#### Instant Whitelist
+ - To instantly whitelist a domain, select `iw` and then type your domain.
+ - Type `Y` and press enter.
 
 #### Blacklist Instructions:
  - Find text file on sdcard called `blacklist` in `sdcard/EnergizedProtection/`
  - Add exact lines you want to remove it (do not include the `0.0.0.0` -> so for example: `abcd.com`)
  - Run hosts script and choose blacklist `b` option.
 
-#### To Remove Whitelist/Blacklist:
- - Just run hosts script and reinstall host file of choice without selecting whitelist/blacklist.
+#### Instant Blacklist
+ - To instantly blacklist a domain, select `ib` and then type your domain.
+ - Type `Y` and press enter.
+ 
+#### Redirect Domains
+ - Find text file on sdcard called `redirectlist` in `sdcard/EnergizedProtection/`
+ - Add the domain name only, to the redirectlist. Ex. `abcd.com`
+ - Run hosts script and choose whitelist `ri` option.
+ - Type your `IP` and type `Y`
+ - Hit enter.
+ 
+#### Instant Redirect
+ - To instantly redirect a domain, select `ir` and then type your domain.
+ - Type `Y` & hit enter.
+ - Type your IPv4/v6 and press enter.
+ - Type `Y` & wait for the script to finish redirecting.
+
+#### Finishing
+ - Reboot once after applying hosts/whitelist/blacklist/redirectionlist.
+ 
+#### To Remove Whitelist/Blacklist/Redirectionlist
+ - Just run hosts script and reinstall host file of choice without selecting whitelist/blacklist/redirectionlist.
 
 ## Changelog
+v. edamame
+ - Reworked script. Totally re-written to improve the script quality.
+ - Added `Redirect Domains`, `Instant Redirect`, `Backup & Restore` & `Domain Check` Features.
+ - Re-written `Whitelist` & `Blacklist` work-flow. Fixed issues.
+ - Added blacklist `Log` to check already blacklisted domains.
+ - Added whitelist `Log` to check already whitelisted domains.
+ - Improved blacklisting features (Blacklist & Instant Blacklist) to `remove` duplicates.
+ - Improved `Current-O-Patch`, `Delta Patch` & `Redirection IP` Features.
+ - `Redesigned` Script UI.
+ - Added Magisk Manager opener activity, via script.
+ - Improved sleep parameters.
+ - Improved adblocker detection. Thanks to `Romain.`
+ - Added full Porn pack as extension.
+ - Patched other fixes.
+ - Improved Script.
+ 
+__Note__: After installing new update, it will show an update is available, due to directory change.
+ 
 v4.0
  - Reworked Script.
- - Added `Delta Patchset` & `Current-O-Update` Features. (Check upper details for more info)
+ - Added `Delta Patchset` & `Current-O-Update` Features. (Check uppee details for more info)
  - Improved hosts clearing.
  - Added warning before applying large hosts.
  - Moved temp location to `sdcard/EnergizedProtection`.
