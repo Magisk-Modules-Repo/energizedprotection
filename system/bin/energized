@@ -48,7 +48,7 @@ fi
 # Versioning & Date
 # ----------------------------------------
 version=$Y'edamame'$N > /dev/null 2>&1
-released=$G'Sep 9, 2018'$N > /dev/null 2>&1
+released=$G'Sep 10, 2018'$N > /dev/null 2>&1
 saythanks='https://saythanks.io/to/AdroitAdorKhan' > /dev/null 2>&1
 date=$(date "+%d.%m.%Y %H:%M:%S")
 
