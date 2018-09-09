@@ -129,7 +129,7 @@ This is basically like incremental updates to the whitelist and blacklist. You w
 #### Redirect Domains
  - Find text file on sdcard called `redirectlist` in `sdcard/EnergizedProtection/`
  - Add the domain name only, to the redirectlist. Ex. `abcd.com`
- - Run hosts script and choose whitelist `ri` option.
+ - Run hosts script and choose whitelist `re` option.
  - Type your `IP` and type `Y`
  - Hit enter.
  
