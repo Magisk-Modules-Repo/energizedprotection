@@ -47,8 +47,8 @@ fi
 
 # Versioning & Date
 # ----------------------------------------
-version=$Y'edamame'$N > /dev/null 2>&1
-released=$G'Sep 10, 2018'$N > /dev/null 2>&1
+version=$Y'quinoa'$N > /dev/null 2>&1
+released=$G'Sep 12, 2018'$N > /dev/null 2>&1
 saythanks='https://saythanks.io/to/AdroitAdorKhan' > /dev/null 2>&1
 date=$(date "+%d.%m.%Y %H:%M:%S")
 
@@ -774,10 +774,10 @@ echo -e $R'[q] Quit.'$N
 						sed 's/^ *//; s/ *$//; /^$/d; /^#/ d' $BLACKLIST > $LTEMP
 						sort -u $LTEMP > $TEMP
 						NEWFILTERS="$(cat $TEMP)"
+						echo -e "\n# Applied on - $date" >> $HOST
 						printf '%s\n' "$NEWFILTERS" | while IFS= read -r linenew
 						do
 						  if [ ! "$(grep -x "$curip$linenew" $HOST)" ]; then
-						    echo -e "\n# Applied on - $date" >> $HOST
 						    echo -e "$curip$linenew" >> $HOST
 						    echo -e $Y"$linenew "$N$W"- blacklisted."$N
 						  else
@@ -928,10 +928,10 @@ echo -e $R'[q] Quit.'$N
 						sed 's/^ *//; s/ *$//; /^$/d; /^#/ d' $BLACKLIST > $LTEMP
 						sort -u $LTEMP > $TEMP
 						NEWFILTERS="$(cat $TEMP)"
+						echo -e "\n# Applied on - $date" >> $HOST
 						printf '%s\n' "$NEWFILTERS" | while IFS= read -r linenew
 						do
 						  if [ ! "$(grep -x "$curip$linenew" $HOST)" ]; then
-						    echo -e "\n# Applied on - $date" >> $HOST
 						    echo -e "$curip$linenew" >> $HOST
 						    echo -e $Y"$linenew "$N$W"- blacklisted."$N
 						  else
@@ -1128,11 +1128,11 @@ echo -e $R'[q] Quit.'$N
 		;;
 		# Info
 		# ----------------------------------------
-		i) am start -a android.intent.action.VIEW -d "https://nayemador.com/energized"
+		i|info|Info|INFO) am start -a android.intent.action.VIEW -d "https://nayemador.com/energized"
 		;;
 		# Instructions
 		# ----------------------------------------
-		in) am start -a android.intent.action.VIEW -d "https://nayemador.com/energized/instructions"
+		in|instructions|instruction|IN|INSTRUCTION|INSTRUCTIONS) am start -a android.intent.action.VIEW -d "http://link.nayemador.com/epmagiskusage"
 		;;
 		thanks|thx|thnx|thax|thank|thanku|thankyou) am start -a android.intent.action.VIEW -d "$saythanks"
 		;;
@@ -1155,7 +1155,7 @@ echo -e $R'[q] Quit.'$N
 		;;
 		# Restore Hosts
 		# ----------------------------------------
-		rs) clear
+		rs|restore|Restore|RESTORE) clear
 		echo -e $Y"$divider"$N
 		echo -e $Y'[+] RESTORE'$N
 		sleep 0.1
@@ -1178,7 +1178,7 @@ echo -e $R'[q] Quit.'$N
 		;;
 		# Clear Hosts
 		# ----------------------------------------
-		c) clear
+		c|clear|Clear|CLEAR) clear
 		echo -e $Y"$divider"$N
 		echo -e $Y'[+] CLEAN HOSTS'$N
 		sleep 0.1
@@ -1201,7 +1201,7 @@ echo -e $R'[q] Quit.'$N
         ;;
 		# Delta Patch
 		# ----------------------------------------
-		dp)  clear
+		dp|deltapatch)  clear
 		echo -e $Y"$divider"$N
 		echo -e $Y'[+] DELTA PATCHING'$N
 		sleep 0.1
@@ -1225,10 +1225,10 @@ echo -e $R'[q] Quit.'$N
 		sed 's/^ *//; s/ *$//; /^$/d; /^#/ d' $LTEMP > $TEMP
 		sort -u $TEMP > $LTEMP
 		NEWFILTERS="$(cat $LTEMP)"
+		echo -e "\n# Delta Patch - $date" >> $HOST
 		printf '%s\n' "$NEWFILTERS" | while IFS= read -r linenew
 		do
 			if [ ! "$(grep -x "$curip$linenew" $HOST)" ]; then
-				echo -e "\n# Delta Patch - $date" >> $HOST
 				echo -e "$curip$linenew" >> $HOST
 				echo -e $Y"$linenew "$N$W"- blacklisted."$N
 			else
