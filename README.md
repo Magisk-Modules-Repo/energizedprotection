@@ -4,10 +4,10 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-edamame-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-quinoa-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Last Updated -->
-    <img src="https://img.shields.io/badge/Updated-Sep 10, 2018-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Updated-Sep 12, 2018-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
   <!-- Status -->
     <img src="https://img.shields.io/badge/Status-Stable-green.svg?longCache=true&style=flat-square"
@@ -129,7 +129,7 @@ This is basically like incremental updates to the whitelist and blacklist. You w
 #### Redirect Domains
  - Find text file on sdcard called `redirectlist` in `sdcard/EnergizedProtection/`
  - Add the domain name only, to the redirectlist. Ex. `abcd.com`
- - Run hosts script and choose whitelist `re` option.
+ - Run hosts script and choose whitelist `ri` option.
  - Type your `IP` and type `Y`
  - Hit enter.
  
@@ -146,6 +146,11 @@ This is basically like incremental updates to the whitelist and blacklist. You w
  - Just run hosts script and reinstall host file of choice without selecting whitelist/blacklist/redirectionlist.
 
 ## Changelog
+v.quinoa
+ - Fixed Blacklist Applying Date Gap Issue.
+ - Added Pack Name Input Support. (Ex. Typing `spark` will also apply The Spark Pack.)
+ - Script Improvement and Optimizations.
+
 v. edamame
  - Reworked script. Totally re-written to improve the script quality.
  - Added `Redirect Domains`, `Instant Redirect`, `Backup & Restore` & `Domain Check` Features.
