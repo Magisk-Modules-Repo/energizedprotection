@@ -86,6 +86,9 @@
 #### Delta Patchset
 This is basically like incremental updates to the whitelist and blacklist. You will be able to apply latest whitelist and blacklist without waiting for full release.
 
+#### Requirements
+ - Install the `Busybox For Android NDK` Busybox Module from Magisk Manager.
+
 #### Run
  - First Enable Systemless Hosts in Magisk Manager
  - Open terminal then type:  
