@@ -47,8 +47,8 @@ fi
 
 # Versioning & Date
 # ----------------------------------------
-version=$Y'quinoa'$N > /dev/null 2>&1
-released=$G'Sep 12, 2018'$N > /dev/null 2>&1
+version=$Y'mars'$N > /dev/null 2>&1
+released=$G'Sep 14, 2018'$N > /dev/null 2>&1
 saythanks='https://saythanks.io/to/AdroitAdorKhan' > /dev/null 2>&1
 date=$(date "+%d.%m.%Y %H:%M:%S")
 
@@ -239,10 +239,13 @@ do
 alias wget="/sbin/.core/busybox/wget"
 alias grep="/sbin/.core/busybox/grep"
 HOST=/sbin/.core/img/.core/hosts
+SHOST=$DIRECTORY/hosts.gz
 TREADME=$DIRECTORY/cache/readme
 DREADME=$DIRECTORY/cache/deltaReadme
 FILTER=$DIRECTORY/cache/filter
+BFILTER=$DIRECTORY/cache/filter-backup
 DFILTER=$DIRECTORY/cache/deltaFilter
+BDFILTER=$DIRECTORY/cache/deltaFilter-backup
 WHITELIST=$DIRECTORY/whitelist
 BLACKLIST=$DIRECTORY/blacklist
 REDIRECTLIST=$DIRECTORY/redirectlist
@@ -250,6 +253,7 @@ TEMP=$DIRECTORY/cache/energizedtemp
 LTEMP=$DIRECTORY/cache/energizedlisttemp
 PTEMP=$DIRECTORY/cache/energizedporntemp
 STEMP=$DIRECTORY/cache/energizedsocialtemp
+HBP=$DIRECTORY/hosts-backup.gz
 curip=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} ads.nayemador.com' $HOST | sed 's/ads.nayemador.com//')
 busybox='/sbin/.core/mirror/bin/busybox' 2>/dev/null
 COUNT=1
@@ -274,7 +278,9 @@ if [ -f $DFILTER ]; then
 	DCURRENT=$(grep "#" $DREADME)
 	DUPDATED=$(sed '1q;d' $DFILTER)
 	if [ "$DUPDATED" != "$DCURRENT" ]; then
-		deltapatch=$G'[dp] DELTA PATCH'$N
+	   if [ "$(grep "ads.nayemador.com" $HOST)" ]; then
+	    deltapatch=$G'[dp] DELTA PATCH'$N
+	   fi
 	else
 	    deltapatch=$W''$N
 	fi
@@ -366,7 +372,9 @@ if [ -f $FILTER ]; then
 	CURRENT=$(grep "Version Code" $TREADME)
 	LAST_UPDATED=$(sed '1q;d' $FILTER)
 	if [ "$LAST_UPDATED" != "$CURRENT" ]; then
-		eupdate=$G'[✓] UPDATE AVAILABLE!'$N
+	  if [ "$(grep "ads.nayemador.com" $HOST)" ]; then
+	    eupdate=$G'[✓] UPDATE AVAILABLE!'$N
+	  fi
 	else
 		eupdate=$C'[×] NO NEW UPDATE!'$N
 	fi
@@ -471,14 +479,14 @@ echo -e $R'[q] Quit.'$N
 	fi
 	case "$INPUT" in
 	    # Spark Protection
-		1|spark|Spark|SPARK) DIR="master/spark/formats/hosts"
+		1|spark|Spark|SPARK) DIR="master/spark/formats/hosts.gz"
 		clear
 		echo -e $Y"$divider"$N
 		sleep 0.1
 		echo -e $Y'[+] Applying Energized Spark Protection'$N
 		;;
 		# Blu Go Protection
-		2|blugo|BluGo|bluGo|BLUGO) DIR="master/bluGo/formats/hosts"
+		2|blugo|BluGo|bluGo|BLUGO) DIR="master/bluGo/formats/hosts.gz"
 		clear
 		echo -e $Y"$divider"$N
 		sleep 0.1
@@ -486,7 +494,7 @@ echo -e $R'[q] Quit.'$N
 		echo -e $Y"$divider"$N
 		;;
 		# Blu Protection
-		3|blu|Blu|BLU) DIR="master/blu/formats/hosts"
+		3|blu|Blu|BLU) DIR="master/blu/formats/hosts.gz"
 		clear
 		echo -e $Y"$divider"$N
 		sleep 0.1
@@ -512,7 +520,7 @@ echo -e $R'[q] Quit.'$N
 		read answer
 		if [ "$answer" == "Y" ]; then
 		  echo "[+] Applying Energized Basic..."
-		  DIR="master/basic/formats/hosts"
+		  DIR="master/basic/formats/hosts.gz"
 		  clear
 		  echo -e $Y"$divider"$N
 		  sleep 0.1
@@ -547,7 +555,7 @@ echo -e $R'[q] Quit.'$N
 		read answer
 		if [ "$answer" == "Y" ]; then
 		  echo "[+] Applying Energized Ultimate..."
-		  DIR="master/ultimate/formats/hosts"
+		  DIR="master/ultimate/formats/hosts.gz"
 		  clear
 		  echo -e $Y"$divider"$N
 		  sleep 0.1
@@ -582,7 +590,7 @@ echo -e $R'[q] Quit.'$N
 		read answer
 		if [ "$answer" == "Y" ]; then
 		  echo "[+] Applying Energized Unified..."
-		  DIR="master/unified/formats/hosts"
+		  DIR="master/unified/formats/hosts.gz"
 		  clear
 		  echo -e $Y"$divider"$N
 		  sleep 0.1
@@ -626,13 +634,14 @@ echo -e $R'[q] Quit.'$N
 		  echo "Add Porn Blocking Pack to current hosts."
 		  echo -e $Y"$divider"$N
 		  echo ""
-		  wget --no-check-certificate -O $PTEMP https://raw.githubusercontent.com/EnergizedProtection/block/master/porn/formats/hosts
+		  wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/porn/formats/hosts.gz
 			echo "[+] Applying Porn Hosts to current hosts."
+			gzip -d -c $SHOST > $PTEMP
             mv $HOST $TEMP
             rm -f $HOST
 			cat $TEMP $PTEMP > $HOST
 			awk '!a[$0]++' $HOST > $PTEMP && mv -f $PTEMP $HOST
-			rm -f $TEMP $PTEMP
+			rm -f $TEMP $PTEMP $SHOST
 			echo -e $G'[+] Done!'$N
 			echo "[+] Returning..."
 		else
@@ -655,13 +664,14 @@ echo -e $R'[q] Quit.'$N
 		echo "Add Porn Lite Blocking Pack to current hosts."
 		echo -e $Y"$divider"$N
 		echo ""
-		wget --no-check-certificate -O $PTEMP https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/formats/ext-porn-hosts
+		wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/formats/ext-porn-hosts.gz
 		echo "[+] Applying Porn Hosts to current hosts."
+		gzip -d -c $SHOST > $PTEMP
         mv $HOST $TEMP
         rm -f $HOST
 		cat $TEMP $PTEMP > $HOST
 		awk '!a[$0]++' $HOST > $PTEMP && mv -f $PTEMP $HOST
-		rm -f $TEMP $PTEMP
+		rm -f $TEMP $PTEMP $SHOST
 		echo -e $G'[+] Done!'$N
 		echo "[+] Returning..."
 		;;
@@ -676,12 +686,13 @@ echo -e $R'[q] Quit.'$N
 		echo "Add Social Blocking Pack to current hosts."
 		echo -e $Y"$divider"$N
 		echo ""
-		wget --no-check-certificate -O $STEMP https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/formats/ext-social-hosts
+		wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/formats/ext-social-hosts
 		echo "[+] Applying Social Hosts to current hosts."
+		gzip -d -c $SHOST > $STEMP
         mv $HOST $TEMP
 		cat $TEMP $STEMP > $HOST
 		awk '!a[$0]++' $HOST > $STEMP && mv -f $STEMP $HOST
-		rm -f $TEMP $STEMP
+		rm -f $TEMP $STEMP $SHOST
 		echo -e $G'[+] Done!'$N
 		echo "[+] Returning..."
 		;;
@@ -698,7 +709,9 @@ echo -e $R'[q] Quit.'$N
 		  sleep 0.1
 		  echo -e $Y"$divider"$N
 		  echo ''
-		  wget --no-check-certificate -O $HOST https://raw.githubusercontent.com/EnergizedProtection/block/master/$autopack/formats/hosts
+		  wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/$autopack/formats/hosts.gz
+		  gzip -d -c $SHOST > $HOST
+		  rm -f $SHOST
 		  echo "\n\033[32;5;7m[+] Done Applying!\033[0m"
 		  sleep 1
 		  echo -e $Y"$divider"$N
@@ -725,15 +738,15 @@ echo -e $R'[q] Quit.'$N
 					sleep 0.3
 					grep -Fvxf $WHITELIST $HOST > $TEMP
 					rm -f $HOST
-					mv $TEMP $HOST
+					mv -f $TEMP $HOST
 					sleep 0.5
 					grep -Fvf $WHITELIST $HOST > $TEMP
 					rm -f $HOST
-					mv $TEMP $HOST
+					mv -f $TEMP $HOST
 					sleep 0.5
 					grep -vxf $WHITELIST $HOST > $TEMP
 					rm -f $HOST
-					mv $TEMP $HOST
+					mv -f $TEMP $HOST
 					sleep 0.1
 					echo -e $G'[+] Done'$N
 					echo -e $W'[+] Make sure to reboot once after applying.'$N
@@ -840,15 +853,15 @@ echo -e $R'[q] Quit.'$N
 					sleep 0.3
 					grep -Fvxf $WHITELIST $HOST > $TEMP
 					rm -f $HOST
-					mv $TEMP $HOST
+					mv -f $TEMP $HOST
 					sleep 0.5
 					grep -Fvf $WHITELIST $HOST > $TEMP
 					rm -f $HOST
-					mv $TEMP $HOST
+					mv -f $TEMP $HOST
 					sleep 0.5
 					grep -vxf $WHITELIST $HOST > $TEMP
 					rm -f $HOST
-					mv $TEMP $HOST
+					mv -f $TEMP $HOST
 					sleep 1
 					echo -e $G'[+] Done'$N
 					echo -e $W'[+] Make sure to reboot once after applying.'$N
@@ -884,7 +897,7 @@ echo -e $R'[q] Quit.'$N
 		  echo "[+] Applying $iw as whitelist..."
 		  grep -Fvx "$curip$iw" $HOST > $TEMP
 		  rm -f $HOST
-		  mv $TEMP $HOST
+		  mv -f $TEMP $HOST
 		  echo "$iw" >> $WHITELIST
 		  echo -e $W'[+] Done'$N
 		  echo -e $W'[+] Make sure to reboot once after applying.'$N
@@ -1046,7 +1059,7 @@ echo -e $R'[q] Quit.'$N
 						do
 						grep -Fvx "$curip$linenew" $HOST > $STEMP
 						rm -f $HOST
-						mv $STEMP $HOST
+						mv -f $TEMP $HOST
 						  if [ ! "$(grep -Fx "$curip$linenew" $HOST)" ]; then
 							echo -e "$ip $linenew" >> $HOST
 							echo -e $Y"$linenew "$N$W"- redirected to "$N$G"$ip"$N
@@ -1095,7 +1108,7 @@ echo -e $R'[q] Quit.'$N
 		if [ "$answer" == "Y" ]; then
 		  grep -Fvx "$curip$iw" $HOST > $TEMP
 		  rm -f $HOST
-		  mv $TEMP $HOST
+		  mv -f $TEMP $HOST
 		  echo -n -e $W'[+] Enter IP (v4 or v6):'$N $ip
 		  read ip
 		  echo -e $W'[+] Your IP'$N $Y"$ip"$N
@@ -1148,7 +1161,9 @@ echo -e $R'[q] Quit.'$N
 		echo -e $Y"$divider"$N
 		echo ""
 		echo -e $G'[+] Backup In Process...'$N
-		cp $HOST $DIRECTORY/hosts-backup
+		gzip -9 -c $HOST > $HBP
+		cp $FILTER $BFILTER
+		cp $DFILTER $BDFILTER
 		sleep 0.5
 		echo -e $W'[+] Done!'$N
 		sleep 1.3
@@ -1164,10 +1179,11 @@ echo -e $R'[q] Quit.'$N
 		echo "Restores the hosts backup."
 		echo -e $Y"$divider"$N
 		echo ""
-		if [ -s $$DIRECTORY/hosts-backup ]; then
+		if [ -s $HBP ]; then
 		echo -e $G'[+] Restoring...'$N
-		mv $DIRECTORY/hosts-backup $HOST
-		cp $HOST $DIRECTORY/hosts-backup
+		gzip -d -c $HBP > $HOST
+		cp $BFILTER $FILTER
+		cp $BDFILTER $DFILTER
 		sleep 0.5
 		echo -e $W'[+] Done!'$N
 		sleep 1.3
@@ -1257,7 +1273,7 @@ echo -e $R'[q] Quit.'$N
 		done
 		grep -Fvf $STEMP $HOST > $TEMP
 		rm -f $HOST
-		mv $TEMP $HOST
+		mv -f $TEMP $HOST
 		rm -f $TEMP $STEMP
 		echo -e $G'[+] Done!'$N
 		echo -e $W'[+] Make sure to reboot once after applying.'$N
@@ -1360,7 +1376,9 @@ echo -e $R'[q] Quit.'$N
 	esac
 	if [ $DIR ]; then
 		echo ""
-		wget --no-check-certificate -O $HOST https://raw.githubusercontent.com/EnergizedProtection/block/$DIR
+		wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/$DIR
+		gzip -d -c $SHOST > $HOST
+		rm -f $SHOST
 		echo -e $G'[+] Done Applying!'$N
 		sleep 0.5
 		echo -e $W'[+] Make sure to reboot once after applying.'$N
