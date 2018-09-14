@@ -4,10 +4,10 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-quinoa-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-mars-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Last Updated -->
-    <img src="https://img.shields.io/badge/Updated-Sep 12, 2018-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Updated-Sep 14, 2018-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
   <!-- Status -->
     <img src="https://img.shields.io/badge/Status-Stable-green.svg?longCache=true&style=flat-square"
@@ -149,7 +149,15 @@ This is basically like incremental updates to the whitelist and blacklist. You w
  - Just run hosts script and reinstall host file of choice without selecting whitelist/blacklist/redirectionlist.
 
 ## Changelog
-v.quinoa
+v. mars
+ - Replaced `hosts` format to `hosts.gz` format to download. Packs size reduced while downloading. Reduced upto 1/5 of each pack's size.
+ - Improved Delta Patch and Update Check Features.
+ - Fixed Backup Hosts Restoring.
+ - Improved Backup and Restore Features.
+ - Improved Current-O-Update Feature.
+ - Script Improvement and Optimizations. 
+
+v. quinoa
  - Fixed Blacklist Applying Date Gap Issue.
  - Added Pack Name Input Support. (Ex. Typing `spark` will also apply The Spark Pack.)
  - Script Improvement and Optimizations.
