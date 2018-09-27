@@ -1,8 +1,8 @@
 #!/system/bin/sh
 # ======================================================================
 # Module: Energized Protection 
-# License: CC BY-NC-SA 4.0; https://nayemador.com/energized/license
-# Copyright (C) 2018 Energized Protectionà¥¤ All Rights Reserved.
+# License: CC BY-NC-SA 4.0; https://nenergized.pro/license
+# Copyright (C) 2018 Energized Protection ϟ All Rights Reserved.
 # ====================================================================== 
 # Script Begins -
 # ========================================
@@ -47,8 +47,8 @@ fi
 
 # Versioning & Date
 # ----------------------------------------
-version=$Y'mars'$N > /dev/null 2>&1
-released=$G'Sep 14, 2018'$N > /dev/null 2>&1
+version=$Y'milo'$N > /dev/null 2>&1
+released=$G'Sep 27, 2018'$N > /dev/null 2>&1
 saythanks='https://saythanks.io/to/AdroitAdorKhan' > /dev/null 2>&1
 date=$(date "+%d.%m.%Y %H:%M:%S")
 
@@ -64,16 +64,16 @@ echo ''
 echo -e $Y'      P   R   O   T   E   C   T   I   O   N'$N 
 sleep 0.1
 echo "$divider" 
-echo "     Version: $version | Updated: $released"
+echo "      Version: $version | Updated: $released"
 sleep 0.1
 echo "$divider"
 sleep 0.1
 echo ""
 sleep 0.1
-echo -e $Y'             nayemador.com/energized'$N
+echo -e $Y'                  energized.pro'$N
 echo ""
 sleep 0.1
-echo "             ©Team Boltz | Energized"
+echo "                 CC BY-NC-SA 4.0"
 echo ''
 sleep 0.5
 echo -n -e $Y'                        •'$N; sleep 0.2; 
@@ -85,7 +85,7 @@ clear
 # Disclaimer
 # ----------------------------------------
 echo -e "$divider"
-echo -e $R'DISCLAIMER'$N
+echo -e $R'D I S C L A I M E R'$N
 echo -e "$divider"
 echo -e $R"THIS IS SIMPLY A MODULE TO CHANGE YOUR SYSTEMLESS"$N
 echo -e $R"HOSTS FILE. IF YOU DON'T KNOW WHAT YOU ARE DOING,"$N
@@ -114,31 +114,31 @@ echo "[+] Checking Systemless Support"; sleep 0.2; clear
 if [ ! -f /sbin/.core/img/.core/hosts ]; then
 clear
 	sleep 0.1
-	echo "$divider"
+	echo -e $R"$divider"$N
 	echo ''
 	sleep 0.1
-	echo "\033[33;5;7m[-] Systemless Hosts isn't enabled!\033[0m"
+	echo -e $R"[-] Systemless Hosts isn't enabled!"$N
 	sleep 0.1
-	echo "\033[37;5;7m[+] Enable it in 'Magisk Manager > Settings > Systemless Hosts'\033[0m"
+	echo -e $G"[+] Enable it in 'Magisk Manager > Settings > Systemless Hosts'"$N
 	sleep 0.1
-	echo "\033[36;5;7m[+] Re-run script after enabling Systemless Hosts!\033[0m"
+	echo -e $W"[+] Re-run script after enabling Systemless Hosts!"$N
 	sleep 0.2
-	echo "\033[31;5;7m[-] Quitting Script!\033[0m"
+	echo -e $R"[-] Quitting Script!"$N
 	echo ''
 	sleep 0.1
-	echo "$divider"
+	echo -e $R"$divider"$N
     sleep 3
     exit 0
 else
     clear
 	sleep 0.1
-	echo "$divider"
+	echo -e $Y"$divider"$N
 	echo ''
-	echo "\033[37;5;7m[+] Superb Dude! Systemless Hosts is enabled! ^_^\033[0m"
+	echo -e $W"[+] Superb Dude! Systemless Hosts is enabled! ^_^"$N
 	echo ''
 	sleep 0.1
-	echo "$divider"
-	sleep 2
+	echo -e $Y"$divider"$N
+	sleep 1
 fi
 clear
 
@@ -146,26 +146,26 @@ clear
 # ----------------------------------------
 if [ -d /data/data/org.adaway/ ] || [ -d /system/app/org.adaway/ ] || [ -d /system/priv-app/org.adaway/ ]; then
     clear
-    echo "\n\033[33;5;7m[-] Other adblocker is detected!\033[0m"
+    echo -e $R"[-] Other adblocker is detected!"$N
     sleep 0.3
     echo ''
-    echo "\033[36;5;7m[+] Make sure to disable them, to avoid any issue using Energized!\033[0m"
-    sleep 4
+    echo -e $Y"[+] Make sure to disable them, to avoid any issue using Energized!"$N
+    sleep 2
 elif [ -d /data/data/ru.dixl0f0s.unifiedhostsmanager/ ] || [ -d /system/app/ru.dixl0f0s.unifiedhostsmanager/] || [ -d /system/priv-app/ru.dixl0f0s.unifiedhostsmanager/ ]; then
     clear
-    echo "\n\033[33;5;7m[-] Other adblocker detected!\033[0m"
+    echo -e $R"[-] Other adblocker is detected!"$N
     sleep 0.3
     echo ''
-    echo "\033[36;5;7m[+] Make sure to disable them, to avoid any issue using Energized!\033[0m"
+    echo -e $Y"[+] Make sure to disable them, to avoid any issue using Energized!"$N
     sleep 2
 else
     clear
 	sleep 0.1 
-	echo "$divider"
+	echo -e $Y"$divider"$N
 	echo ''
-	echo "  \033[37;5;7m[+] Awesome! No other adblocker detected! ^_^\033[0m"
+	echo -e $W"  [+] Awesome! No other adblocker detected! ^_^"$N
 	echo ''
-	echo "$divider"
+	echo -e $Y"$divider"$N
 	sleep 2
 fi
 
@@ -208,26 +208,26 @@ if [ ! -f $DIRECTORY/redirectlist ]; then
 fi
 # Check Temp
 # ---------------------------------------- 
-if [ ! -f $DIRECTORY/cache/energizedtemp ]; then
+if [ ! -f $DIRECTORY/cache/temp ]; then
    clear
    echo -e "[+] Creating temporary cache...";
-   touch $DIRECTORY/cache/energizedtemp
+   touch $DIRECTORY/cache/temp
    sleep 0.2
 fi
 # Check Porn Temp
 # ----------------------------------------
-if [ ! -f $DIRECTORY/cache/energizedporntemp ]; then
+if [ ! -f $DIRECTORY/cache/ptemp ]; then
    clear
    echo -e "[+] Creating Temp...";
-   touch $DIRECTORY/cache/energizedporntemp
+   touch $DIRECTORY/cache/ptemp
    sleep 0.2
 fi
 # Check Social Temp
 # ----------------------------------------
-if [ ! -f $DIRECTORY/cache/energizedsocialtemp ]; then
+if [ ! -f $DIRECTORY/cache/stemp ]; then
    clear
    echo -e "[+] Creating Temp...";
-   touch $DIRECTORY/cache/energizedsocialtemp
+   touch $DIRECTORY/cache/stemp
    sleep 0.2
 fi
 # Features & Main Parts
@@ -241,6 +241,7 @@ alias grep="/sbin/.core/busybox/grep"
 HOST=/sbin/.core/img/.core/hosts
 SHOST=$DIRECTORY/hosts.gz
 TREADME=$DIRECTORY/cache/readme
+BREADME=$DIRECTORY/cache/readme-backup
 DREADME=$DIRECTORY/cache/deltaReadme
 FILTER=$DIRECTORY/cache/filter
 BFILTER=$DIRECTORY/cache/filter-backup
@@ -249,29 +250,69 @@ BDFILTER=$DIRECTORY/cache/deltaFilter-backup
 WHITELIST=$DIRECTORY/whitelist
 BLACKLIST=$DIRECTORY/blacklist
 REDIRECTLIST=$DIRECTORY/redirectlist
-TEMP=$DIRECTORY/cache/energizedtemp
-LTEMP=$DIRECTORY/cache/energizedlisttemp
-PTEMP=$DIRECTORY/cache/energizedporntemp
-STEMP=$DIRECTORY/cache/energizedsocialtemp
+TEMP=$DIRECTORY/cache/temp
+LTEMP=$DIRECTORY/cache/ltemp
+PTEMP=$DIRECTORY/cache/ptemp
+STEMP=$DIRECTORY/cache/stemp
 HBP=$DIRECTORY/hosts-backup.gz
 curip=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} ads.nayemador.com' $HOST | sed 's/ads.nayemador.com//')
 busybox='/sbin/.core/mirror/bin/busybox' 2>/dev/null
 COUNT=1
+
 # TIP 1
 # ----------------------------------------
 clear
 echo -e $G"$divider"$N
-echo -e $G"TIPs"$N
+echo -e $G"T I P s"$N
 echo -e $G"$divider"$N
 echo ''
 echo -e $W'~ NOT SURE WHAT YOU ARE DOING?\n- MAKE BACKUP & THEN RESTORE! ;)'$N
 sleep 0.1
 echo ''
+echo -e $W'~ NEED MORE INFO?\n- TYPE TG AND JOIN US! B)'$N
+sleep 0.1
+echo ''
 echo -e $W'~ WANT TO GO TO MAGISK DIRECTLY FROM\nTHE SCRIPT? - TYPE MAGISK & HIT ENTER! :D'$N
 sleep 1.5
 
+# Check Energized Pack
+# ----------------------------------------
+	[ -f /system/etc/hosts ];
+if busybox grep -q "E84S1C-P" /sbin/.core/img/.core/hosts; then
+	echeck="\e[1;32mBasic Protection\e[0m"
+	autopack="basic"
+elif busybox grep -q "E5P4RK-P" /sbin/.core/img/.core/hosts; then
+	echeck="\e[1;32mSpark Protection\e[0m"
+	autopack="spark"
+elif busybox grep -q "E8LU-P" /sbin/.core/img/.core/hosts; then
+	echeck="\e[1;32mBlu Protection\e[0m"
+	autopack="blu"
+elif busybox grep -q "E8LUG0-P" /sbin/.core/img/.core/hosts; then
+	echeck="\e[1;32mBlu Go Protection\e[0m"
+	autopack="bluGo"
+elif busybox grep -q "EP0R9-P" /sbin/.core/img/.core/hosts; then
+	echeck="\e[1;32mPorn Protection\e[0m"
+	autopack="porn"
+elif busybox grep -q "EUL71M473-P" /sbin/.core/img/.core/hosts; then
+	echeck="\e[1;32mUltimate Protection\e[0m"
+	autopack="ultimate"
+elif busybox grep -q "EU91F13D-P" /sbin/.core/img/.core/hosts; then
+	echeck="\e[1;32mUnified Protection\e[0m"
+	autopack="unified"
+else
+	echeck="\e[1;31mNo Pack Detected!\e[0m"
+	autopack="null"
+fi
+
 # Check Delta Update
 # ----------------------------------------
+if [ "$autopack" != "null" ]; then
+clear
+echo "[+] Checking Delta-Patch"; sleep 0.1; clear
+echo "[+] Checking Delta-Patch."; sleep 0.15; clear
+echo "[+] Checking Delta-Patch.."; sleep 0.18; clear
+echo "[+] Checking Delta-Patch..."; sleep 0.2;
+
 wget --no-check-certificate -q -O $DREADME https://raw.githubusercontent.com/AdroitAdorKhan/Energized/master/core/delta-patchset/blacklist
 grep -q "#" $DREADME
 if [ -f $DFILTER ]; then
@@ -287,8 +328,12 @@ if [ -f $DFILTER ]; then
 else
 	touch $DFILTER
 fi
-busybox clear
-	
+clear
+echo "[+] Checking Delta-Patch.."; sleep 0.18; clear
+echo "[+] Checking Delta-Patch."; sleep 0.15; clear
+echo "[+] Checking Delta-Patch"; sleep 0.1; clear
+fi
+
 # Check Root
 # ----------------------------------------
 id="$(id)"; id="${id#*=}"; id="${id%%\(*}"; id="${id%% *}"
@@ -322,43 +367,17 @@ else
 	eonoff="\e[1;31m[×]\e[0m"
 fi
 
-# Check Energized Pack
-# ----------------------------------------
-	[ -f /system/etc/hosts ];
-if busybox grep -q "E84S1C-P" /sbin/.core/img/.core/hosts; then
-	echeck="\e[1;32mBasic Protection\e[0m"
-	autopack="basic"
-elif busybox grep -q "E5P4RK-P" /sbin/.core/img/.core/hosts; then
-	echeck="\e[1;32mSpark Protection\e[0m"
-	autopack="spark"
-elif busybox grep -q "E8LU-P" /sbin/.core/img/.core/hosts; then
-	echeck="\e[1;32mBlu Protection\e[0m"
-	autopack="blu"
-elif busybox grep -q "E8LUG0-P" /sbin/.core/img/.core/hosts; then
-	echeck="\e[1;32mBlu Go Protection\e[0m"
-	autopack="bluGo"
-elif busybox grep -q "EP0R9-P" /sbin/.core/img/.core/hosts; then
-	echeck="\e[1;32mPorn Protection\e[0m"
-	autopack="porn"
-elif busybox grep -q "EUL71M473-P" /sbin/.core/img/.core/hosts; then
-	echeck="\e[1;32mUltimate Protection\e[0m"
-	autopack="ultimate"
-elif busybox grep -q "EU91F13D-P" /sbin/.core/img/.core/hosts; then
-	echeck="\e[1;32mUnified Protection\e[0m"
-	autopack="unified"
-else
-	echeck="\e[1;31mNo Pack Detected!\e[0m"
-	autopack="null"
-fi
-
 # TIP 2
 # ----------------------------------------
 clear
 echo -e $Y"$divider"$N
-echo -e $Y"TIPs"$N
+echo -e $Y"T I P s"$N
 echo -e $Y"$divider"$N
 echo ''
 echo -e $W'~ TO DISABLE, JUST TOGGLE THE SYSTEMLESS HOSTS\nIN MAGISK MANAGER.'$N
+sleep 0.1
+echo ''
+echo -e $W'~ GOT ANY ISSUE?\n - SUBMIT ISSUE VIA WEB APP.'$N
 sleep 0.1
 echo ''
 echo -e $W'~ FEELING THANKFUL? ^_^\n - TYPE THX & YOU ARE MOST WELCOME! <3'$N
@@ -366,14 +385,22 @@ sleep 1.6
 
 # Check Hosts Update
 # ----------------------------------------
+if [ "$autopack" != "null" ]; then
+clear
+echo "[+] Checking Update"; sleep 0.1; clear
+echo "[+] Checking Update."; sleep 0.15; clear
+echo "[+] Checking Update.."; sleep 0.18; clear
+echo "[+] Checking Update..."; sleep 0.2; 
+
 wget --no-check-certificate -q -O $TREADME https://raw.githubusercontent.com/EnergizedProtection/block/master/VERSION.md
 grep -q "Version Code" $TREADME
+cp $TREADME $BREADME
 if [ -f $FILTER ]; then
 	CURRENT=$(grep "Version Code" $TREADME)
 	LAST_UPDATED=$(sed '1q;d' $FILTER)
 	if [ "$LAST_UPDATED" != "$CURRENT" ]; then
 	  if [ "$(grep "ads.nayemador.com" $HOST)" ]; then
-	    eupdate=$G'[✓] UPDATE AVAILABLE!'$N
+	    eupdate=$G'[ϟ] UPDATE AVAILABLE!'$N
 	  fi
 	else
 		eupdate=$C'[×] NO NEW UPDATE!'$N
@@ -382,8 +409,16 @@ else
 	touch $FILTER
 	eupdate="[+] APPLY PACK FIRST!"
 fi
-busybox clear
-	INPUT=$(eval "echo \$$COUNT")
+clear
+echo "[+] Checking Update.."; sleep 0.18; clear
+echo "[+] Checking Update."; sleep 0.15; clear
+echo "[+] Checking Update"; sleep 0.1; clear
+else
+	eupdate="[+] APPLY PACK FIRST!"
+fi
+# Input
+# ----------------------------------------
+INPUT=$(eval "echo \$$COUNT")
 	if [ ! "$INPUT" ]; then
 		if [ "$1" ]; then
 			rm -f $TREADME
@@ -392,7 +427,7 @@ busybox clear
 # Starts Screen Echos
 # ----------------------------------------
 echo ''
-echo "                                      v.$version"
+echo "                                           v.$version"
 echo -e $Y"      _____  _________  _____________  _______  "$N; sleep 0.1;
 echo -e $Y"     / __/ |/ / __/ _ \/ ___/  _/_  / / __/ _ \ "$N; sleep 0.1;
 echo -e $Y"    / _//    / _// , _/ (_ // /  / /_/ _// // / "$N; sleep 0.1;
@@ -404,15 +439,15 @@ echo ''
 sleep 0.1
 echo -e $Y"$divider"$N
 sleep 0.1
-echo -e $Y'[+] ROOT, BUSYBOX & DEVICE HOSTS INFO:'$N
+echo -e $Y'ϟ B A S I C  I N F O -'$N
 sleep 0.1
 echo -e $Y"$divider"$N
 sleep 0.1
-echo -e $W"$root ROOT             [+] BUSYBOX: $bboxname"$N
+echo -e $root$W" ROOT             "$N$W"[+] BUSYBOX: $bboxname"$N
 sleep 0.1
-echo -e $W"$eonoff ENERGIZED        [+] PACK: $echeck"$N
+echo -e $eonoff$W" ENERGIZED        "$N$W"[+] PACK: $echeck"$N
 sleep 0.1
-echo -e $W"$adblocker ADBLOCKING       [+] SIZE: $size"$N
+echo -e $adblocker$W" ADBLOCKING       "$N$W"[+] SIZE: $size"$N
 sleep 0.1
 echo -e $W"[+] LAST UPDATED: $update"$N
 sleep 0.1
@@ -420,7 +455,7 @@ echo -e $Y"$divider"$N
 sleep 0.1
 # Packs
 # ----------------------------------------
-echo -e $Y"[+] ENERGIZED PACKs:     $eupdate"$N
+echo -e $Y"ϟ P A C K s -             $eupdate"$N
 sleep 0.1
 echo -e $Y"$divider"$N
 sleep 0.1
@@ -430,17 +465,17 @@ echo -e $W"[2] Blu Go        [4] Basic        [6] Unified"$N
 sleep 0.1
 echo -e $Y"$divider"$N
 sleep 0.1
-echo -e $Y"[+] EXTENSIONS:          "$N$G"$deltapatch"$N
+echo -e $Y"ϟ E X T E N S I O N s -   "$N$deltapatch
 sleep 0.1
 echo -e $Y"$divider"$N
 sleep 0.1
-echo -e $W"[p] Porn (Full)   [pl] Porn Lite   [s] Social"$N
+echo -e $W"[p] Porn  [pl] Porn Lite  [s] Social  [x] Xtreme"$N
 sleep 0.1
 # Options
 # ----------------------------------------
 echo -e $Y"$divider"$N
 sleep 0.1
-echo -e $Y'[+] OPTIONS:'$N
+echo -e $Y'ϟ O P T I O N s -'$N
 sleep 0.1
 echo -e $Y"$divider"$N
 sleep 0.1
@@ -450,13 +485,13 @@ echo -e $W'[w] Apply Whitelist       [iw] Instant Whitelist'$N
 sleep 0.1
 echo -e $W'[b] Apply Blacklist       [ib] Instant Blacklist'$N
 sleep 0.1
-echo -e $W'[re] Redirect Domains     [ir] Instant Redirect'$N
+echo -e $W'[r] Redirect Domains      [ir] Instant Redirect'$N
 sleep 0.1
 # Misc
 # ----------------------------------------
 echo -e $Y"$divider"$N
 sleep 0.1
-echo -e $Y'[+] MISC:'$N
+echo -e $Y'ϟ M I S C -'$N
 sleep 0.1
 echo -e $Y"$divider"$N
 sleep 0.1
@@ -466,7 +501,7 @@ echo -e $W'[i] Web & Info            [in] Instructions'$N
 sleep 0.1
 echo -e $W'[u] Current-O-Update      [ck] Check Domain'$N
 sleep 0.1
-echo -e $R'[q] Quit.'$N
+echo -e $G'[si] Submit Issue         '$N$R'[q] Quit.'$N
 # Read Input
 # ----------------------------------------
 		echo -n "\033[33;1m[+] Your Input\033[0m - "
@@ -608,7 +643,7 @@ echo -e $R'[q] Quit.'$N
 		;;
 		# Porn Extension
 		# ----------------------------------------
-        p) clear
+        p|porn|Porn|PORN) clear
 		echo -e $Y"$divider"$N
 		sleep 0.1
 		echo -e $Y"Hold on a sec!"$N
@@ -631,19 +666,19 @@ echo -e $R'[q] Quit.'$N
 		  sleep 0.1
 		  echo -e $Y"$divider"$N
 		  sleep 0.1
-		  echo "Add Porn Blocking Pack to current hosts."
+		  echo "Adds Porn Blocking Pack to current hosts."
 		  echo -e $Y"$divider"$N
 		  echo ""
 		  wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/porn/formats/hosts.gz
-			echo "[+] Applying Porn Hosts to current hosts."
-			gzip -d -c $SHOST > $PTEMP
-            mv $HOST $TEMP
-            rm -f $HOST
-			cat $TEMP $PTEMP > $HOST
-			awk '!a[$0]++' $HOST > $PTEMP && mv -f $PTEMP $HOST
-			rm -f $TEMP $PTEMP $SHOST
-			echo -e $G'[+] Done!'$N
-			echo "[+] Returning..."
+		  echo "[+] Applying Porn Hosts to current hosts."
+		  gzip -d -c $SHOST > $PTEMP
+		  mv $HOST $TEMP
+		  rm -f $HOST
+		  cat $TEMP $PTEMP > $HOST
+		  awk '!a[$0]++' $HOST > $PTEMP && mv -f $PTEMP $HOST
+		  rm -f $TEMP $PTEMP $SHOST
+		  echo -e $G'[+] Done!'$N
+		  echo "[+] Returning..."
 		else
 		  clear
 		  echo -n -e $W'[+] RETURNING '$N
@@ -661,11 +696,11 @@ echo -e $R'[q] Quit.'$N
 		sleep 0.1
 		echo -e $Y"$divider"$N
 		sleep 0.1
-		echo "Add Porn Lite Blocking Pack to current hosts."
+		echo "Adds Porn Lite Blocking Pack to current hosts."
 		echo -e $Y"$divider"$N
 		echo ""
-		wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/formats/ext-porn-hosts.gz
-		echo "[+] Applying Porn Hosts to current hosts."
+		wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/porn-lite/formats/hosts.gz
+		echo "[+] Applying Porn Lite Hosts to current hosts."
 		gzip -d -c $SHOST > $PTEMP
         mv $HOST $TEMP
         rm -f $HOST
@@ -677,16 +712,16 @@ echo -e $R'[q] Quit.'$N
 		;;
 		# Social Extension
 		# ----------------------------------------
-		s)  clear
+		s|social|Social|SOCIAL)  clear
 		echo -e $Y"$divider"$N
 		echo -e $Y'[+] SOCIAL HOSTS EXTENSION'$N
 		sleep 0.1
 		echo -e $Y"$divider"$N
 		sleep 0.1
-		echo "Add Social Blocking Pack to current hosts."
+		echo "Adds Social Blocking Pack to current hosts."
 		echo -e $Y"$divider"$N
 		echo ""
-		wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/formats/ext-social-hosts
+		wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/social/formats/hosts.gz
 		echo "[+] Applying Social Hosts to current hosts."
 		gzip -d -c $SHOST > $STEMP
         mv $HOST $TEMP
@@ -695,6 +730,53 @@ echo -e $R'[q] Quit.'$N
 		rm -f $TEMP $STEMP $SHOST
 		echo -e $G'[+] Done!'$N
 		echo "[+] Returning..."
+		;;
+		# Xtreme Extension
+		# ----------------------------------------
+		x|X|xtreme|XTRM|xtrm|Xtrm|Xtreme) clear
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $Y"Hold on a sec!"$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $W"Energized Xtreme Extension strictly blocks every"$N
+		sleep 0.1
+		echo -e $W"annoyance out there. Which may break app(s) and"$N
+		sleep 0.1
+		echo -e $W"website(s)."$N
+		echo ''
+		sleep 0.1
+		echo -n -e $W'[+] PROCEED?'$N $Y'[Y/N]'$N: $G"$answer"$N
+		read answer
+		if [ "$answer" == "Y" ]; then
+		  clear
+		  echo -e $Y"$divider"$N
+		  echo -e $Y'[+] XTREME HOSTS EXTENSION'$N
+		  sleep 0.1
+		  echo -e $Y"$divider"$N
+		  sleep 0.1
+		  echo "Adds Xtreme Blocking Pack to current hosts."
+		  echo -e $Y"$divider"$N
+		  echo ""
+		  wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/xtreme/formats/hosts.gz
+		  echo "[+] Applying Xtreme Hosts to current hosts."
+		  gzip -d -c $SHOST > $PTEMP
+		  mv $HOST $TEMP
+		  rm -f $HOST
+		  cat $TEMP $PTEMP > $HOST
+		  awk '!a[$0]++' $HOST > $PTEMP && mv -f $PTEMP $HOST
+		  rm -f $TEMP $PTEMP $SHOST
+		  echo -e $G'[+] Done!'$N
+		  echo "[+] Returning..."
+		else
+		  clear
+		  echo -n -e $W'[+] RETURNING '$N
+		  echo -n -e $Y'•'$N; sleep 0.2;
+		  echo -n -e $Y'•'$N; sleep 0.3;
+		  echo -n -e $Y'•'$N; sleep 0.2;
+		  sleep 0.1
+		fi
 		;;
 		# Current-O-Update
 		# ----------------------------------------
@@ -712,7 +794,7 @@ echo -e $R'[q] Quit.'$N
 		  wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/$autopack/formats/hosts.gz
 		  gzip -d -c $SHOST > $HOST
 		  rm -f $SHOST
-		  echo "\n\033[32;5;7m[+] Done Applying!\033[0m"
+		  echo -e $G"[+] Done Applying!"$N
 		  sleep 1
 		  echo -e $Y"$divider"$N
 		  grep "Version Code" $TREADME > $FILTER
@@ -824,7 +906,7 @@ echo -e $R'[q] Quit.'$N
 		# ----------------------------------------
 		w) clear
 		echo -e $Y"$divider"$N
-		echo -e $Y'[+] WHITELISTING'$N
+		echo -e $Y'ϟ W H I T E L I S T I N G'$N
 		sleep 0.1
 		echo -e $Y"$divider"$N
 		sleep 0.1
@@ -879,9 +961,11 @@ echo -e $R'[q] Quit.'$N
 		;;
 		# Instant Whitelist
 		# ----------------------------------------
-		iw) clear
+		iw) while true
+		do
+		clear
 		echo -e $Y"$divider"$N
-		echo -e $Y'[+] INSTANT WHITELIST'$N
+		echo -e $Y'ϟ I N S T A N T  W H I T E L I S T'$N
 		sleep 0.1
 		echo -e $Y"$divider"$N
 		sleep 0.1
@@ -904,20 +988,31 @@ echo -e $R'[q] Quit.'$N
 		  sleep 0.5
 		  echo -e $W'[+] Returning...'$N
 		  sleep 1
+		  echo -n -e $W'[+] Whitelist Another Domain?'$N $Y'[y/n]'$N: $G"$answer"$N
+		  read answer
+		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
+		      break
+		    fi
 		else
 		  clear
+		  echo -n -e $W'[+] Whitelist Another Domain?'$N $Y'[y/n]'$N: $G"$answer"$N
+		  read answer
+		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
+		      break
+		    fi
 		  echo -n -e $W'[+] RETURNING '$N
 		  echo -n -e $Y'•'$N; sleep 0.2;
 		  echo -n -e $Y'•'$N; sleep 0.3;
 		  echo -n -e $Y'•'$N; sleep 0.2;
 		  sleep 0.3
 		fi
+		done
 		;;
 		# Blacklist
 		# ----------------------------------------
 		b)  clear
 		echo -e $Y"$divider"$N
-		echo -e $Y'[+] BLACKLISTING'$N
+		echo -e $Y'ϟ B L A C K L I S T I N G'$N
 		sleep 0.1
 		echo -e $Y"$divider"$N
 		sleep 0.1
@@ -975,9 +1070,11 @@ echo -e $R'[q] Quit.'$N
 		;;
 		# Instant Blacklist
 		# ----------------------------------------
-		ib) clear
+		ib) while true
+		do
+		clear
 		echo -e $Y"$divider"$N
-		echo -e $Y'[+] INSTANT BLACKLIST'$N
+		echo -e $Y'ϟ I N S T A N T  B L A C K L I S T'$N
 		sleep 0.1
 		echo -e $Y"$divider"$N
 		sleep 0.1
@@ -1003,9 +1100,19 @@ echo -e $R'[q] Quit.'$N
 			sleep 0.5
 		    echo -e $W'[+] Returning...'$N
 		    sleep 0.4
+		    echo -n -e $W'[+] Blacklist Another Domain?'$N $Y'[y/n]'$N: $G"$answer"$N
+		    read answer
+		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
+		      break
+		    fi
 		    clear
 		  else
 		    clear
+		    echo -n -e $W'[+] Blacklist Another Domain?'$N $Y'[y/n]'$N: $G"$answer"$N
+		    read answer
+		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
+		      break
+		    fi
 		    echo -n -e $W'[+] RETURNING '$N
 		  echo -n -e $Y'•'$N; sleep 0.2;
 		  echo -n -e $Y'•'$N; sleep 0.3;
@@ -1014,14 +1121,20 @@ echo -e $R'[q] Quit.'$N
 		  fi
 		else
 		  echo -e $G'[+] Domain was already being added to the hosts!'$N
-		  sleep 2
+		  sleep 1
+		  echo -n -e $W'[+] Blacklist Another Domain?'$N $Y'[y/n]'$N: $G"$answer"$N
+		  read answer
+		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
+		      break
+		    fi
 		  fi
+		done
 		;;
 		# Redirect
 		# ----------------------------------------
-		re) clear
+		r) clear
 		echo -e $Y"$divider"$N
-		echo -e $Y'[+] REDIRECTS'$N
+		echo -e $Y'ϟ R E D I R E C T'$N
 		sleep 0.1
 		echo -e $Y"$divider"$N
 		sleep 0.1
@@ -1091,9 +1204,11 @@ echo -e $R'[q] Quit.'$N
 		;;
 		# Instant Redirect
 		# ----------------------------------------
-		ir) clear
+		ir) while true
+		do
+		clear
 		echo -e $Y"$divider"$N
-		echo -e $Y'[+] INSTANT REDIRECT'$N
+		echo -e $Y'ϟ I N S T A N T  R E D I R E C T'$N
 		sleep 0.1
 		echo -e $Y"$divider"$N
 		sleep 0.1
@@ -1126,14 +1241,25 @@ echo -e $R'[q] Quit.'$N
 		  sleep 0.5
 		  echo -e $W'[+] Returning...'$N
 		  sleep 1
+		  echo -n -e $W'[+] Redirect Another Domain?'$N $Y'[y/n]'$N: $G"$answer"$N
+		  read answer
+		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
+		      break
+		    fi
 		else
 		  clear
+		  echo -n -e $W'[+] Redirect Another Domain?'$N $Y'[y/n]'$N: $G"$answer"$N
+		  read answer
+		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
+		      break
+		    fi
 		  echo -n -e $W'[+] RETURNING '$N
 		  echo -n -e $Y'•'$N; sleep 0.2;
 		  echo -n -e $Y'•'$N; sleep 0.3;
 		  echo -n -e $Y'•'$N; sleep 0.2;
 		  sleep 0.3
 		fi
+		done
 		;;
 		# Systemless Hosts
 		# ----------------------------------------
@@ -1141,19 +1267,39 @@ echo -e $R'[q] Quit.'$N
 		;;
 		# Info
 		# ----------------------------------------
-		i|info|Info|INFO) am start -a android.intent.action.VIEW -d "https://nayemador.com/energized"
+		i|info|Info|INFO) am start -a android.intent.action.VIEW -d "https://energized.pro"
 		;;
 		# Instructions
 		# ----------------------------------------
 		in|instructions|instruction|IN|INSTRUCTION|INSTRUCTIONS) am start -a android.intent.action.VIEW -d "http://link.nayemador.com/epmagiskusage"
 		;;
-		thanks|thx|thnx|thax|thank|thanku|thankyou) am start -a android.intent.action.VIEW -d "$saythanks"
+		# Submit Issue
+		# ----------------------------------------
+		si|SI|webapp|WEBAPP|WebApp|app|submit|Submit|issue|Submit|is|SUBMIT|ISSUE|IS) clear
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $Y'ϟ B O X  W E B  A P P'$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo "Got any whitelist/blacklist issue? or anything\nelse? No worry! Just Submit via Web App."
+		echo -e $Y"$divider"$N
+		echo ""
+		echo -e $B'You will be redirected in 3 seconds...'$N
+		sleep 3
+		am start -a android.intent.action.VIEW -d "https://app.energized.pro"
+		;;
+		thanks|thx|thnx|thax|thank|thanku|thankyou|THX|Thanks) am start -a android.intent.action.VIEW -d "$saythanks"
+		;;
+		# Telegram
+		# ----------------------------------------
+		tg|telegram|Telegram|TELEGRAM) am start -a android.intent.action.VIEW -d "http://go.energized.pro/telegram"
 		;;
 		# Backup Hosts
 		# ----------------------------------------
 		bp) clear
 		echo -e $Y"$divider"$N
-		echo -e $Y'[+] BACKUP'$N
+		echo -e $Y'ϟ B A C K U P'$N
 		sleep 0.1
 		echo -e $Y"$divider"$N
 		sleep 0.1
@@ -1166,13 +1312,13 @@ echo -e $R'[q] Quit.'$N
 		cp $DFILTER $BDFILTER
 		sleep 0.5
 		echo -e $W'[+] Done!'$N
-		sleep 1.3
+		sleep 0.5
 		;;
 		# Restore Hosts
 		# ----------------------------------------
 		rs|restore|Restore|RESTORE) clear
 		echo -e $Y"$divider"$N
-		echo -e $Y'[+] RESTORE'$N
+		echo -e $Y'ϟ R E S T O R E'$N
 		sleep 0.1
 		echo -e $Y"$divider"$N
 		sleep 0.1
@@ -1196,7 +1342,7 @@ echo -e $R'[q] Quit.'$N
 		# ----------------------------------------
 		c|clear|Clear|CLEAR) clear
 		echo -e $Y"$divider"$N
-		echo -e $Y'[+] CLEAN HOSTS'$N
+		echo -e $Y'ϟ C L E A N  H O S T S'$N
 		sleep 0.1
 		echo -e $Y"$divider"$N
 		sleep 0.1
@@ -1210,16 +1356,19 @@ echo -e $R'[q] Quit.'$N
 		touch $DFILTER
 		echo "[+] Clearing Hosts File..."
 		sleep 0.3
-		echo -e "# Energized Protection - nayemador.com/energized\n# Let's make an annoyance free better open internet, altogether!\127.0.0.1 localhost" >> $HOST
+		echo -e "# Energized Protection - https://energized.pro\n# Let's make an annoyance free better open internet, altogether!\127.0.0.1 localhost" >> $HOST
         echo "[+] Done Clearing Hosts!"
         echo "[+] Returning..."
         sleep 2
         ;;
 		# Delta Patch
 		# ----------------------------------------
-		dp|deltapatch)  clear
+		dp|deltapatch) clear
+		DCURRENT=$(grep "#" $DREADME)
+		DUPDATED=$(sed '1q;d' $DFILTER)
+		if [ "$DUPDATED" != "$DCURRENT" ]; then
 		echo -e $Y"$divider"$N
-		echo -e $Y'[+] DELTA PATCHING'$N
+		echo -e $Y'ϟ D E L T A  P A T C H S E T'$N
 		sleep 0.1
 		echo -e $Y"$divider"$N
 		sleep 0.1
@@ -1254,7 +1403,7 @@ echo -e $R'[q] Quit.'$N
 		rm -f $TEMP $STEMP $PTEMP $LTEMP
 		echo -e $G'[+] Done'$N
 		echo ''
-		sleep 2
+		sleep 0.5
 		# Whitelist
 		echo -e $W'[+] Downloading Whitelist Patch'$N
 		wget --no-check-certificate -O $STEMP https://raw.githubusercontent.com/AdroitAdorKhan/Energized/master/core/delta-patchset/whitelist
@@ -1280,12 +1429,16 @@ echo -e $R'[q] Quit.'$N
 		sleep 0.5
 		echo "[+] Returning..."
 		sleep 2
+		else
+		echo -e $Y"[+] No New Patch is Available!"$N
+		sleep 2
+		fi
 		;;
 		# Redirection IP
 		# ----------------------------------------
 		ip) clear
 		echo -e $Y"$divider"$N
-		echo -e $Y'[+] CUSTOM REDIRECTION IP'$N
+		echo -e $Y'ϟ R E D I R E C T I O N  I P'$N
 		sleep 0.1
 		echo -e $Y"$divider"$N
 		sleep 0.1
@@ -1323,9 +1476,11 @@ echo -e $R'[q] Quit.'$N
 		;;
 		# Check Domain In Hosts
 		# ----------------------------------------
-		chk|check|Check|CHECK|ck) clear
+		chk|check|Check|CHECK|ck) while true
+		do
+		clear
 		echo -e $Y"$divider"$N
-		echo -e $Y'[+] CHECK DOMAIN AVAILABILITY IN HOSTS'$N
+		echo -e $Y'ϟ C H E C K  D O M A I N'$N
 		sleep 0.1
 		echo -e $Y"$divider"$N
 		sleep 0.1
@@ -1337,10 +1492,10 @@ echo -e $R'[q] Quit.'$N
 		echo -e $W"[+] Your Domain"$N $Y"$domain"$N
 		if [ ! "$(grep -x "$curip$domain" $HOST)" ]; then
 		  echo -e $R"[×] $domain - "$N$W"is not in the list!"$N
-		  sleep 2
-		  echo -n -e $W'[+] Want to block the domain?'$N $Y'[Y/N]'$N: $G"$answer"$N
+		  sleep 1
+		  echo -n -e $W'[+] Want to block the domain?'$N $Y'[y/n]'$N: $G"$answer"$N
 		  read answer
-		  if [ "$answer" == "Y" ]; then
+		  if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
 		    echo "[+] Applying $domain as blacklist..."
 		    echo -e "\n# Instant Blacklist Applied on - $date" >> $HOST
 		    echo -e "$curip$domain" >> $HOST
@@ -1353,15 +1508,31 @@ echo -e $R'[q] Quit.'$N
 			sleep 0.5
 		    echo -e $W'[+] Returning...'$N
 		    sleep 1
+		    echo -n -e $W'[+] Check Again?'$N $Y'[Y/N]'$N: $G"$answer"$N
+		    read answer
+		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
+		      break
+		    fi
 		    clear
 		  else
+		    echo -n -e $W'[+] Check Again?'$N $Y'[y/n]'$N: $G"$answer"$N
+		    read answer
+		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
+		      break
+		    fi
 		    clear
-		    echo -n -e $W'[+] RETURNING '$N
+		    echo -n -e $W'[+] RETURNING...'$N
 		  fi
 		else
 		  echo -e $G"[✓] $domain - "$N$W"is in the list!"$N
-		  sleep 2
+		  sleep 1
+		  echo -n -e $W'[+] Check Again?'$N $Y'[y/n]'$N: $G"$answer"$N
+		  read answer
+		  if [[ "$answer" == "N" || "$answer" == "n" ]]; then
+		    break
+		  fi
 		fi
+		done
 		;;
 		# Quit
 		# ----------------------------------------
@@ -1369,8 +1540,9 @@ echo -e $R'[q] Quit.'$N
 		clear
 		reset
 		;;
-		*)  echo ""
-			echo -e $R"Invalid input. Don't use any spaces between letters."$N 
+		*)  echo -e $R"$divider"$N
+			echo -e $R"----------- I N V A L I D  I N P U T ! ----------"$N
+			echo -e $R"$divider"$N
 			sleep 2
 		;;
 	esac
@@ -1386,10 +1558,14 @@ echo -e $R'[q] Quit.'$N
 		echo -e $Y"$divider"$N
 		grep "Version Code" $TREADME > $FILTER
 		sleep 0.5
+		CURRENT=$(grep "Version Code" $TREADME)
+		LAST_UPDATED=$(sed '1q;d' $FILTER)
+		if [ "$LAST_UPDATED" != "$CURRENT" ]; then
 		rm -f $DFILTER
 		touch $DFILTER
+		fi
 		echo -e $W'[+] Returning...'$N
-		sleep 0.3
+		sleep 0.5
 		clear
 	fi
 	DIR=""
@@ -1405,19 +1581,22 @@ clear
 sleep 0.3
 echo -e $Y"$divider"$N
 sleep 0.1
-echo -n -e $Y'                   T'$N; sleep 0.1; 
-echo -n -e $Y'H'$N; sleep 0.1;
-echo -n -e $Y'A'$N; sleep 0.1; 
-echo -n -e $Y'N'$N; sleep 0.1; 
-echo -n -e $Y'K '$N; sleep 0.1; 
-echo -n -e $Y'Y'$N; sleep 0.1; 
-echo -n -e $Y'O'$N; sleep 0.1; 
-echo -n -e $Y'U'$N; sleep 0.1; 
-echo -n -e $Y'!'$N; sleep 0.5; 
-echo -n -e $R'♡\n\n'$N
-sleep 0.1
-echo -e $Y'              STAY ENERGIZED BUDDY!'$N
+echo -n -e $Y"---------- "$N$W'S '$N; sleep 0.1; 
+echo -n -e $W'T '$N; sleep 0.1; 
+echo -n -e $W'A '$N; sleep 0.1; 
+echo -n -e $W'Y '$N; sleep 0.1; 
+echo -n -e $W' E '$N; sleep 0.1; 
+echo -n -e $W'N '$N; sleep 0.1; 
+echo -n -e $W'E '$N; sleep 0.1; 
+echo -n -e $W'R '$N; sleep 0.1; 
+echo -n -e $W'G '$N; sleep 0.1; 
+echo -n -e $W'I '$N; sleep 0.1; 
+echo -n -e $W'Z '$N; sleep 0.1; 
+echo -n -e $W'E '$N; sleep 0.1; 
+echo -n -e $W'D '$N; sleep 0.1; 
+echo -n -e $Y'ϟ '$N 
+echo -e $Y'---------'$N;
 sleep 0.1
 echo -e $Y"$divider"$N
 echo ""
-sleep 3
+sleep 1
