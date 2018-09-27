@@ -75,10 +75,10 @@
 - `re` - Redirect Domains - `redirect` domains in `redirectlist` to an IP.
 - `ir` - Instant Redirect - when you have to instantly redirect `one` domain.
 - `u` - Current-O-Update - this will update your current pack, and auto apply your whitelist and blacklist. Use this when you have to update.
-- `ck` - Check Domain - check a domain whether it's `already` blocked or not! -
+- `ck` - Check Domain - check a domain whether it's `already` blocked or not!
 - `bp` - Backup Hosts - makes a backup of your `current` hosts.
 - `rs` - Restore Hosts - restores the hosts you made a `backup` before.
-- `i` - Web & Info - Website and Infos.  -
+- `i` - Web & Info - Website and Infos.
 - `ip` - Redirection IP - to change the default `0.0.0.0` ip to your own.
 - `in` - Instructions - type for detailed instructions.
 - `si` - Submit Issue - submit any issue via `web` app.
