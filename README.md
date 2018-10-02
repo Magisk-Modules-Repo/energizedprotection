@@ -4,10 +4,10 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-milo-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-canelé-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Last Updated -->
-    <img src="https://img.shields.io/badge/Updated-Sep 27, 2018-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Updated-Oct 02, 2018-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
   <!-- Status -->
     <img src="https://img.shields.io/badge/Status-Stable-green.svg?longCache=true&style=flat-square"
@@ -64,25 +64,27 @@
 ## Usage: 
 
 #### Feature Details
-- `1-6` - Energized Packs - Energized `main` blocking packs.
-- `p/pl/s/x` - Extensions - Porn, Porn Lite, Social and Xtreme Extensions, to apply with the `main` pack.
-- `dp` - Delta Patchset - this will be visible, when any `delta patch` will be available to apply.
-- `c` - Clear Hosts - this will clear your `hosts` file to default hosts. Also, clears filters.
-- `w` - Apply Whitelist - use this to apply `whitelisted` domains.
-- `iw` - Instant Whitelist - when you have to instantly whitelist `one` domain.
-- `b` - Apply Blacklist - use this to apply `blacklisted` domains.
-- `ib` - Instant Blacklist - when you have to instantly blacklist `one` domain.
-- `re` - Redirect Domains - `redirect` domains in `redirectlist` to an IP.
-- `ir` - Instant Redirect - when you have to instantly redirect `one` domain.
-- `u` - Current-O-Update - this will update your current pack, and auto apply your whitelist and blacklist. Use this when you have to update.
-- `ck` - Check Domain - check a domain whether it's `already` blocked or not!
-- `bp` - Backup Hosts - makes a backup of your `current` hosts.
-- `rs` - Restore Hosts - restores the hosts you made a `backup` before.
-- `i` - Web & Info - Website and Infos.
-- `ip` - Redirection IP - to change the default `0.0.0.0` ip to your own.
-- `in` - Instructions - type for detailed instructions.
-- `si` - Submit Issue - submit any issue via `web` app.
-- `q` - Quit - `exit` the script.
+| Command(s) | Feature | Description |
+|:----------:|:-------:|:-----------:|
+| `1|6` | Energized Packs | Energized `main` blocking packs. |
+| `p/pl/rl/s/x` | Extensions | Porn, Porn Lite, Regional, Social and Xtreme Extensions, to apply with the `main` pack. |
+| `dp` | Delta Patchset | this will be visible, when any `delta patch` will be available to apply. |
+| `c` | Clear Hosts | this will clear your `hosts` file to default hosts. Also, clears filters. |
+| `w` | Apply Whitelist | use this to apply `whitelisted` domains. |
+| `iw` | Instant Whitelist | when you have to instantly whitelist `one` domain. |
+| `b` | Apply Blacklist | use this to apply `blacklisted` domains. |
+| `ib` | Instant Blacklist | when you have to instantly blacklist `one` domain. |
+| `re` | Redirect Domains | `redirect` domains in `redirectlist` to an IP. |
+| `ir` | Instant Redirect | when you have to instantly redirect `one` domain. |
+| `u` | Current|O|Update | this will update your current pack, and auto apply your whitelist and blacklist. Use this when you have to update. |
+| `ck` | Check Domain | check a domain whether it's `already` blocked or not! |
+| `bp` | Backup Hosts | makes a backup of your `current` hosts. |
+| `rs` | Restore Hosts | restores the hosts you made a `backup` before. |
+| `i` | Web & Info | Website and Infos.  |
+| `ip` | Redirection IP | to change the default `0.0.0.0` ip to your own. |
+| `in` | Instructions | type for detailed instructions. |
+| `si` | Submit Issue | submit any issue via `web` app. |
+| `q` | Quit | `exit` the script. |
 
 #### Delta Patchset
 This is basically like incremental updates to the whitelist and blacklist. You will be able to apply latest whitelist and blacklist without waiting for full release.
@@ -150,6 +152,11 @@ This is basically like incremental updates to the whitelist and blacklist. You w
  - Just run hosts script and reinstall host file of choice without selecting whitelist/blacklist/redirectionlist.
 
 ## Changelog
+v.canelé
+ - Added Regional Extension Pack.
+ - Fixed Update Checking Issue.
+ - Script Optimization.
+ 
 v.milo
  - Improved `instant` Whitelist, Blacklist and Redirect Domain Features.
  - Improved Domain Check Feature.
