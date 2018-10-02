@@ -66,7 +66,7 @@
 #### Feature Details
 | Command(s) | Feature | Description |
 |:----------:|:-------:|:-----------:|
-| `1|6` | Energized Packs | Energized `main` blocking packs. |
+| `1-6` | Energized Packs | Energized `main` blocking packs. |
 | `p/pl/rl/s/x` | Extensions | Porn, Porn Lite, Regional, Social and Xtreme Extensions, to apply with the `main` pack. |
 | `dp` | Delta Patchset | this will be visible, when any `delta patch` will be available to apply. |
 | `c` | Clear Hosts | this will clear your `hosts` file to default hosts. Also, clears filters. |
