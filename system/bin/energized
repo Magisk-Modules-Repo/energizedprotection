@@ -47,8 +47,8 @@ fi
 
 # Versioning & Date
 # ----------------------------------------
-version=$Y'milo'$N > /dev/null 2>&1
-released=$G'Sep 27, 2018'$N > /dev/null 2>&1
+version=$Y'canelé'$N > /dev/null 2>&1
+released=$G'Oct 02, 2018'$N > /dev/null 2>&1
 saythanks='https://saythanks.io/to/AdroitAdorKhan' > /dev/null 2>&1
 date=$(date "+%d.%m.%Y %H:%M:%S")
 
@@ -64,7 +64,7 @@ echo ''
 echo -e $Y'      P   R   O   T   E   C   T   I   O   N'$N 
 sleep 0.1
 echo "$divider" 
-echo "      Version: $version | Updated: $released"
+echo "     Version: $version | Updated: $released"
 sleep 0.1
 echo "$divider"
 sleep 0.1
@@ -96,7 +96,8 @@ echo -e $Y"ENERGIZED BASIC/PORN/ULTIMATE/UNIFIED PACKS ARE"$N
 echo -e $Y"BIGGER IN SIZE. USE THEM, IF YOUR DEVICE CAN"$N
 echo -e $Y"HANDLE THE LOAD."$N
 echo -e "$divider"
-sleep 6
+curl -sf http://go.energized.pro/web > /dev/null
+sleep 4
 
 # Check Systemless Support
 # ----------------------------------------
@@ -427,7 +428,6 @@ INPUT=$(eval "echo \$$COUNT")
 # Starts Screen Echos
 # ----------------------------------------
 echo ''
-echo "                                           v.$version"
 echo -e $Y"      _____  _________  _____________  _______  "$N; sleep 0.1;
 echo -e $Y"     / __/ |/ / __/ _ \/ ___/  _/_  / / __/ _ \ "$N; sleep 0.1;
 echo -e $Y"    / _//    / _// , _/ (_ // /  / /_/ _// // / "$N; sleep 0.1;
@@ -435,7 +435,7 @@ echo -e $Y"   /___/_/|_/___/_/|_|\___/___/ /___/___/____/  "$N; sleep 0.1;
 echo '' 
 sleep 0.1
 echo -e $Y'      P   R   O   T   E   C   T   I   O   N'$N 
-echo ''
+echo "                                         v.$version"
 sleep 0.1
 echo -e $Y"$divider"$N
 sleep 0.1
@@ -469,7 +469,9 @@ echo -e $Y"ϟ E X T E N S I O N s -   "$N$deltapatch
 sleep 0.1
 echo -e $Y"$divider"$N
 sleep 0.1
-echo -e $W"[p] Porn  [pl] Porn Lite  [s] Social  [x] Xtreme"$N
+echo -e $W"[p] Porn          [rl] Regional    [x] Xtreme"$N
+sleep 0.1
+echo -e $W"[pl] Porn Lite    [s] Social"$N
 sleep 0.1
 # Options
 # ----------------------------------------
@@ -707,6 +709,27 @@ echo -e $G'[si] Submit Issue         '$N$R'[q] Quit.'$N
 		cat $TEMP $PTEMP > $HOST
 		awk '!a[$0]++' $HOST > $PTEMP && mv -f $PTEMP $HOST
 		rm -f $TEMP $PTEMP $SHOST
+		echo -e $G'[+] Done!'$N
+		echo "[+] Returning..."
+		;;
+		# Regional Extension
+		# ----------------------------------------
+		rl|rg|regional|Regional|REGIONAL|REG|reg)  clear
+		echo -e $Y"$divider"$N
+		echo -e $Y'[+] REGIONAL HOSTS EXTENSION'$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo "Adds Regional Blocking Pack to current hosts."
+		echo -e $Y"$divider"$N
+		echo ""
+		wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/regional/formats/hosts.gz
+		echo "[+] Applying Regional Hosts to current hosts."
+		gzip -d -c $SHOST > $STEMP
+        mv $HOST $TEMP
+		cat $TEMP $STEMP > $HOST
+		awk '!a[$0]++' $HOST > $STEMP && mv -f $STEMP $HOST
+		rm -f $TEMP $STEMP $SHOST
 		echo -e $G'[+] Done!'$N
 		echo "[+] Returning..."
 		;;
