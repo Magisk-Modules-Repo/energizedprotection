@@ -112,7 +112,12 @@ echo "[+] Checking Systemless Support"; sleep 0.2; clear
 
 # Check if the Systemless Hosts
 # ----------------------------------------
-if [ ! -f /sbin/.core/img/.core/hosts ]; then
+HOST=/sbin/.magisk/img/hosts/system/etc/hosts
+# Check for old non-module-style Systemless Hosts and update path
+if [[ "$(/sbin/magisk -c)" == 17.3* ]]; then
+	HOST=/sbin/.core/img/.core/hosts
+fi
+if [ ! -f $HOST ]; then
 clear
 	sleep 0.1
 	echo -e $R"$divider"$N
@@ -239,7 +244,6 @@ do
 # ----------------------------------------
 alias wget="/sbin/.core/busybox/wget"
 alias grep="/sbin/.core/busybox/grep"
-HOST=/sbin/.core/img/.core/hosts
 SHOST=$DIRECTORY/hosts.gz
 TREADME=$DIRECTORY/cache/readme
 BREADME=$DIRECTORY/cache/readme-backup
@@ -279,25 +283,25 @@ sleep 1.5
 # Check Energized Pack
 # ----------------------------------------
 	[ -f /system/etc/hosts ];
-if busybox grep -q "E84S1C-P" /sbin/.core/img/.core/hosts; then
+if busybox grep -q "E84S1C-P" $HOST; then
 	echeck="\e[1;32mBasic Protection\e[0m"
 	autopack="basic"
-elif busybox grep -q "E5P4RK-P" /sbin/.core/img/.core/hosts; then
+elif busybox grep -q "E5P4RK-P" $HOST; then
 	echeck="\e[1;32mSpark Protection\e[0m"
 	autopack="spark"
-elif busybox grep -q "E8LU-P" /sbin/.core/img/.core/hosts; then
+elif busybox grep -q "E8LU-P" $HOST; then
 	echeck="\e[1;32mBlu Protection\e[0m"
 	autopack="blu"
-elif busybox grep -q "E8LUG0-P" /sbin/.core/img/.core/hosts; then
+elif busybox grep -q "E8LUG0-P" $HOST; then
 	echeck="\e[1;32mBlu Go Protection\e[0m"
 	autopack="bluGo"
-elif busybox grep -q "EP0R9-P" /sbin/.core/img/.core/hosts; then
+elif busybox grep -q "EP0R9-P" $HOST; then
 	echeck="\e[1;32mPorn Protection\e[0m"
 	autopack="porn"
-elif busybox grep -q "EUL71M473-P" /sbin/.core/img/.core/hosts; then
+elif busybox grep -q "EUL71M473-P" $HOST; then
 	echeck="\e[1;32mUltimate Protection\e[0m"
 	autopack="ultimate"
-elif busybox grep -q "EU91F13D-P" /sbin/.core/img/.core/hosts; then
+elif busybox grep -q "EU91F13D-P" $HOST; then
 	echeck="\e[1;32mUnified Protection\e[0m"
 	autopack="unified"
 else
@@ -346,14 +350,14 @@ fi;
 
 # Other Variables
 # ----------------------------------------
-update="\e[1;36m`busybox date -r /sbin/.core/img/.core/hosts`\e[0m"
+update="\e[1;36m`busybox date -r $HOST`\e[0m"
 bboxname="\e[1;36m`busybox | head -1 | cut -f 2 -d ' ' | grep -w "osm0sis"`\e[0m"
-size="\e[1;35m`ls -lah /sbin/.core/img/.core/hosts | awk '{print $5}'`\e[0m"
+size="\e[1;35m`ls -lah $HOST | awk '{print $5}'`\e[0m"
 
 # Check Adblocker
 # ----------------------------------------
-   [ -f /sbin/.core/img/.core/hosts ];
-if busybox grep -q ads /sbin/.core/img/.core/hosts; then
+   [ -f $HOST ];
+if busybox grep -q ads $HOST; then
 	adblocker="\e[1;32m[✓]\e[0m"
 else
 	adblocker="\e[1;31m[×]\e[0m"
@@ -361,8 +365,8 @@ fi
 
 # Check Energized
 # ----------------------------------------
-	[ -f /sbin/.core/img/.core/hosts ];
-if busybox grep -q ads.nayemador.com /sbin/.core/img/.core/hosts; then
+	[ -f $HOST ];
+if busybox grep -q ads.nayemador.com $HOST; then
 	eonoff="\e[1;32m[✓]\e[0m"
 else
 	eonoff="\e[1;31m[×]\e[0m"
@@ -1372,7 +1376,7 @@ echo -e $G'[si] Submit Issue         '$N$R'[q] Quit.'$N
 		echo "Clean your current hosts to defualt."
 		echo -e $Y"$divider"$N
 		echo ""
-		rm -rf /sbin/.core/img/.core/hosts
+		truncate -s 0 $HOST
 		rm -f $FILTER
 		rm -f $DFILTER
 		touch $FILTER
