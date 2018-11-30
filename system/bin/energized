@@ -20,10 +20,6 @@ LG='\e[01;37m' > /dev/null 2>&1; # Light Gray
 N='\e[0m' > /dev/null 2>&1; # Null
 # ----------------------------------------
 
-# Aliases
-alias wget="/sbin/.core/busybox/wget"
-alias grep="/sbin/.core/busybox/grep"
-
 # Define Energized Protection Directory
 # ----------------------------------------
 DIRECTORY=/sdcard/EnergizedProtection
@@ -119,7 +115,7 @@ echo "[+] Checking Systemless Support"; sleep 0.2; clear
 HOST=/sbin/.core/img/.core/hosts
 # Check for old module-style Systemless Hosts and update path
 MAGISK_VERSION="$(/sbin/magisk -c)"
-if echo "$MAGISK_VERSION" | grep -Eq '17.[4-9]+'; then
+if echo "$MAGISK_VERSION" | /sbin/.core/busybox/grep -Eq '17.[4-9]+'; then
    HOST=/sbin/.magisk/img/hosts/system/etc/hosts
 fi
 
@@ -246,8 +242,10 @@ fi
 # ----------------------------------------
 while true
 do
-# Wget Variables
+# Aliases, Grep, Wget Variables
 # ----------------------------------------
+alias wget="/sbin/.core/busybox/wget"
+alias grep="/sbin/.core/busybox/grep"
 SHOST=$DIRECTORY/hosts.gz
 TREADME=$DIRECTORY/cache/readme
 BREADME=$DIRECTORY/cache/readme-backup
