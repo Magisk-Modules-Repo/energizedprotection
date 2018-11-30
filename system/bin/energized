@@ -20,6 +20,10 @@ LG='\e[01;37m' > /dev/null 2>&1; # Light Gray
 N='\e[0m' > /dev/null 2>&1; # Null
 # ----------------------------------------
 
+# Aliases
+alias wget="/sbin/.core/busybox/wget"
+alias grep="/sbin/.core/busybox/grep"
+
 # Define Energized Protection Directory
 # ----------------------------------------
 DIRECTORY=/sdcard/EnergizedProtection
@@ -112,11 +116,13 @@ echo "[+] Checking Systemless Support"; sleep 0.2; clear
 
 # Check if the Systemless Hosts
 # ----------------------------------------
-HOST=/sbin/.magisk/img/hosts/system/etc/hosts
-# Check for old non-module-style Systemless Hosts and update path
-if [[ "$(/sbin/magisk -c)" == 17.3* ]]; then
-	HOST=/sbin/.core/img/.core/hosts
+HOST=/sbin/.core/img/.core/hosts
+# Check for old module-style Systemless Hosts and update path
+MAGISK_VERSION="$(/sbin/magisk -c)"
+if echo "$MAGISK_VERSION" | grep -Eq '17.[4-9]+'; then
+   HOST=/sbin/.magisk/img/hosts/system/etc/hosts
 fi
+
 if [ ! -f $HOST ]; then
 clear
 	sleep 0.1
@@ -157,7 +163,7 @@ if [ -d /data/data/org.adaway/ ] || [ -d /system/app/org.adaway/ ] || [ -d /syst
     echo ''
     echo -e $Y"[+] Make sure to disable them, to avoid any issue using Energized!"$N
     sleep 2
-elif [ -d /data/data/ru.dixl0f0s.unifiedhostsmanager/ ] || [ -d /system/app/ru.dixl0f0s.unifiedhostsmanager/] || [ -d /system/priv-app/ru.dixl0f0s.unifiedhostsmanager/ ]; then
+elif [ -d /data/data/ru.dixl0f0s.unifiedhostsmanager/ ] || [ -d /system/app/ru.dixl0f0s.unifiedhostsmanager/ ] || [ -d /system/priv-app/ru.dixl0f0s.unifiedhostsmanager/ ]; then
     clear
     echo -e $R"[-] Other adblocker is detected!"$N
     sleep 0.3
@@ -240,10 +246,8 @@ fi
 # ----------------------------------------
 while true
 do
-# Aliases, Grep, Wget Variables
+# Wget Variables
 # ----------------------------------------
-alias wget="/sbin/.core/busybox/wget"
-alias grep="/sbin/.core/busybox/grep"
 SHOST=$DIRECTORY/hosts.gz
 TREADME=$DIRECTORY/cache/readme
 BREADME=$DIRECTORY/cache/readme-backup
