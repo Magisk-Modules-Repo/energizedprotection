@@ -4,10 +4,10 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-canelé-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-flake-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Last Updated -->
-    <img src="https://img.shields.io/badge/Updated-Oct 02, 2018-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Updated-Dec 01, 2018-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
   <!-- Status -->
     <img src="https://img.shields.io/badge/Status-Stable-green.svg?longCache=true&style=flat-square"
@@ -25,23 +25,23 @@
 
 <div align="center">
   <h3>
-    <a href="https://nayemador.com/energized">
+    <a href="https://energized.pro">
       Website
     </a>
     <span> | </span>
-    <a href="https://github.com/EnergizedProtection/block">
+    <a href="http://go.energized.pro/github">
       Energized Repo
     </a>
     <span> | </span>
-    <a href="https://nayemador.com/energized/check/">
+    <a href="https://energized.pro/check/">
       Check Energized
     </a>
     <span> | </span>
-    <a href="https://t.me/EnergizedProtection">
+    <a href="http://go.energized.pro/telegram">
       Telegram
     </a>
     <span> | </span>
-    <a href="link.nayemador.com/epxdamagisk">
+    <a href="http://go.energized.pro/xdamagisk">
       XDA
     </a>
   </h3>
@@ -68,7 +68,7 @@
 |:----------:|:-------:|:-----------:|
 | `1-6` | Energized Packs | Energized `main` blocking packs. |
 | `p/pl/rl/s/x` | Extensions | Porn, Porn Lite, Regional, Social and Xtreme Extensions, to apply with the `main` pack. |
-| `dp` | Delta Patchset | this will be visible, when any `delta patch` will be available to apply. |
+| `o` | Open Hosts File | Open the `hosts` file. |
 | `c` | Clear Hosts | this will clear your `hosts` file to default hosts. Also, clears filters. |
 | `w` | Apply Whitelist | use this to apply `whitelisted` domains. |
 | `iw` | Instant Whitelist | when you have to instantly whitelist `one` domain. |
@@ -76,7 +76,7 @@
 | `ib` | Instant Blacklist | when you have to instantly blacklist `one` domain. |
 | `re` | Redirect Domains | `redirect` domains in `redirectlist` to an IP. |
 | `ir` | Instant Redirect | when you have to instantly redirect `one` domain. |
-| `u` | Current|O|Update | this will update your current pack, and auto apply your whitelist and blacklist. Use this when you have to update. |
+| `u` | Update H&WB | this will update your current pack, and auto apply your whitelist and blacklist. Use this when you have to update. |
 | `ck` | Check Domain | check a domain whether it's `already` blocked or not! |
 | `bp` | Backup Hosts | makes a backup of your `current` hosts. |
 | `rs` | Restore Hosts | restores the hosts you made a `backup` before. |
@@ -86,8 +86,6 @@
 | `si` | Submit Issue | submit any issue via `web` app. |
 | `q` | Quit | `exit` the script. |
 
-#### Delta Patchset
-This is basically like incremental updates to the whitelist and blacklist. You will be able to apply latest whitelist and blacklist without waiting for full release.
 
 #### Requirements
  - Install the `Busybox For Android NDK` Busybox Module from Magisk Manager.
@@ -151,7 +149,20 @@ This is basically like incremental updates to the whitelist and blacklist. You w
 #### To Remove Whitelist/Blacklist/Redirectionlist
  - Just run hosts script and reinstall host file of choice without selecting whitelist/blacklist/redirectionlist.
 
+#### Uninstall Hosts
+ - Run Clear Hosts by typing `c` and enter. It will clear your hosts file to stock state.
+ 
 ## Changelog
+v.flake
+ - Added Magisk 17.4+ Systemless Hosts Support.
+ - Updated to `sh` Posix Compliance.
+ - Added `Open Hosts File` Option.
+ - Renamed `Current-O-Update` to `Update H&WB` (Update Hosts & Whitelist-Blacklist).
+ - Removed `Delta Patchset` Service. [DEPRECATED]
+ - Retouched UI and Rearranged few Options.
+ - Fixed Bugs.
+ - Script Optimization.
+ 
 v.canelé
  - Added Regional Extension Pack.
  - Fixed Update Checking Issue.
@@ -275,8 +286,10 @@ v1.0
  - Initial release.
  
 ## Disclaimer
-
 Energized Hosts are basically `hosts` files to block access to domains. If you don't know how it works, then please try this at your own risk. I won't be responsible for any damage or loss. Never forget to make backups.
+
+## Support
+[SUPPORT THE DEVELOPMENT](https://energized.pro/support)
 
 ## License
 [CC BY-NC-SA 4.0](https://github.com/EnergizedProtection/block/blob/master/LICENSE.md)

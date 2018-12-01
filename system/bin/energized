@@ -25,8 +25,20 @@ N='\e[0m' > /dev/null 2>&1; # Null
 DIRECTORY=/sdcard/EnergizedProtection
 
 rm -f $DIRECTORY/filter
-rm -f $DIRECTORY/deltaFilter
-rm -f $DIRECTORY/deltaReadme
+
+
+# Deletes Unnecessary stuffs
+# ----------------------------------------
+DREADME=$DIRECTORY/cache/deltaReadme
+DFILTER=$DIRECTORY/cache/deltaFilter
+
+if [ -f $DREADME ]; then
+  rm -f $DREADME
+  rm -f $DFILTER
+  rm -f $DIRECTORY/deltaFilter
+  rm -f $DIRECTORY/deltaReadme
+fi
+
 
 # Divider
 # ----------------------------------------
@@ -47,8 +59,8 @@ fi
 
 # Versioning & Date
 # ----------------------------------------
-version=$Y'canelé'$N > /dev/null 2>&1
-released=$G'Oct 02, 2018'$N > /dev/null 2>&1
+version=$Y'flake'$N > /dev/null 2>&1
+released=$G'Dec 01, 2018'$N > /dev/null 2>&1
 saythanks='https://saythanks.io/to/AdroitAdorKhan' > /dev/null 2>&1
 date=$(date "+%d.%m.%Y %H:%M:%S")
 
@@ -64,7 +76,7 @@ echo ''
 echo -e $Y'      P   R   O   T   E   C   T   I   O   N'$N 
 sleep 0.1
 echo "$divider" 
-echo "     Version: $version | Updated: $released"
+echo "      Version: $version | Updated: $released"
 sleep 0.1
 echo "$divider"
 sleep 0.1
@@ -84,20 +96,31 @@ clear
 
 # Disclaimer
 # ----------------------------------------
-echo -e "$divider"
+echo -e $R"$divider"$N
 echo -e $R'D I S C L A I M E R'$N
-echo -e "$divider"
+echo -e $R"$divider"$N
 echo -e $R"THIS IS SIMPLY A MODULE TO CHANGE YOUR SYSTEMLESS"$N
 echo -e $R"HOSTS FILE. IF YOU DON'T KNOW WHAT YOU ARE DOING,"$N
 echo -e $R"THEN PLEASE DON'T PROCEED. I WON'T BE RESPONSIBLE"$N
 echo -e $R"FOR THE MESS YOU CREATE."$N
+echo -e $R"$divider"$N
 echo ''
-echo -e $Y"ENERGIZED BASIC/PORN/ULTIMATE/UNIFIED PACKS ARE"$N
-echo -e $Y"BIGGER IN SIZE. USE THEM, IF YOUR DEVICE CAN"$N
-echo -e $Y"HANDLE THE LOAD."$N
-echo -e "$divider"
+echo -e $Y"$divider"$N
+echo -e $Y'W A R N I N G'$N
+echo -e $Y"$divider"$N
+echo -e $Y"BASIC, PORN, ULTIMATE & UNIFIED PACKS ARE BIGGER"$N
+echo -e $Y"IN SIZE. USE THEM, IF YOUR DEVICE CAN HANDLE"$N
+echo -e $Y"THE LOAD."$N
+echo -e $Y"$divider"$N
+echo ''
+echo -e $P"$divider"$N
+echo -e $P'S U P P O R T  D E V E L O P M E N T'$N
+echo -e $P"$divider"$N
+echo -e $P"IF YOU LOVED OUR WORK, CONSIDER DONATING; TO"$N
+echo -e $P"KEEP THE PROJECT ALIVE AND RUNNING."$N
+echo -e $P"$divider"$N
 curl -sf http://go.energized.pro/web > /dev/null
-sleep 4
+sleep 2
 
 # Check Systemless Support
 # ----------------------------------------
@@ -112,7 +135,14 @@ echo "[+] Checking Systemless Support"; sleep 0.2; clear
 
 # Check if the Systemless Hosts
 # ----------------------------------------
-if [ ! -f /sbin/.core/img/.core/hosts ]; then
+HOST=/sbin/.core/img/.core/hosts
+# Check for old module-style Systemless Hosts and update path
+MAGISK_VERSION="$(/sbin/magisk -c)"
+if echo "$MAGISK_VERSION" | /sbin/.core/busybox/grep -Eq '17.[4-9]+'; then
+   HOST=/sbin/.magisk/img/hosts/system/etc/hosts
+fi
+
+if [ ! -f $HOST ]; then
 clear
 	sleep 0.1
 	echo -e $R"$divider"$N
@@ -147,17 +177,29 @@ clear
 # ----------------------------------------
 if [ -d /data/data/org.adaway/ ] || [ -d /system/app/org.adaway/ ] || [ -d /system/priv-app/org.adaway/ ]; then
     clear
-    echo -e $R"[-] Other adblocker is detected!"$N
+    sleep 0.1 
+	echo -e $Y"$divider"$N
+	echo ''
+    echo -e $R"[-] Other adblocker detected!"$N
     sleep 0.3
     echo ''
-    echo -e $Y"[+] Make sure to disable them, to avoid any issue using Energized!"$N
+    echo -e $Y"[+] Disable them, to avoid any issue."$N
+    echo ''
+    sleep 0.1 
+	echo -e $Y"$divider"$N
     sleep 2
-elif [ -d /data/data/ru.dixl0f0s.unifiedhostsmanager/ ] || [ -d /system/app/ru.dixl0f0s.unifiedhostsmanager/] || [ -d /system/priv-app/ru.dixl0f0s.unifiedhostsmanager/ ]; then
+elif [ -d /data/data/ru.dixl0f0s.unifiedhostsmanager/ ] || [ -d /system/app/ru.dixl0f0s.unifiedhostsmanager/ ] || [ -d /system/priv-app/ru.dixl0f0s.unifiedhostsmanager/ ]; then
     clear
-    echo -e $R"[-] Other adblocker is detected!"$N
+    sleep 0.1 
+	echo -e $Y"$divider"$N
+	echo ''
+    echo -e $R"[-] Other adblocker detected!"$N
     sleep 0.3
     echo ''
-    echo -e $Y"[+] Make sure to disable them, to avoid any issue using Energized!"$N
+    echo -e $Y"[+] Disable them, to avoid any issue."$N
+    echo ''
+    sleep 0.1 
+	echo -e $Y"$divider"$N
     sleep 2
 else
     clear
@@ -181,13 +223,13 @@ echo "[+] Checking Energized Directory..."; sleep 0.1; clear
 # ----------------------------------------
 if [ ! -d $DIRECTORY/cache ]; then
     mkdir -p $DIRECTORY/cache;
-    echo -e "\n[+] Setting up working cache directory.\n";
+    echo "[+] Setting up working cache directory.";
 fi
 # Check Whitelist
 # ----------------------------------------
 if [ ! -f $DIRECTORY/blacklist ]; then
    clear
-   echo -e "\n[+] Creating Blacklist.\n";
+   echo "[+] Creating Blacklist.";
    touch $DIRECTORY/blacklist
    sleep 0.2
 fi
@@ -195,7 +237,7 @@ fi
 # ----------------------------------------
 if [ ! -f $DIRECTORY/whitelist ]; then
    clear
-   echo -e "[+] Creating Whitelist.";
+   echo "[+] Creating Whitelist.";
    touch $DIRECTORY/whitelist
    sleep 0.2
 fi
@@ -203,7 +245,7 @@ fi
 # ---------------------------------------- 
 if [ ! -f $DIRECTORY/redirectlist ]; then
    clear
-   echo -e "[+] Creating Redirectlist.";
+   echo "[+] Creating Redirectlist.";
    touch $DIRECTORY/redirectlist
    sleep 0.2
 fi
@@ -211,7 +253,7 @@ fi
 # ---------------------------------------- 
 if [ ! -f $DIRECTORY/cache/temp ]; then
    clear
-   echo -e "[+] Creating temporary cache...";
+   echo "[+] Creating temporary cache...";
    touch $DIRECTORY/cache/temp
    sleep 0.2
 fi
@@ -219,7 +261,7 @@ fi
 # ----------------------------------------
 if [ ! -f $DIRECTORY/cache/ptemp ]; then
    clear
-   echo -e "[+] Creating Temp...";
+   echo "[+] Creating Temp...";
    touch $DIRECTORY/cache/ptemp
    sleep 0.2
 fi
@@ -227,38 +269,10 @@ fi
 # ----------------------------------------
 if [ ! -f $DIRECTORY/cache/stemp ]; then
    clear
-   echo -e "[+] Creating Temp...";
+   echo "[+] Creating Temp...";
    touch $DIRECTORY/cache/stemp
    sleep 0.2
 fi
-# Features & Main Parts
-# ----------------------------------------
-while true
-do
-# Aliases, Grep, Wget Variables
-# ----------------------------------------
-alias wget="/sbin/.core/busybox/wget"
-alias grep="/sbin/.core/busybox/grep"
-HOST=/sbin/.core/img/.core/hosts
-SHOST=$DIRECTORY/hosts.gz
-TREADME=$DIRECTORY/cache/readme
-BREADME=$DIRECTORY/cache/readme-backup
-DREADME=$DIRECTORY/cache/deltaReadme
-FILTER=$DIRECTORY/cache/filter
-BFILTER=$DIRECTORY/cache/filter-backup
-DFILTER=$DIRECTORY/cache/deltaFilter
-BDFILTER=$DIRECTORY/cache/deltaFilter-backup
-WHITELIST=$DIRECTORY/whitelist
-BLACKLIST=$DIRECTORY/blacklist
-REDIRECTLIST=$DIRECTORY/redirectlist
-TEMP=$DIRECTORY/cache/temp
-LTEMP=$DIRECTORY/cache/ltemp
-PTEMP=$DIRECTORY/cache/ptemp
-STEMP=$DIRECTORY/cache/stemp
-HBP=$DIRECTORY/hosts-backup.gz
-curip=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} ads.nayemador.com' $HOST | sed 's/ads.nayemador.com//')
-busybox='/sbin/.core/mirror/bin/busybox' 2>/dev/null
-COUNT=1
 
 # TIP 1
 # ----------------------------------------
@@ -274,98 +288,94 @@ echo -e $W'~ NEED MORE INFO?\n- TYPE TG AND JOIN US! B)'$N
 sleep 0.1
 echo ''
 echo -e $W'~ WANT TO GO TO MAGISK DIRECTLY FROM\nTHE SCRIPT? - TYPE MAGISK & HIT ENTER! :D'$N
-sleep 1.5
+sleep 2
+
+# Features & Main Parts
+# ----------------------------------------
+while true
+do
+# Aliases, Grep, Wget Variables
+# ----------------------------------------
+alias wget="/sbin/.core/busybox/wget"
+alias grep="/sbin/.core/busybox/grep"
+SHOST=$DIRECTORY/hosts.gz
+TREADME=$DIRECTORY/cache/readme
+BREADME=$DIRECTORY/cache/readme-backup
+DREADME=$DIRECTORY/cache/deltaReadme
+FILTER=$DIRECTORY/cache/filter
+BFILTER=$DIRECTORY/cache/filter-backup
+WHITELIST=$DIRECTORY/whitelist
+BLACKLIST=$DIRECTORY/blacklist
+REDIRECTLIST=$DIRECTORY/redirectlist
+TEMP=$DIRECTORY/cache/temp
+LTEMP=$DIRECTORY/cache/ltemp
+PTEMP=$DIRECTORY/cache/ptemp
+STEMP=$DIRECTORY/cache/stemp
+HBP=$DIRECTORY/hosts-backup.gz
+curip=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} ads.nayemador.com' $HOST | sed 's/ads.nayemador.com//')
+busybox='/sbin/.core/mirror/bin/busybox' 2>/dev/null
+COUNT=1
 
 # Check Energized Pack
 # ----------------------------------------
 	[ -f /system/etc/hosts ];
-if busybox grep -q "E84S1C-P" /sbin/.core/img/.core/hosts; then
-	echeck="\e[1;32mBasic Protection\e[0m"
+if busybox grep -q "E84S1C-P" $HOST; then
+	echeck="Basic Protection"
 	autopack="basic"
-elif busybox grep -q "E5P4RK-P" /sbin/.core/img/.core/hosts; then
-	echeck="\e[1;32mSpark Protection\e[0m"
+elif busybox grep -q "E5P4RK-P" $HOST; then
+	echeck="Spark Protection"
 	autopack="spark"
-elif busybox grep -q "E8LU-P" /sbin/.core/img/.core/hosts; then
-	echeck="\e[1;32mBlu Protection\e[0m"
+elif busybox grep -q "E8LU-P" $HOST; then
+	echeck="Blu Protection"
 	autopack="blu"
-elif busybox grep -q "E8LUG0-P" /sbin/.core/img/.core/hosts; then
-	echeck="\e[1;32mBlu Go Protection\e[0m"
+elif busybox grep -q "E8LUG0-P" $HOST; then
+	echeck="Blu Go Protection"
 	autopack="bluGo"
-elif busybox grep -q "EP0R9-P" /sbin/.core/img/.core/hosts; then
-	echeck="\e[1;32mPorn Protection\e[0m"
+elif busybox grep -q "EP0R9-P" $HOST; then
+	echeck="Porn Protection"
 	autopack="porn"
-elif busybox grep -q "EUL71M473-P" /sbin/.core/img/.core/hosts; then
-	echeck="\e[1;32mUltimate Protection\e[0m"
+elif busybox grep -q "EUL71M473-P" $HOST; then
+	echeck="Ultimate Protection"
 	autopack="ultimate"
-elif busybox grep -q "EU91F13D-P" /sbin/.core/img/.core/hosts; then
-	echeck="\e[1;32mUnified Protection\e[0m"
+elif busybox grep -q "EU91F13D-P" $HOST; then
+	echeck="Unified Protection"
 	autopack="unified"
 else
-	echeck="\e[1;31mNo Pack Detected!\e[0m"
+	echeck="No Pack Detected!"
 	autopack="null"
-fi
-
-# Check Delta Update
-# ----------------------------------------
-if [ "$autopack" != "null" ]; then
-clear
-echo "[+] Checking Delta-Patch"; sleep 0.1; clear
-echo "[+] Checking Delta-Patch."; sleep 0.15; clear
-echo "[+] Checking Delta-Patch.."; sleep 0.18; clear
-echo "[+] Checking Delta-Patch..."; sleep 0.2;
-
-wget --no-check-certificate -q -O $DREADME https://raw.githubusercontent.com/AdroitAdorKhan/Energized/master/core/delta-patchset/blacklist
-grep -q "#" $DREADME
-if [ -f $DFILTER ]; then
-	DCURRENT=$(grep "#" $DREADME)
-	DUPDATED=$(sed '1q;d' $DFILTER)
-	if [ "$DUPDATED" != "$DCURRENT" ]; then
-	   if [ "$(grep "ads.nayemador.com" $HOST)" ]; then
-	    deltapatch=$G'[dp] DELTA PATCH'$N
-	   fi
-	else
-	    deltapatch=$W''$N
-	fi
-else
-	touch $DFILTER
-fi
-clear
-echo "[+] Checking Delta-Patch.."; sleep 0.18; clear
-echo "[+] Checking Delta-Patch."; sleep 0.15; clear
-echo "[+] Checking Delta-Patch"; sleep 0.1; clear
 fi
 
 # Check Root
 # ----------------------------------------
 id="$(id)"; id="${id#*=}"; id="${id%%\(*}"; id="${id%% *}"
 if [ "$id" != "0" ] && [ "$id" != "root" ]; then
-    root="\e[1;31m[×]\e[0m";
+    root="[×]"
 else
-    root="\e[1;32m[✓]\e[0m";
-fi;
+    root=$G"[✓]"$N
+fi
 
 # Other Variables
 # ----------------------------------------
-update="\e[1;36m`busybox date -r /sbin/.core/img/.core/hosts`\e[0m"
-bboxname="\e[1;36m`busybox | head -1 | cut -f 2 -d ' ' | grep -w "osm0sis"`\e[0m"
-size="\e[1;35m`ls -lah /sbin/.core/img/.core/hosts | awk '{print $5}'`\e[0m"
+update=$C"`date -r $HOST "+%a, %d %b %y %H:%M:%S"`"$N
+bboxname=$C"`busybox | head -1 | cut -f 2 -d ' ' | grep -w "osm0sis"`"$N
+size=$P"`ls -lah $HOST | awk '{print $5}'`"$N
 
 # Check Adblocker
 # ----------------------------------------
-   [ -f /sbin/.core/img/.core/hosts ];
-if busybox grep -q ads /sbin/.core/img/.core/hosts; then
-	adblocker="\e[1;32m[✓]\e[0m"
+   [ -f $HOST ];
+if busybox grep -q ads $HOST; then
+	adblocker=$G"[✓]"$N
 else
-	adblocker="\e[1;31m[×]\e[0m"
+	adblocker="[×]"
 fi
 
 # Check Energized
 # ----------------------------------------
-	[ -f /sbin/.core/img/.core/hosts ];
-if busybox grep -q ads.nayemador.com /sbin/.core/img/.core/hosts; then
-	eonoff="\e[1;32m[✓]\e[0m"
+	[ -f $HOST ];
+if busybox grep -q watchdog.energized.pro $HOST; then
+	eonoff=$G"[✓]"$N
 else
-	eonoff="\e[1;31m[×]\e[0m"
+	eonoff=$R"[×]"$N
 fi
 
 # TIP 2
@@ -375,14 +385,17 @@ echo -e $Y"$divider"$N
 echo -e $Y"T I P s"$N
 echo -e $Y"$divider"$N
 echo ''
-echo -e $W'~ TO DISABLE, JUST TOGGLE THE SYSTEMLESS HOSTS\nIN MAGISK MANAGER.'$N
+echo -e $W'~ TO DISABLE, JUST TOGGLE THE SYSTEMLESS HOSTS\nIN MAGISK MANAGER. (≤17.3)'$N
 sleep 0.1
 echo ''
 echo -e $W'~ GOT ANY ISSUE?\n - SUBMIT ISSUE VIA WEB APP.'$N
 sleep 0.1
 echo ''
+echo -e $W'~ WANT TO UNINSTALL?\n - TYPE C & DONE!(≥17.4)'$N
+sleep 0.1
+echo ''
 echo -e $W'~ FEELING THANKFUL? ^_^\n - TYPE THX & YOU ARE MOST WELCOME! <3'$N
-sleep 1.6
+sleep 1.5
 
 # Check Hosts Update
 # ----------------------------------------
@@ -400,11 +413,11 @@ if [ -f $FILTER ]; then
 	CURRENT=$(grep "Version Code" $TREADME)
 	LAST_UPDATED=$(sed '1q;d' $FILTER)
 	if [ "$LAST_UPDATED" != "$CURRENT" ]; then
-	  if [ "$(grep "ads.nayemador.com" $HOST)" ]; then
+	  if [ "$(grep "watchdog.energized.pro" $HOST)" ]; then
 	    eupdate=$G'[ϟ] UPDATE AVAILABLE!'$N
 	  fi
 	else
-		eupdate=$C'[×] NO NEW UPDATE!'$N
+		eupdate=$W'[✓] UP-TO-DATE!'$N
 	fi
 else
 	touch $FILTER
@@ -427,6 +440,7 @@ INPUT=$(eval "echo \$$COUNT")
 		fi
 # Starts Screen Echos
 # ----------------------------------------
+clear
 echo ''
 echo -e $Y"      _____  _________  _____________  _______  "$N; sleep 0.1;
 echo -e $Y"     / __/ |/ / __/ _ \/ ___/  _/_  / / __/ _ \ "$N; sleep 0.1;
@@ -445,7 +459,7 @@ echo -e $Y"$divider"$N
 sleep 0.1
 echo -e $root$W" ROOT             "$N$W"[+] BUSYBOX: $bboxname"$N
 sleep 0.1
-echo -e $eonoff$W" ENERGIZED        "$N$W"[+] PACK: $echeck"$N
+echo -e $eonoff$W" ENERGIZED        "$N$W"[+] PACK: "$N$B"$echeck"$N
 sleep 0.1
 echo -e $adblocker$W" ADBLOCKING       "$N$W"[+] SIZE: $size"$N
 sleep 0.1
@@ -465,7 +479,7 @@ echo -e $W"[2] Blu Go        [4] Basic        [6] Unified"$N
 sleep 0.1
 echo -e $Y"$divider"$N
 sleep 0.1
-echo -e $Y"ϟ E X T E N S I O N s -   "$N$deltapatch
+echo -e $Y"ϟ E X T E N S I O N s -"$N
 sleep 0.1
 echo -e $Y"$divider"$N
 sleep 0.1
@@ -481,7 +495,7 @@ echo -e $Y'ϟ O P T I O N s -'$N
 sleep 0.1
 echo -e $Y"$divider"$N
 sleep 0.1
-echo -e $W'[c] Clear Hosts           [ip] Redirection IP'$N
+echo -e $W'[o] Open Hosts File       [ip] Redirection IP'$N
 sleep 0.1
 echo -e $W'[w] Apply Whitelist       [iw] Instant Whitelist'$N
 sleep 0.1
@@ -497,16 +511,17 @@ echo -e $Y'ϟ M I S C -'$N
 sleep 0.1
 echo -e $Y"$divider"$N
 sleep 0.1
-echo -e $W'[bp] Backup Hosts         [rs] Restore Hosts'$N
+echo -e $W'[bp] Backup       [rs] Restore        [ck] Check'$N
 sleep 0.1
-echo -e $W'[i] Web & Info            [in] Instructions'$N
+echo -e $W'[u] Update H&WB   [in] Instructions   [i] Info'$N
 sleep 0.1
-echo -e $W'[u] Current-O-Update      [ck] Check Domain'$N
+echo -e $R'[c] Clear Hosts   '$N$G'[si] Submit Issue   '$N$R'[q] Quit.'$N
 sleep 0.1
-echo -e $G'[si] Submit Issue         '$N$R'[q] Quit.'$N
+echo -e $Y"$divider"$N
+sleep 0.1
 # Read Input
 # ----------------------------------------
-		echo -n "\033[33;1m[+] Your Input\033[0m - "
+		echo -n $Y"[+] Your Input - "$N
 		read -r INPUT
 		if [ "$INPUT" != "m" ]; then
 			INPUT="$(echo "$INPUT" | sed 's/m//g')"
@@ -801,7 +816,7 @@ echo -e $G'[si] Submit Issue         '$N$R'[q] Quit.'$N
 		  sleep 0.1
 		fi
 		;;
-		# Current-O-Update
+		# Update H&WB
 		# ----------------------------------------
 		u) clear
 		if [ "$autopack" == "null" ]; then
@@ -838,6 +853,7 @@ echo -e $G'[si] Submit Issue         '$N$R'[q] Quit.'$N
 				sleep 2
 		    else
 				if [ -f "$HOST" ]; then
+				 if [ ! -s $WHITELIST ]; then
 					echo -e $G'[+] Whitelist Found!'$N
 					echo -e $W'[+] Applying Whitelist'$N
 					sleep 0.3
@@ -856,6 +872,7 @@ echo -e $G'[si] Submit Issue         '$N$R'[q] Quit.'$N
 					echo -e $G'[+] Done'$N
 					echo -e $W'[+] Make sure to reboot once after applying.'$N
 					sleep 1
+				 fi
 				else
 					echo ""
 					echo -e $R'[-] No hosts file detected!'$N
@@ -1288,13 +1305,40 @@ echo -e $G'[si] Submit Issue         '$N$R'[q] Quit.'$N
 		# ----------------------------------------
 		magisk|Magisk|MAGISK) am start -n com.topjohnwu.magisk/com.topjohnwu.magisk.MainActivity
 		;;
+		# Read Hosts File
+		# ----------------------------------------
+		o|O|oh|OH|openhosts|OpenHosts|hosts) clear
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo -e $Y'ϟ O P E N  H O S T S  F I L E'$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.1
+		echo "Open the hosts file."
+		echo -e $Y"$divider"$N
+		echo ''
+		head -n 30 $HOST
+		echo ''
+		echo -n -e $W'[+] Open Hosts File?'$N $Y'[Y/N]'$N: $G"$answer"$N
+		read answer
+		if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
+		  am start -a android.intent.action.VIEW -d file://$HOST -t text/plain
+		else
+		  clear
+		  echo -n -e $W'[+] RETURNING '$N
+		  echo -n -e $Y'•'$N; sleep 0.2;
+		  echo -n -e $Y'•'$N; sleep 0.3;
+		  echo -n -e $Y'•'$N; sleep 0.2;
+		  sleep 0.3
+		fi
+		;;
 		# Info
 		# ----------------------------------------
 		i|info|Info|INFO) am start -a android.intent.action.VIEW -d "https://energized.pro"
 		;;
 		# Instructions
 		# ----------------------------------------
-		in|instructions|instruction|IN|INSTRUCTION|INSTRUCTIONS) am start -a android.intent.action.VIEW -d "http://link.nayemador.com/epmagiskusage"
+		g|G|Guide|guide|in|instructions|instruction|IN|INSTRUCTION|INSTRUCTIONS) am start -a android.intent.action.VIEW -d "http://link.nayemador.com/epmagiskusage"
 		;;
 		# Submit Issue
 		# ----------------------------------------
@@ -1332,7 +1376,6 @@ echo -e $G'[si] Submit Issue         '$N$R'[q] Quit.'$N
 		echo -e $G'[+] Backup In Process...'$N
 		gzip -9 -c $HOST > $HBP
 		cp $FILTER $BFILTER
-		cp $DFILTER $BDFILTER
 		sleep 0.5
 		echo -e $W'[+] Done!'$N
 		sleep 0.5
@@ -1352,7 +1395,6 @@ echo -e $G'[si] Submit Issue         '$N$R'[q] Quit.'$N
 		echo -e $G'[+] Restoring...'$N
 		gzip -d -c $HBP > $HOST
 		cp $BFILTER $FILTER
-		cp $BDFILTER $DFILTER
 		sleep 0.5
 		echo -e $W'[+] Done!'$N
 		sleep 1.3
@@ -1369,94 +1411,20 @@ echo -e $G'[si] Submit Issue         '$N$R'[q] Quit.'$N
 		sleep 0.1
 		echo -e $Y"$divider"$N
 		sleep 0.1
-		echo "Clean your current hosts to defualt."
+		echo "Clean your current hosts to default."
 		echo -e $Y"$divider"$N
 		echo ""
-		rm -rf /sbin/.core/img/.core/hosts
+		truncate -s 0 $HOST
 		rm -f $FILTER
-		rm -f $DFILTER
 		touch $FILTER
-		touch $DFILTER
 		echo "[+] Clearing Hosts File..."
 		sleep 0.3
-		echo -e "# Energized Protection - https://energized.pro\n# Let's make an annoyance free better open internet, altogether!\127.0.0.1 localhost" >> $HOST
+		echo -e "# Energized Protection - https://energized.pro\n# Let's make an annoyance free better open internet, altogether!\n\n127.0.0.1 localhost\n::1" >> $HOST
         echo "[+] Done Clearing Hosts!"
         echo "[+] Returning..."
         sleep 2
+        clear
         ;;
-		# Delta Patch
-		# ----------------------------------------
-		dp|deltapatch) clear
-		DCURRENT=$(grep "#" $DREADME)
-		DUPDATED=$(sed '1q;d' $DFILTER)
-		if [ "$DUPDATED" != "$DCURRENT" ]; then
-		echo -e $Y"$divider"$N
-		echo -e $Y'ϟ D E L T A  P A T C H S E T'$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo "Apply Delta Blacklist and Whitelist."
-		echo -e $Y"$divider"$N
-		echo ""
-		# Blacklist
-		echo -e $W'[+] Downloading Blacklist Patch'$N
-		wget --no-check-certificate -O $LTEMP https://raw.githubusercontent.com/AdroitAdorKhan/Energized/master/core/delta-patchset/blacklist
-		grep "#" $LTEMP > $DFILTER
-		sed -i '/^#/d' $LTEMP
-		echo -e $W'[+] Applying Delta Blacklist to current hosts.'$N
-		sleep 0.1
-		echo -e $W'[+] It may take a while, depending on hosts size.'$N
-		sleep 0.1
-		echo -e $C'[+] Blacklist Log -'$N
-		sleep 0.1
-		rm -f $TEMP $STEMP $PTEMP
-		sed 's/^ *//; s/ *$//; /^$/d; /^#/ d' $LTEMP > $TEMP
-		sort -u $TEMP > $LTEMP
-		NEWFILTERS="$(cat $LTEMP)"
-		echo -e "\n# Delta Patch - $date" >> $HOST
-		printf '%s\n' "$NEWFILTERS" | while IFS= read -r linenew
-		do
-			if [ ! "$(grep -x "$curip$linenew" $HOST)" ]; then
-				echo -e "$curip$linenew" >> $HOST
-				echo -e $Y"$linenew "$N$W"- blacklisted."$N
-			else
-				echo -e $R"$linenew "$N$W"- already blacklisted."$N
-			fi
-		done
-		rm -f $TEMP $STEMP $PTEMP $LTEMP
-		echo -e $G'[+] Done'$N
-		echo ''
-		sleep 0.5
-		# Whitelist
-		echo -e $W'[+] Downloading Whitelist Patch'$N
-		wget --no-check-certificate -O $STEMP https://raw.githubusercontent.com/AdroitAdorKhan/Energized/master/core/delta-patchset/whitelist
-		echo -e $W'[+] Applying Delta Whitelist to current hosts.'$N
-		sleep 0.1
-		echo -e $W'[+] It may take a while, depending on hosts size.'$N
-		sleep 0.1
-		NEWFILTERS="$(cat $STEMP)"
-		printf '%s\n' "$NEWFILTERS" | while IFS= read -r linenew
-		do
-			if [ ! "$(grep -x "$curip$linenew" $HOST)" ]; then
-				echo -e $G"$linenew "$N$W"- already whitelisted."$N
-			else
-				echo -e $Y"$linenew "$N$W"- whitelisted."$N
-			fi
-		done
-		grep -Fvf $STEMP $HOST > $TEMP
-		rm -f $HOST
-		mv -f $TEMP $HOST
-		rm -f $TEMP $STEMP
-		echo -e $G'[+] Done!'$N
-		echo -e $W'[+] Make sure to reboot once after applying.'$N
-		sleep 0.5
-		echo "[+] Returning..."
-		sleep 2
-		else
-		echo -e $Y"[+] No New Patch is Available!"$N
-		sleep 2
-		fi
-		;;
 		# Redirection IP
 		# ----------------------------------------
 		ip) clear
@@ -1579,14 +1547,13 @@ echo -e $G'[si] Submit Issue         '$N$R'[q] Quit.'$N
 		echo -e $W'[+] Make sure to reboot once after applying.'$N
 		sleep 0.5
 		echo -e $Y"$divider"$N
-		grep "Version Code" $TREADME > $FILTER
+		echo -e $W'[+] Make sure to reboot once after applying.'$N
 		sleep 0.5
-		CURRENT=$(grep "Version Code" $TREADME)
-		LAST_UPDATED=$(sed '1q;d' $FILTER)
-		if [ "$LAST_UPDATED" != "$CURRENT" ]; then
-		rm -f $DFILTER
-		touch $DFILTER
-		fi
+		echo -e $Y"$divider"$N
+		grep "Version Code" $TREADME > $FILTER
+		sleep 0.1
+		echo -e $Y'[+] If you loved our work, consider donating.'$N
+		sleep 0.5
 		echo -e $W'[+] Returning...'$N
 		sleep 0.5
 		clear
@@ -1600,6 +1567,21 @@ rm -f $TREADME
 echo "[+] Done!"
 # Script Ends
 # ----------------------------------------
+clear 
+sleep 0.3
+echo -e $Y"$divider"$N
+sleep 0.1
+echo -e $Y'--------------- T H A N K   Y O U ---------------'$N
+sleep 0.1
+echo -e $Y"$divider"$N
+echo ''
+sleep 0.1
+echo -e $Y'           Avinash - @AvinashReddy3108'$N
+sleep 0.1
+echo -e $Y'           Jason Y - @jasonsyoung'$N
+sleep 0.1
+echo -e $Y'           Romain. - @romain280'$N
+sleep 1.5
 clear 
 sleep 0.3
 echo -e $Y"$divider"$N
