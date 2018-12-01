@@ -25,11 +25,11 @@
 
 <div align="center">
   <h3>
-    <a href="https://nayemador.com/energized">
+    <a href="https://energized.pro">
       Website
     </a>
     <span> | </span>
-    <a href="go.energized.pro/github">
+    <a href="http://go.energized.pro/github">
       Energized Repo
     </a>
     <span> | </span>
@@ -41,7 +41,7 @@
       Telegram
     </a>
     <span> | </span>
-    <a href="go.energized.pro/xdamagisk">
+    <a href="http://go.energized.pro/xdamagisk">
       XDA
     </a>
   </h3>
