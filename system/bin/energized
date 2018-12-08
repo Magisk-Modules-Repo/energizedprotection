@@ -167,7 +167,7 @@ clear
 	sleep 0.1
 	echo -e $G"[+] Enable it in 'Magisk Manager > Settings > Systemless Hosts'"$N
 	sleep 0.1
-	echo -e $Y"[+] To enable just tap the 'Systemless Hosts'.
+	echo -e $Y"[+] To enable just tap the 'Systemless Hosts'."$N
 	sleep 0.1
 	echo -e $W"[+] Re-run script after enabling Systemless Hosts!"$N
 	sleep 0.2
