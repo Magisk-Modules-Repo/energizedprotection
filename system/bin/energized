@@ -59,8 +59,8 @@ fi
 
 # Versioning & Date
 # ----------------------------------------
-version=$Y'flake'$N > /dev/null 2>&1
-released=$G'Dec 01, 2018'$N > /dev/null 2>&1
+version=$Y'flaky'$N > /dev/null 2>&1
+released=$G'Dec 09, 2018'$N > /dev/null 2>&1
 saythanks='https://saythanks.io/to/AdroitAdorKhan' > /dev/null 2>&1
 date=$(date "+%d.%m.%Y %H:%M:%S")
 
@@ -135,13 +135,28 @@ echo "[+] Checking Systemless Support"; sleep 0.2; clear
 
 # Check if the Systemless Hosts
 # ----------------------------------------
-HOST=/sbin/.core/img/.core/hosts
-# Check for old module-style Systemless Hosts and update path
 MAGISK_VERSION="$(/sbin/magisk -c)"
-if echo "$MAGISK_VERSION" | /sbin/.core/busybox/grep -Eq '17.[4-9]+'; then
-   HOST=/sbin/.magisk/img/hosts/system/etc/hosts
-fi
-
+case "$MAGISK_VERSION" in
+'15.'[1-9]*) # Version 15.1 - 15.9
+    HOST=/sbin/.core/img/.core/hosts
+;;
+'16.'[1-9]*) # Version 16.1 - 16.9
+    HOST=/sbin/.core/img/.core/hosts
+;;
+'17.'[1-3]*) # Version 17.1 - 17.3
+    HOST=/sbin/.core/img/.core/hosts
+;;
+'17.'[4-9]*) # Version 17.4 - 17.9
+    HOST=/sbin/.magisk/img/hosts/system/etc/hosts
+;;
+'18.'[0-9]*) # Version 18.x
+    HOST=/sbin/.magisk/img/hosts/system/etc/hosts
+;;    
+*)
+    echo "Unknown version: $1"
+;;
+esac
+# Echo Results
 if [ ! -f $HOST ]; then
 clear
 	sleep 0.1
@@ -430,6 +445,7 @@ echo "[+] Checking Update"; sleep 0.1; clear
 else
 	eupdate="[+] APPLY PACK FIRST!"
 fi
+
 # Input
 # ----------------------------------------
 INPUT=$(eval "echo \$$COUNT")
@@ -570,7 +586,7 @@ sleep 0.1
 		sleep 0.1
 		echo -n -e $W'[+] PROCEED?'$N $Y'[Y/N]'$N: $G"$answer"$N
 		read answer
-		if [ "$answer" == "Y" ]; then
+		if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
 		  echo "[+] Applying Energized Basic..."
 		  DIR="master/basic/formats/hosts.gz"
 		  clear
@@ -605,7 +621,7 @@ sleep 0.1
 		sleep 0.1
 		echo -n -e $W'[+] PROCEED?'$N $Y'[Y/N]'$N: $G"$answer"$N
 		read answer
-		if [ "$answer" == "Y" ]; then
+		if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
 		  echo "[+] Applying Energized Ultimate..."
 		  DIR="master/ultimate/formats/hosts.gz"
 		  clear
@@ -640,7 +656,7 @@ sleep 0.1
 		sleep 0.1
 		echo -n -e $W'[+] PROCEED?'$N $Y'[Y/N]'$N: $G"$answer"$N
 		read answer
-		if [ "$answer" == "Y" ]; then
+		if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
 		  echo "[+] Applying Energized Unified..."
 		  DIR="master/unified/formats/hosts.gz"
 		  clear
@@ -676,7 +692,7 @@ sleep 0.1
 		sleep 0.1
 		echo -n -e $W'[+] PROCEED?'$N $Y'[Y/N]'$N: $G"$answer"$N
 		read answer
-		if [ "$answer" == "Y" ]; then
+		if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
 		  clear
 		  echo -e $Y"$divider"$N
 		  echo -e $Y'[+] PORN HOSTS EXTENSION'$N
@@ -787,7 +803,7 @@ sleep 0.1
 		sleep 0.1
 		echo -n -e $W'[+] PROCEED?'$N $Y'[Y/N]'$N: $G"$answer"$N
 		read answer
-		if [ "$answer" == "Y" ]; then
+		if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
 		  clear
 		  echo -e $Y"$divider"$N
 		  echo -e $Y'[+] XTREME HOSTS EXTENSION'$N
@@ -1127,7 +1143,7 @@ sleep 0.1
 		  echo -e $W'[+] Your Domain(s)'$N $Y"$ib"$N
 		  echo -n -e $W'[+] Are you sure?'$N $Y'[Y/N]'$N: $G"$answer"$N
 		  read answer
-		  if [ "$answer" == "Y" ]; then
+		  if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
 		    echo "[+] Applying $ib as blacklist..."
 		    echo -e "\n# Instant Blacklist Applied on - $date" >> $HOST
 		    echo -e "$curip$ib" >> $HOST
@@ -1196,7 +1212,7 @@ sleep 0.1
 					echo -e $W'[+] Your IP:'$N $Y"$ip"$N
 					echo -n -e $W'[+] Are you sure?'$N $Y'[Y/N]'$N: $G"$answer"$N
 					read answer
-					if [ "$answer" == "Y" ]; then
+					if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
 						echo -e $W'[+] Redirecting...'$N
 						sleep 0.1
 						echo -e $W'[+] May take a while, depending on hosts size.'$N
@@ -1260,7 +1276,7 @@ sleep 0.1
 		echo -e $W'[+] Your Domain'$N $Y"$iw"$N
 		echo -n -e $W'[+] Are you sure?'$N $Y'[Y/N]'$N: $G"$answer"$N
 		read answer
-		if [ "$answer" == "Y" ]; then
+		if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
 		  grep -Fvx "$curip$iw" $HOST > $TEMP
 		  rm -f $HOST
 		  mv -f $TEMP $HOST
@@ -1269,7 +1285,7 @@ sleep 0.1
 		  echo -e $W'[+] Your IP'$N $Y"$ip"$N
 		  echo -n -e $W'[+] Are you sure?'$N $Y'[Y/N]'$N: $G"$answer"$N
 		  read answer
-		  if [ "$answer" == "Y" ]; then
+		  if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
 		    echo -e "\n$ip $iw" >> $HOST
 		    echo -e "\n# Applied on - $date" >> $REDIRECTLIST
 		    echo "$ip $iw" >> $REDIRECTLIST
@@ -1441,7 +1457,7 @@ sleep 0.1
 		echo -e $W'[+] Your Redirection IP'$N $Y"$ip"$N
 		echo -n -e $W'[+] Are you sure?'$N $Y'[Y/N]'$N: $G"$answer"$N
 		read answer
-		if [ "$answer" == "Y" ]; then
+		if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
 		  echo "[+] Adding $ip as redirection IP..."
 		  rm -f $TEMP $STEMP $PTEMP
 		  sed -n '1,79p' $HOST > $PTEMP
@@ -1544,16 +1560,21 @@ sleep 0.1
 		rm -f $SHOST
 		echo -e $G'[+] Done Applying!'$N
 		sleep 0.5
-		echo -e $W'[+] Make sure to reboot once after applying.'$N
-		sleep 0.5
 		echo -e $Y"$divider"$N
-		echo -e $W'[+] Make sure to reboot once after applying.'$N
-		sleep 0.5
-		echo -e $Y"$divider"$N
-		grep "Version Code" $TREADME > $FILTER
 		sleep 0.1
+		echo -e $W'[+] Make sure to reboot once after applying.'$N
+		sleep 0.1
+		echo -e $Y"$divider"$N
+		sleep 0.3
 		echo -e $Y'[+] If you loved our work, consider donating.'$N
-		sleep 0.5
+		# Checks if an update is available after applying 
+		if [ ! -s $FILTER ]; then
+		  wget --no-check-certificate -q -O $TREADME https://raw.githubusercontent.com/EnergizedProtection/block/master/VERSION.md
+		  grep -q "Version Code" $TREADME
+		  cp $TREADME $BREADME
+		  grep "Version Code" $TREADME > $FILTER 2>/dev/null
+		fi
+		sleep 2
 		echo -e $W'[+] Returning...'$N
 		sleep 0.5
 		clear
@@ -1580,7 +1601,7 @@ echo -e $Y'           Avinash - @AvinashReddy3108'$N
 sleep 0.1
 echo -e $Y'           Jason Y - @jasonsyoung'$N
 sleep 0.1
-echo -e $Y'           Romain. - @romain280'$N
+echo -e $Y'           Romain. - @Rom'$N
 sleep 1.5
 clear 
 sleep 0.3
