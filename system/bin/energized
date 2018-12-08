@@ -135,7 +135,7 @@ echo "[+] Checking Systemless Support"; sleep 0.2; clear
 
 # Check if the Systemless Hosts
 # ----------------------------------------
-MAGISK_VERSION="$(/sbin/magisk -c)"
+MAGISK_VERSION="$(/sbin/magisk -c | /sbin/.core/busybox/grep -Eo '[1-9]{2}\.[0-9]+')"
 case "$MAGISK_VERSION" in
 '15.'[1-9]*) # Version 15.1 - 15.9
     HOST=/sbin/.core/img/.core/hosts
@@ -166,6 +166,8 @@ clear
 	echo -e $R"[-] Systemless Hosts isn't enabled!"$N
 	sleep 0.1
 	echo -e $G"[+] Enable it in 'Magisk Manager > Settings > Systemless Hosts'"$N
+	sleep 0.1
+	echo -e $Y"[+] To enable just tap the 'Systemless Hosts'.
 	sleep 0.1
 	echo -e $W"[+] Re-run script after enabling Systemless Hosts!"$N
 	sleep 0.2
