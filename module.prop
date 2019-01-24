@@ -1,7 +1,7 @@
 id=energizedprotection
 name=Energized Protection
-version=flake
-versionCode=90
+version=flaky
+versionCode=93
 author=AdroitAdorKhan
 description=Let's make an annoyance free better open internet, altogether! https://energized.pro
 minMagisk=1500
