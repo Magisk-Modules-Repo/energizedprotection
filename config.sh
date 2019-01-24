@@ -108,4 +108,5 @@ set_permissions() {
   # set_perm  $MODPATH/system/bin/dex2oat         0       2000    0755         u:object_r:dex2oat_exec:s0
   # set_perm  $MODPATH/system/lib/libart.so       0       0       0644
   set_perm  $MODPATH/system/bin/energized  0  0  0777
+  set_perm  $MODPATH/busybox_check.sh  0  0  0777
 }
