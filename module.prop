@@ -1,7 +1,6 @@
 id=energizedprotection
 name=Energized Protection
 version=flaky
-versionCode=93
-author=AdroitAdorKhan
+versionCode=94
+author=AdroitAdorKhan, Rom
 description=Let's make an annoyance free better open internet, altogether! https://energized.pro
-minMagisk=1500
