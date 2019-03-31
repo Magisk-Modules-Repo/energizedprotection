@@ -152,6 +152,10 @@
  - Run Clear Hosts by typing `c` and enter. It will clear your hosts file to stock state.
  
 ## Changelog
+03/31/2019
+ - Magisk 19.0 compatibility added
+ - Busybox Magisk module check added to prevent grep & wget error(s) message(s)
+
 v.flaky
  - Added Magisk 18.0+ Systemless Hosts Support.
  - Fixed Update Checking Issue.
