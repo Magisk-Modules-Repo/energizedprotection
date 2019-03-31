@@ -135,27 +135,48 @@ echo "[+] Checking Systemless Support"; sleep 0.2; clear
 
 # Check if the Systemless Hosts
 # ----------------------------------------
-MAGISK_VERSION="$(/sbin/magisk -c | /sbin/.core/busybox/grep -Eo '[1-9]{2}\.[0-9]+')"
+magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
+alias wget=$(ls /sbin/.core/busybox/wget || ls /sbin/.magisk/busybox/wget) 2>/dev/null;
+alias grep=$(ls /sbin/.core/busybox/grep || ls /sbin/.magisk/busybox/grep) 2>/dev/null;
+MAGISK_VERSION=$($magisk -c | grep -Eo '[1-9]{2}\.[0-9]+')
 case "$MAGISK_VERSION" in
 '15.'[1-9]*) # Version 15.1 - 15.9
     HOST=/sbin/.core/img/.core/hosts
+	BBOX_PATH=/sbin/.core/img/busybox-ndk
 ;;
 '16.'[1-9]*) # Version 16.1 - 16.9
     HOST=/sbin/.core/img/.core/hosts
+	BBOX_PATH=/sbin/.core/img/busybox-ndk
 ;;
 '17.'[1-3]*) # Version 17.1 - 17.3
     HOST=/sbin/.core/img/.core/hosts
+	BBOX_PATH=/sbin/.core/img/busybox-ndk
 ;;
 '17.'[4-9]*) # Version 17.4 - 17.9
     HOST=/sbin/.magisk/img/hosts/system/etc/hosts
+	BBOX_PATH=/sbin/.magisk/img/busybox-ndk
 ;;
 '18.'[0-9]*) # Version 18.x
     HOST=/sbin/.magisk/img/hosts/system/etc/hosts
-;;    
+	BBOX_PATH=/sbin/.magisk/img/busybox-ndk
+;;
+'19.'[0]*) # Version 19
+	HOST=/data/adb/modules/hosts/system/etc/hosts
+	BBOX_PATH=/data/adb/modules/busybox-ndk
+;;
 *)
     echo "Unknown version: $1"
 ;;
 esac
+
+# Busybox Check
+# ----------------------------------------
+clear
+if [ ! -e "$BBOX_PATH" ]; then
+	echo -n -e $R "\n\n=> 'Busybox for Android NDK' Magisk module isn't installed!\n=> You need to install it and reboot please.\n\nNB: You can download and install it directly from Download section.\n\n"
+	exit
+fi
+
 # Echo Results
 if [ ! -f $HOST ]; then
 clear
@@ -313,8 +334,6 @@ while true
 do
 # Aliases, Grep, Wget Variables
 # ----------------------------------------
-alias wget="/sbin/.core/busybox/wget"
-alias grep="/sbin/.core/busybox/grep"
 SHOST=$DIRECTORY/hosts.gz
 TREADME=$DIRECTORY/cache/readme
 BREADME=$DIRECTORY/cache/readme-backup
@@ -330,31 +349,31 @@ PTEMP=$DIRECTORY/cache/ptemp
 STEMP=$DIRECTORY/cache/stemp
 HBP=$DIRECTORY/hosts-backup.gz
 curip=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} ads.nayemador.com' $HOST | sed 's/ads.nayemador.com//')
-busybox='/sbin/.core/mirror/bin/busybox' 2>/dev/null
+busybox=$(ls $BBOX_PATH/bin/busybox || ls $BBOX_PATH/xbin/busybox) 2>/dev/null
 COUNT=1
 
 # Check Energized Pack
 # ----------------------------------------
 	[ -f /system/etc/hosts ];
-if busybox grep -q "E84S1C-P" $HOST; then
+if grep -q "E84S1C-P" $HOST; then
 	echeck="Basic Protection"
 	autopack="basic"
-elif busybox grep -q "E5P4RK-P" $HOST; then
+elif grep -q "E5P4RK-P" $HOST; then
 	echeck="Spark Protection"
 	autopack="spark"
-elif busybox grep -q "E8LU-P" $HOST; then
+elif grep -q "E8LU-P" $HOST; then
 	echeck="Blu Protection"
 	autopack="blu"
-elif busybox grep -q "E8LUG0-P" $HOST; then
+elif grep -q "E8LUG0-P" $HOST; then
 	echeck="Blu Go Protection"
 	autopack="bluGo"
-elif busybox grep -q "EP0R9-P" $HOST; then
+elif grep -q "EP0R9-P" $HOST; then
 	echeck="Porn Protection"
 	autopack="porn"
-elif busybox grep -q "EUL71M473-P" $HOST; then
+elif grep -q "EUL71M473-P" $HOST; then
 	echeck="Ultimate Protection"
 	autopack="ultimate"
-elif busybox grep -q "EU91F13D-P" $HOST; then
+elif grep -q "EU91F13D-P" $HOST; then
 	echeck="Unified Protection"
 	autopack="unified"
 else
@@ -374,13 +393,13 @@ fi
 # Other Variables
 # ----------------------------------------
 update=$C"`date -r $HOST "+%a, %d %b %y %H:%M:%S"`"$N
-bboxname=$C"`busybox | head -1 | cut -f 2 -d ' ' | grep -w "osm0sis"`"$N
+bboxname=$C"`$busybox | head -1 | cut -f 2 -d ' ' | grep -w "osm0sis"`"$N
 size=$P"`ls -lah $HOST | awk '{print $5}'`"$N
 
 # Check Adblocker
 # ----------------------------------------
    [ -f $HOST ];
-if busybox grep -q ads $HOST; then
+if grep -q ads $HOST; then
 	adblocker=$G"[✓]"$N
 else
 	adblocker="[×]"
@@ -389,7 +408,7 @@ fi
 # Check Energized
 # ----------------------------------------
 	[ -f $HOST ];
-if busybox grep -q watchdog.energized.pro $HOST; then
+if grep -q watchdog.energized.pro $HOST; then
 	eonoff=$G"[✓]"$N
 else
 	eonoff=$R"[×]"$N
