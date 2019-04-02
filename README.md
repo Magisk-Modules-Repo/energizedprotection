@@ -4,10 +4,10 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-flaky-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-pewds-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Last Updated -->
-    <img src="https://img.shields.io/badge/Updated-Dec 09, 2018-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Updated-Apr 01, 2019-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
   <!-- Status -->
     <img src="https://img.shields.io/badge/Status-Stable-green.svg?longCache=true&style=flat-square"
@@ -152,9 +152,11 @@
  - Run Clear Hosts by typing `c` and enter. It will clear your hosts file to stock state.
  
 ## Changelog
-03/31/2019
- - Magisk 19.0 compatibility added
- - Busybox Magisk module check added to prevent grep & wget error(s) message(s)
+
+v.pewds
+ - Added Magisk 19.0 Compatibility.
+ - Added Busybox Magisk Module Check to Prevent grep & wget Error(s) Message(s).
+ - *Do your part! Let's subscribe to PewDiePie! :D* 
 
 v.flaky
  - Added Magisk 18.0+ Systemless Hosts Support.
