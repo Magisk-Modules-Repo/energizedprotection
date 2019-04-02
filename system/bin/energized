@@ -160,7 +160,7 @@ case "$MAGISK_VERSION" in
     HOST=/sbin/.magisk/img/hosts/system/etc/hosts
 	BBOX_PATH=/sbin/.magisk/img/busybox-ndk
 ;;
-'19.'[0]*) # Version 19
+'19.'[0-9a-zA-Z]*) # All versions 19
 	HOST=/data/adb/modules/hosts/system/etc/hosts
 	BBOX_PATH=/data/adb/modules/busybox-ndk
 ;;
