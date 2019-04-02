@@ -326,7 +326,7 @@ echo -e $W'~ NEED MORE INFO?\n- TYPE TG AND JOIN US! B)'$N
 sleep 0.1
 echo ''
 echo -e $W'~ WANT TO GO TO MAGISK DIRECTLY FROM\nTHE SCRIPT? - TYPE MAGISK & HIT ENTER! :D'$N
-sleep 2
+sleep 1.5
 
 # Features & Main Parts
 # ----------------------------------------
