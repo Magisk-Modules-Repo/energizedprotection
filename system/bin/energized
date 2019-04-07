@@ -172,10 +172,8 @@ esac
 # Busybox Check
 # ----------------------------------------
 clear
-if [ ! -e "$BBOX_PATH" ]; then
-	echo -n -e $R "\n\n=> 'Busybox for Android NDK' Magisk module isn't installed!\n=> You need to install it and reboot please.\n\nNB: You can download and install it directly from Download section.\n\n"
-	exit
-fi
+echo -e $P"Be sure you have the Magisk module 'Busybox for Andorid-NDK' installed on your device."
+sleep 5
 
 # Echo Results
 if [ ! -f $HOST ]; then
@@ -349,7 +347,7 @@ PTEMP=$DIRECTORY/cache/ptemp
 STEMP=$DIRECTORY/cache/stemp
 HBP=$DIRECTORY/hosts-backup.gz
 curip=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} ads.nayemador.com' $HOST | sed 's/ads.nayemador.com//')
-busybox=$(ls $BBOX_PATH/bin/busybox || ls $BBOX_PATH/xbin/busybox) 2>/dev/null
+busybox=$(ls $BBOX_PATH/system/bin/busybox || ls $BBOX_PATH/system/xbin/busybox) 2>/dev/null
 COUNT=1
 
 # Check Energized Pack
@@ -393,7 +391,7 @@ fi
 # Other Variables
 # ----------------------------------------
 update=$C"`date -r $HOST "+%a, %d %b %y %H:%M:%S"`"$N
-bboxname=$C"`$busybox | head -1 | cut -f 2 -d ' ' | grep -w "osm0sis"`"$N
+bboxname=$C"`"$busybox" | head -1 | cut -f 2 -d ' ' | grep -w "osm0sis"`"$N
 size=$P"`ls -lah $HOST | awk '{print $5}'`"$N
 
 # Check Adblocker
