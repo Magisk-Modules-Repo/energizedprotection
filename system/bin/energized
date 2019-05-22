@@ -170,7 +170,7 @@ esac
 # ----------------------------------------
 clear
 wget=$(ls /system/bin/wget || ls /system/sbin/wget || ls /system/xbin/wget) 2>/dev/null;
-grep=$(ls /system/bin/grep || ls /system/sbin/grep || ls /system/xbin/wget) 2>/dev/null;
+grep=$(ls /system/bin/grep || ls /system/sbin/grep || ls /system/xbin/grep) 2>/dev/null;
 
 if [ ! -n "$wget" ] && [ ! -n "$grep" ]; then
     echo -e $P"\nBe sure you have the Magisk module 'Busybox for Android-NDK' installed on your device.\nWe cannot guarantee the proper functioning of Energized without Busybox being installed."$N
