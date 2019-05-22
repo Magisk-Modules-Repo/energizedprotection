@@ -119,7 +119,7 @@ echo -e $P"$divider"$N
 echo -e $P"IF YOU LOVED OUR WORK, CONSIDER DONATING; TO"$N
 echo -e $P"KEEP THE PROJECT ALIVE AND RUNNING."$N
 echo -e $P"$divider"$N
-curl -sf http://go.energized.pro/web > 2/dev/null
+#curl -sf http://go.energized.pro/web > 2/dev/null
 sleep 2
 
 # Systemless Hosts, BusyBox Management
