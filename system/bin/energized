@@ -169,11 +169,11 @@ esac
 # Busybox Check
 # ----------------------------------------
 clear
-alias wget=$(ls /sbin/.core/img/busybox-ndk/system/xbin/wget || ls /sbin/.magisk/img/busybox-ndk/system/xbin/wget || ls /data/adb/modules/busybox-ndk/system/xbin/wget || ls /system/bin/wget || ls /system/sbin/wget || ls /system/xbin/wget) 2>/dev/null;
-alias grep=$(ls /sbin/.core/img/busybox-ndk/system/xbin/grep || ls /sbin/.magisk/img/busybox-ndk/system/xbin/grep || ls /data/adb/modules/busybox-ndk/system/xbin/grep || ls /system/bin/grep || ls /system/sbin/grep || ls /system/xbin/wget) 2>/dev/null;
+wget=$(ls /system/bin/wget || ls /system/sbin/wget || ls /system/xbin/wget) 2>/dev/null;
+grep=$(ls /system/bin/grep || ls /system/sbin/grep || ls /system/xbin/wget) 2>/dev/null;
 
-if [ ! -d "$wget" ] && [ ! -d "$grep" ]; then
-    echo -e $P"Be sure you have the Magisk module 'Busybox for Andorid-NDK' installed on your device.\nWe cannot guarantee the proper functioning of Energized without Busybox being installed."$N
+if [ ! -n "$wget" ] && [ ! -n "$grep" ]; then
+    echo -e $P"\nBe sure you have the Magisk module 'Busybox for Android-NDK' installed on your device.\nWe cannot guarantee the proper functioning of Energized without Busybox being installed."$N
     sleep 5
 fi
 
