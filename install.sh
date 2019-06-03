@@ -162,3 +162,8 @@ set_permissions() {
 }
 
 # You can add more functions to assist your custom script code
+
+# Create symlink to avoid user confusion when they could typing 'Energized' or 'ENERGIZED'
+for i in /system/bin/Energized /system/bin/ENERGIZED;
+  do ln -sf energized "$i"
+done
