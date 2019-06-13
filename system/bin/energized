@@ -1621,6 +1621,7 @@ sleep 0.1
 			sleep 2
 		;;
 	esac
+	done
 	
 	if [ $DIR ]; then
 		echo ""
