@@ -25,11 +25,11 @@ N='\e[0m' > /dev/null 2>&1; # Null
 CUR_SHELL=$(ps -p $$ | tail -1 | awk '{print $NF}')
 
 case $CUR_SHELL in
-			/system/bin/bash)
+			/system/bin/bash|bash)
 				echo -e $R"\n\nYou run this terminal in 'bash', you must run in sh mode.\n\n- Energized is not compatible with bash.\n\n"$N; sleep 3;
 				exit 1
 			;;
-			/system/bin/sh)
+			/system/bin/sh|sh)
 				echo -e $G"\n\nTerminal check done sucecssfully."$N; sleep 3;
 			;;
 			*)
