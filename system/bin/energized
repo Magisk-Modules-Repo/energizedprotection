@@ -20,6 +20,24 @@ LG='\e[01;37m' > /dev/null 2>&1; # Light Gray
 N='\e[0m' > /dev/null 2>&1; # Null
 # ----------------------------------------
 
+# Shell check
+# ----------------------------------------
+CUR_SHELL=$(ps -p $$ | tail -1 | awk '{print $NF}')
+
+case $CUR_SHELL in
+			/system/bin/bash)
+				echo -e $R"\n\nYou run this terminal in 'bash', you must run in sh mode.\n\n- Energized is not compatible with bash.\n\n"$N; sleep 3;
+				exit 1
+			;;
+			/system/bin/sh)
+				echo -e $G"\n\nTerminal check done sucecssfully."$N; sleep 3;
+			;;
+			*)
+				echo -e $R"\n\nYou run this terminal in "$CUR_SHELL" mode.\n\n=> You must run in sh mode.\n- Energized is only compatible with sh.\n\n"$N; sleep 3;
+				exit 1
+			;;
+esac
+
 # Define Energized Protection Directory
 # ----------------------------------------
 DIRECTORY=/sdcard/EnergizedProtection
@@ -166,18 +184,47 @@ case "$MAGISK_VERSION" in
 ;;
 esac
 
-# Busybox Check
-# ----------------------------------------
-clear
-wget=$(ls /system/bin/wget || ls /system/sbin/wget || ls /system/xbin/wget) 2>/dev/null;
-grep=$(ls /system/bin/grep || ls /system/sbin/grep || ls /system/xbin/grep) 2>/dev/null;
+while true
+do
 
-if [ ! -n "$wget" ] && [ ! -n "$grep" ]; then
-    echo -e $P"\nBe sure you have the Magisk module 'Busybox for Android-NDK' installed on your device.\nWe cannot guarantee the proper functioning of Energized without Busybox being installed."$N
-    sleep 5
+# Busybox check
+# ----------------------------------------
+busybox=$(ls $BBOX_PATH/system/bin/busybox || ls $BBOX_PATH/system/xbin/busybox) 2>/dev/null
+bb_auto_implement=$(ls /system/bin/busybox || ls /system/sbin/busybox || ls /system/xbin/busybox || ls /sbin/busybox) 2>/dev/null
+bb_manual_implement_gzip=$(ls /system/bin/gzip || ls /system/sbin/gzip || ls /system/xbin/gzip || ls /sbin/gzip) 2>/dev/null
+bb_manual_implement_wget=$(ls /system/bin/wget || ls /system/sbin/wget || ls /system/xbin/wget || ls /sbin/wget) 2>/dev/null
+bb_manual_implement_awk=$(ls /system/bin/awk || ls /system/sbin/awk || ls /system/xbin/awk || ls /sbin/awk) 2>/dev/null
+bb_manual_implement_sort=$(ls /system/bin/sort || ls /system/sbin/sort || ls /system/xbin/sort || ls /sbin/sort) 2>/dev/null
+bb_manual_implement_truncate=$(ls /system/bin/truncate || ls /system/sbin/truncate || ls /system/xbin/truncate || ls /sbin/truncate) 2>/dev/null
+
+if [ -n "$busybox" ]; then
+	busybox=$(echo "Busybox-Magisk-Module")
+
+elif [ -n "$bb_auto_implement" ]; then
+	busybox=$(echo "Busybox-Market-App")
+
+elif [ -z "$bb_manual_implement_gzip" ] || [ -z "$bb_manual_implement_wget" ] || [ -z "$bb_manual_implement_awk" ] || [ -z "$bb_manual_implement_sort" ] || [ -z "$bb_manual_implement_truncate" ]; then
+	busybox=$(echo "Busybox-Applets")
 fi
 
+case $busybox in
+	Busybox-Magisk-Module)
+					bboxname=$("$busybox" | head -1 | cut -f 2 -d ' ')
+					;;
+	Busybox-Market-App)
+					bboxname=$("$bb_auto_implement" | head -1 | cut -f 2 -d ' ')
+					;;
+	Busybox-Auto-impl)
+					bboxname=$(echo 'Busybox Applets')
+					;;
+					*)
+					bboxname=$(echo -e $R'Not found!'$N)
+					echo -e $R"\nBe sure you have installed Busybox on your device at least.\n\nWe support:\n	=> Busybox Magisk module by osm0sis\n	=> Busybox installed by market app\n	=> Commands applets installed directly\n	(by default on your device or by another tools/apps/MODs..)\n\n\n----------------------------------------\n\n	=> We cannot guaranting the proper functioning of Energized without Busybox stuff."$N; sleep 3;
+					;;
+esac
+
 # Echo Results
+# ----------------------------------------
 if [ ! -f $HOST ]; then
 clear
 	sleep 0.1
@@ -330,8 +377,10 @@ sleep 1.5
 
 # Features & Main Parts
 # ----------------------------------------
+
 while true
 do
+
 # Aliases, Grep, Wget Variables
 # ----------------------------------------
 SHOST=$DIRECTORY/hosts.gz
@@ -349,7 +398,6 @@ PTEMP=$DIRECTORY/cache/ptemp
 STEMP=$DIRECTORY/cache/stemp
 HBP=$DIRECTORY/hosts-backup.gz
 curip=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} ads.nayemador.com' $HOST | sed 's/ads.nayemador.com//')
-busybox=$(ls $BBOX_PATH/system/bin/busybox || ls $BBOX_PATH/system/xbin/busybox) 2>/dev/null
 COUNT=1
 
 # Check Energized Pack
@@ -393,7 +441,6 @@ fi
 # Other Variables
 # ----------------------------------------
 update=$C"`date -r $HOST "+%a, %d %b %y %H:%M:%S"`"$N
-bboxname=$C"`"$busybox" | head -1 | cut -f 2 -d ' ' | grep -w "osm0sis"`"$N
 size=$P"`ls -lah $HOST | awk '{print $5}'`"$N
 
 # Check Adblocker
@@ -442,7 +489,7 @@ echo "[+] Checking Update."; sleep 0.15; clear
 echo "[+] Checking Update.."; sleep 0.18; clear
 echo "[+] Checking Update..."; sleep 0.2;
 
-wget --no-check-certificate -q -O $TREADME https://github.com/EnergizedProtection/block/raw/master/VERSION.md
+wget --no-check-certificate -q -O $TREADME https://raw.githubusercontent.com/EnergizedProtection/block/master/VERSION.md
 grep -q "Version Code" $TREADME
 cp $TREADME $BREADME
 if [ -f $FILTER ]; then
@@ -723,7 +770,7 @@ sleep 0.1
 		  echo "Adds Porn Blocking Pack to current hosts."
 		  echo -e $Y"$divider"$N
 		  echo ""
-		  wget --no-check-certificate -O $SHOST https://github.com/EnergizedProtection/block/raw/master/porn/formats/hosts.gz
+		  wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/porn/formats/hosts.gz
 		  echo "[+] Applying Porn Hosts to current hosts."
 		  gzip -d -c $SHOST > $PTEMP
 		  mv $HOST $TEMP
@@ -753,7 +800,7 @@ sleep 0.1
 		echo "Adds Porn Lite Blocking Pack to current hosts."
 		echo -e $Y"$divider"$N
 		echo ""
-		wget --no-check-certificate -O $SHOST https://github.com/EnergizedProtection/block/raw/master/extensions/porn-lite/formats/hosts.gz
+		wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/porn-lite/formats/hosts.gz
 		echo "[+] Applying Porn Lite Hosts to current hosts."
 		gzip -d -c $SHOST > $PTEMP
         mv $HOST $TEMP
@@ -775,7 +822,7 @@ sleep 0.1
 		echo "Adds Regional Blocking Pack to current hosts."
 		echo -e $Y"$divider"$N
 		echo ""
-		wget --no-check-certificate -O $SHOST https://github.com/EnergizedProtection/block/raw/master/extensions/regional/formats/hosts.gz
+		wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/regional/formats/hosts.gz
 		echo "[+] Applying Regional Hosts to current hosts."
 		gzip -d -c $SHOST > $STEMP
         mv $HOST $TEMP
@@ -796,7 +843,7 @@ sleep 0.1
 		echo "Adds Social Blocking Pack to current hosts."
 		echo -e $Y"$divider"$N
 		echo ""
-		wget --no-check-certificate -O $SHOST https://github.com/EnergizedProtection/block/raw/master/extensions/social/formats/hosts.gz
+		wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/social/formats/hosts.gz
 		echo "[+] Applying Social Hosts to current hosts."
 		gzip -d -c $SHOST > $STEMP
         mv $HOST $TEMP
@@ -834,7 +881,7 @@ sleep 0.1
 		  echo "Adds Xtreme Blocking Pack to current hosts."
 		  echo -e $Y"$divider"$N
 		  echo ""
-		  wget --no-check-certificate -O $SHOST https://github.com/EnergizedProtection/block/raw/master/extensions/xtreme/formats/hosts.gz
+		  wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/xtreme/formats/hosts.gz
 		  echo "[+] Applying Xtreme Hosts to current hosts."
 		  gzip -d -c $SHOST > $PTEMP
 		  mv $HOST $TEMP
@@ -866,7 +913,7 @@ sleep 0.1
 		  sleep 0.1
 		  echo -e $Y"$divider"$N
 		  echo ''
-		  wget --no-check-certificate -O $SHOST https://github.com/EnergizedProtection/block/raw/master/$autopack/formats/hosts.gz
+		  wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/$autopack/formats/hosts.gz
 		  gzip -d -c $SHOST > $HOST
 		  rm -f $SHOST
 		  echo -e $G"[+] Done Applying!"$N
@@ -1574,9 +1621,10 @@ sleep 0.1
 			sleep 2
 		;;
 	esac
+	
 	if [ $DIR ]; then
 		echo ""
-		wget --no-check-certificate -O $SHOST https://github.com/EnergizedProtection/block/raw/$DIR
+		wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/$DIR
 		gzip -d -c $SHOST > $HOST
 		rm -f $SHOST
 		echo -e $G'[+] Done Applying!'$N
@@ -1590,7 +1638,7 @@ sleep 0.1
 		echo -e $Y'[+] If you loved our work, consider donating.'$N
 		# Checks if an update is available after applying
 		if [ ! -s $FILTER ]; then
-		  wget --no-check-certificate -q -O $TREADME https://github.com/EnergizedProtection/block/raw/master/VERSION.md
+		  wget --no-check-certificate -q -O $TREADME https://raw.githubusercontent.com/EnergizedProtection/block/master/VERSION.md
 		  grep -q "Version Code" $TREADME
 		  cp $TREADME $BREADME
 		  grep "Version Code" $TREADME > $FILTER 2>/dev/null
