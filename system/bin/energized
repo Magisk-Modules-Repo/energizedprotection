@@ -442,7 +442,7 @@ echo "[+] Checking Update."; sleep 0.15; clear
 echo "[+] Checking Update.."; sleep 0.18; clear
 echo "[+] Checking Update..."; sleep 0.2;
 
-wget --no-check-certificate -q -O $TREADME https://raw.githubusercontent.com/EnergizedProtection/block/master/VERSION.md
+wget --no-check-certificate -q -O $TREADME https://github.com/EnergizedProtection/block/raw/master/VERSION.md
 grep -q "Version Code" $TREADME
 cp $TREADME $BREADME
 if [ -f $FILTER ]; then
@@ -723,7 +723,7 @@ sleep 0.1
 		  echo "Adds Porn Blocking Pack to current hosts."
 		  echo -e $Y"$divider"$N
 		  echo ""
-		  wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/porn/formats/hosts.gz
+		  wget --no-check-certificate -O $SHOST https://github.com/EnergizedProtection/block/raw/master/porn/formats/hosts.gz
 		  echo "[+] Applying Porn Hosts to current hosts."
 		  gzip -d -c $SHOST > $PTEMP
 		  mv $HOST $TEMP
@@ -753,7 +753,7 @@ sleep 0.1
 		echo "Adds Porn Lite Blocking Pack to current hosts."
 		echo -e $Y"$divider"$N
 		echo ""
-		wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/porn-lite/formats/hosts.gz
+		wget --no-check-certificate -O $SHOST https://github.com/EnergizedProtection/block/raw/master/extensions/porn-lite/formats/hosts.gz
 		echo "[+] Applying Porn Lite Hosts to current hosts."
 		gzip -d -c $SHOST > $PTEMP
         mv $HOST $TEMP
@@ -775,7 +775,7 @@ sleep 0.1
 		echo "Adds Regional Blocking Pack to current hosts."
 		echo -e $Y"$divider"$N
 		echo ""
-		wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/regional/formats/hosts.gz
+		wget --no-check-certificate -O $SHOST https://github.com/EnergizedProtection/block/raw/master/extensions/regional/formats/hosts.gz
 		echo "[+] Applying Regional Hosts to current hosts."
 		gzip -d -c $SHOST > $STEMP
         mv $HOST $TEMP
@@ -796,7 +796,7 @@ sleep 0.1
 		echo "Adds Social Blocking Pack to current hosts."
 		echo -e $Y"$divider"$N
 		echo ""
-		wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/social/formats/hosts.gz
+		wget --no-check-certificate -O $SHOST https://github.com/EnergizedProtection/block/raw/master/extensions/social/formats/hosts.gz
 		echo "[+] Applying Social Hosts to current hosts."
 		gzip -d -c $SHOST > $STEMP
         mv $HOST $TEMP
@@ -834,7 +834,7 @@ sleep 0.1
 		  echo "Adds Xtreme Blocking Pack to current hosts."
 		  echo -e $Y"$divider"$N
 		  echo ""
-		  wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/xtreme/formats/hosts.gz
+		  wget --no-check-certificate -O $SHOST https://github.com/EnergizedProtection/block/raw/master/extensions/xtreme/formats/hosts.gz
 		  echo "[+] Applying Xtreme Hosts to current hosts."
 		  gzip -d -c $SHOST > $PTEMP
 		  mv $HOST $TEMP
@@ -866,7 +866,7 @@ sleep 0.1
 		  sleep 0.1
 		  echo -e $Y"$divider"$N
 		  echo ''
-		  wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/master/$autopack/formats/hosts.gz
+		  wget --no-check-certificate -O $SHOST https://github.com/EnergizedProtection/block/raw/master/$autopack/formats/hosts.gz
 		  gzip -d -c $SHOST > $HOST
 		  rm -f $SHOST
 		  echo -e $G"[+] Done Applying!"$N
@@ -1576,7 +1576,7 @@ sleep 0.1
 	esac
 	if [ $DIR ]; then
 		echo ""
-		wget --no-check-certificate -O $SHOST https://raw.githubusercontent.com/EnergizedProtection/block/$DIR
+		wget --no-check-certificate -O $SHOST https://github.com/EnergizedProtection/block/raw/$DIR
 		gzip -d -c $SHOST > $HOST
 		rm -f $SHOST
 		echo -e $G'[+] Done Applying!'$N
@@ -1590,7 +1590,7 @@ sleep 0.1
 		echo -e $Y'[+] If you loved our work, consider donating.'$N
 		# Checks if an update is available after applying
 		if [ ! -s $FILTER ]; then
-		  wget --no-check-certificate -q -O $TREADME https://raw.githubusercontent.com/EnergizedProtection/block/master/VERSION.md
+		  wget --no-check-certificate -q -O $TREADME https://github.com/EnergizedProtection/block/raw/master/VERSION.md
 		  grep -q "Version Code" $TREADME
 		  cp $TREADME $BREADME
 		  grep "Version Code" $TREADME > $FILTER 2>/dev/null
