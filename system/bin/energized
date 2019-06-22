@@ -273,7 +273,6 @@ elif [ -z "$busybox" ] || [ -z "$bb_auto_implement" ] || [ -z "$bb_manual_implem
 	bboxname=$(echo $R'Not Found!'$N)
 	bbCheck=$R" × "$N$W"Busybox $bboxname!"$N$R"\n   - Install Busybox properly.\n   - Osmosis or Stericson Busybox recommended.\n   - Quitting Script..."$N
 	sleep 3
-    exit 0
 fi
 
 sleep 1.5
