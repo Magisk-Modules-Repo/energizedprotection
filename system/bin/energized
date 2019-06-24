@@ -183,7 +183,9 @@ fi
 # Shell check
 # ----------------------------------------
 CUR_SHELL=$(ps $$ | tail -1 | awk '{print $NF}' | sed 's/NAME //' | sed ':a;N;$!ba;s/\n//' | sed 's/NAME//') 2>/dev/null;
-
+if [ $(echo "$CUR_SHELL" | grep 'NAME')];then
+	CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/NAME //' | sed ':a;N;$!ba;s/\n//' | sed 's/NAME//')
+fi
 case $CUR_SHELL in
 	/system/bin/bash|bash)
 		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
