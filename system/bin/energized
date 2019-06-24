@@ -182,24 +182,24 @@ fi
 
 # Shell check
 # ----------------------------------------
-CUR_SHELL=$(ps $$ | tail -1 | awk '{print $NF}')
+CUR_SHELL=$(ps $$ | tail -1 | awk '{print $NF}' | sed 's/NAME //' | sed ':a;N;$!ba;s/\n//' | sed 's/NAME//') 2>/dev/null;
 
 case $CUR_SHELL in
-			/system/bin/bash|bash)
-				CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
-			    SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
-				# not in bash
-			;;
-			/system/bin/sh|sh)
-				CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
-				SHELL_TYPE=$(echo -e $G" ✓ "$N$W"Script running in $CUR_SHELL mode. Great!"$N)
-				#Success
-			;;
-			*)
-				CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
-				SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
-				# not in zsh or another..
-			;;
+	/system/bin/bash|bash)
+		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
+		SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
+		# not in bash
+	;;
+	/system/bin/sh|sh)
+		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
+		SHELL_TYPE=$(echo -e $G" ✓ "$N$W"Script running in $CUR_SHELL mode. Great!"$N)
+		#Success
+	;;
+	*)
+		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
+		SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
+		# not in zsh or another..
+	;;
 esac
 
 # New UI
