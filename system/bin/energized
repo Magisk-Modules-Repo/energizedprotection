@@ -183,14 +183,34 @@ fi
 # Shell check
 # ----------------------------------------
 CUR_SHELL=$(ps $$ | tail -1 | awk '{print $NF}')
-if [ $(echo "$CUR_SHELL" | grep 'NAME')];then
-	CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/NAME //' | sed ':a;N;$!ba;s/\n//' | sed 's/NAME//')
+if [ $(echo "$CUR_SHELL" | grep 'NAME') ]; then
+	CUR_SHELL=$(ps $$ | tail -1 | awk '{print $NF}' | sed 's/NAME //' | sed ':a;N;$!ba;s/\n//' | sed 's/NAME//') 2>/dev/null;
 fi
 case $CUR_SHELL in
 	/system/bin/bash|bash)
 		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
 		SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
 		# not in bash
+	;;
+	/system/bin/ksh|ksh)
+		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
+		SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
+		# not in ksh
+	;;
+	/system/bin/csh|csh)
+		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
+		SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
+		# not in csh
+	;;
+	/system/bin/zsh|zsh)
+		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
+		SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
+		# not in zsh
+	;;
+	/system/bin/ash|ash)
+		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
+		SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
+		# not in ash
 	;;
 	/system/bin/sh|sh)
 		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
