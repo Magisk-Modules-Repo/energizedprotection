@@ -165,6 +165,4 @@ set_permissions() {
 
 # Create symlink to avoid user confusion when they could typing 'Energized' or 'ENERGIZED'
 [ -d "$TMPDIR/system/bin/" ] || mkdir -p "$TMPDIR/system/bin/"
-for files in "$TMPDIR/system/bin/Energized" "$TMPDIR/system/bin/ENERGIZED"; do
-ln -sf energized $files
-done
+ln -sf energized "$TMPDIR/system/bin/Energized"
