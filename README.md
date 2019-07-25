@@ -165,6 +165,7 @@ v.pluot
  - Fixed instant whitelist.
  - Fixed redirection IP change method.
  - Fixed current IP check service.
+ - Fixed domain check issue.
  - Improved update check service.
  - Script optimization.
 
