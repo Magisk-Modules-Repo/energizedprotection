@@ -4,10 +4,10 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-dynamo-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-pluot-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Last Updated -->
-    <img src="https://img.shields.io/badge/Updated-Jun 24, 2019-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Updated-Jul 26, 2019-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
   <!-- Status -->
     <img src="https://img.shields.io/badge/Status-Stable-green.svg?longCache=true&style=flat-square"
@@ -159,6 +159,14 @@
  - Run Clear Hosts by typing `c` and enter. It will clear your hosts file to stock state.
  
 ## Changelog
+
+v.pluot
+ - Fixed shell check.
+ - Fixed instant whitelist.
+ - Fixed redirection IP change method.
+ - Fixed current IP check service.
+ - Improved update check service.
+ - Script optimization.
 
 v.dynamo
  - Added Terminal Detection.
@@ -320,7 +328,7 @@ v1.0
 Energized Hosts are basically `hosts` files to block access to domains. If you don't know how it works, then please try this at your own risk. I won't be responsible for any damage or loss. Never forget to make backups.
 
 ## Support
-[SUPPORT THE DEVELOPMENT](https://energized.pro/support)
+[SUPPORT THE DEVELOPMENT](https://opencollective.com/energizedprotection)
 
 ## License
 [CC BY-NC-SA 4.0](https://github.com/EnergizedProtection/block/blob/master/LICENSE.md)
