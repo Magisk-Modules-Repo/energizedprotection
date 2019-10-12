@@ -4,10 +4,10 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-pewds-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-pluot-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Last Updated -->
-    <img src="https://img.shields.io/badge/Updated-Apr 01, 2019-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Updated-Jul 26, 2019-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
   <!-- Status -->
     <img src="https://img.shields.io/badge/Status-Stable-green.svg?longCache=true&style=flat-square"
@@ -18,7 +18,7 @@
   <strong>ad.porn.malware blocking.</strong>
 </div>
 <div align="center">
-  Energized consolidates several reputable <code>hosts</code> files, and merges them into a unified hosts file with duplicates removed.  A variety of tailored hosts files are provided.
+  This repository consolidates several reputable <code>filters</code>, and merges them into couple of protection packs with duplicates and dead/inactive domains removed. A variety of tailored packs are provided.
 </div>
 
 <br />
@@ -85,6 +85,12 @@
 - `si` : Submit Issue - submit any issue via `web` app.
 - `q` : Quit - exit` the script.
 
+#### Extras
+
+- `Magisk` : Opens up Magisk Manager.
+- `Telegram` : Takes you to our awesome Telegram group!
+- `Thx` : You are welcome! <3
+
 
 #### Requirements
  - Install the `Busybox For Android NDK` Busybox Module from Magisk Manager.
@@ -96,6 +102,7 @@
  su  
  energized
  ```
+  *`Energized` or `ENERGIZED` would also work.*
  - Then follow the prompts to install host file of choice
 
 #### Whitelist (0.0.0.0) Instructions:
@@ -127,20 +134,20 @@
 
 #### Instant Blacklist
  - To instantly blacklist a domain, select `ib` and then type your domain.
- - Type `Y` and press enter.
+ - Type `Y/y` and press enter.
  
 #### Redirect Domains
  - Find text file on sdcard called `redirectlist` in `sdcard/EnergizedProtection/`
  - Add the domain name only, to the redirectlist. Ex. `abcd.com`
  - Run hosts script and choose whitelist `ri` option.
- - Type your `IP` and type `Y`
+ - Type your `IP` and type `Y/y`
  - Hit enter.
  
 #### Instant Redirect
  - To instantly redirect a domain, select `ir` and then type your domain.
- - Type `Y` & hit enter.
+ - Type `Y/y` & hit enter.
  - Type your IPv4/v6 and press enter.
- - Type `Y` & wait for the script to finish redirecting.
+ - Type `Y/y` & wait for the script to finish redirecting.
 
 #### Finishing
  - Reboot once after applying hosts/whitelist/blacklist/redirectionlist.
@@ -152,6 +159,29 @@
  - Run Clear Hosts by typing `c` and enter. It will clear your hosts file to stock state.
  
 ## Changelog
+
+v.pluot
+ - Fixed shell check.
+ - Fixed instant whitelist.
+ - Fixed redirection IP change method.
+ - Fixed current IP check service.
+ - Fixed domain check issue.
+ - Improved update check service.
+ - Script optimization.
+
+v.dynamo
+ - Added Terminal Detection.
+ - New Symlink Added. Like you can type  `Energized` or `ENERGIZED` to run the script.
+ - Updated Download Links.
+ - Improved Busybox Detection.
+ - Improved Busybox Support & Compatibility. 
+ - UI Revamped.
+ - Added Better Extension Detection Support.
+ - Improved Blacklist, Whitelist & Redirectlist Detection.
+ - Hosts Update Checking Service Should be Fixed Forever.
+ - Updated Sleep Parameters.
+ - Script Optimization & Improvement Patches Applied.
+ - Fixed Known Bugs so far.
 
 v.pewds
  - Added Magisk 19.0 Compatibility.
@@ -299,7 +329,7 @@ v1.0
 Energized Hosts are basically `hosts` files to block access to domains. If you don't know how it works, then please try this at your own risk. I won't be responsible for any damage or loss. Never forget to make backups.
 
 ## Support
-[SUPPORT THE DEVELOPMENT](https://energized.pro/support)
+[SUPPORT THE DEVELOPMENT](https://opencollective.com/energizedprotection)
 
 ## License
 [CC BY-NC-SA 4.0](https://github.com/EnergizedProtection/block/blob/master/LICENSE.md)

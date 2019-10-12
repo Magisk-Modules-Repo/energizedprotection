@@ -65,8 +65,8 @@ fi
 
 # Versioning & Date
 # ----------------------------------------
-version=$Y'dynamo β'$N > /dev/null 2>&1
-released=$G'Jun 18, 2019'$N > /dev/null 2>&1
+version=$Y'pluot'$N > /dev/null 2>&1
+released=$G'Jul 26, 2019'$N > /dev/null 2>&1
 saythanks='https://saythanks.io/to/AdroitAdorKhan' > /dev/null 2>&1
 date=$(date "+%d.%m.%Y %H:%M:%S")
 # ----------------------------------------
@@ -127,8 +127,15 @@ echo -e $P"$divider"$N
 echo -e $P"IF YOU LOVED OUR WORK, CONSIDER DONATING; TO"$N
 echo -e $P"KEEP THE PROJECT ALIVE AND RUNNING."$N
 echo -e $P"$divider"$N
+echo ''
+echo -e $G"$divider"$N
+echo -e $G'S A Y  T H A N K S'$N
+echo -e $G"$divider"$N
+echo -e $G"I REALLY LOVE HEARING FROM YOU GUYS!"$N
+echo -e $G"TYPE THX AND TELL US MORE!"$N
+echo -e $G"$divider"$N
 curl -sf http://go.energized.pro/web > /dev/null 2>&1; 
-sleep 2
+sleep 3
 clear
 # Systemless Hosts, BusyBox Management
 # ----------------------------------------
@@ -183,23 +190,45 @@ fi
 # Shell check
 # ----------------------------------------
 CUR_SHELL=$(ps $$ | tail -1 | awk '{print $NF}')
-
+if [ $(echo "$CUR_SHELL" | grep 'NAME') ]; then
+	CUR_SHELL=$(ps $$ | tail -1 | awk '{print $NF}' | sed 's/NAME //' | sed ':a;N;$!ba;s/\n//' | sed 's/NAME//') 2>/dev/null;
+fi
 case $CUR_SHELL in
-			/system/bin/bash|bash)
-				CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
-			    SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
-				# not in bash
-			;;
-			/system/bin/sh|sh)
-				CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
-				SHELL_TYPE=$(echo -e $G" ✓ "$N$W"Script running in $CUR_SHELL mode. Great!"$N)
-				#Success
-			;;
-			*)
-				CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
-				SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
-				# not in zsh or another..
-			;;
+	/system/bin/bash|bash)
+		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
+		SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
+		# not in bash
+	;;
+	/system/bin/ksh|ksh)
+		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
+		SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
+		# not in ksh
+	;;
+	/system/bin/csh|csh)
+		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
+		SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
+		# not in csh
+	;;
+	/system/bin/zsh|zsh)
+		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
+		SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
+		# not in zsh
+	;;
+	/system/bin/ash|ash)
+		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
+		SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
+		# not in ash
+	;;
+	/system/bin/sh|sh)
+		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
+		SHELL_TYPE=$(echo -e $G" ✓ "$N$W"Script running in $CUR_SHELL mode. Great!"$N)
+		#Success
+	;;
+	*)
+		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
+		SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
+		# not in zsh or another..
+	;;
 esac
 
 # New UI
@@ -273,10 +302,9 @@ elif [ -z "$busybox" ] || [ -z "$bb_auto_implement" ] || [ -z "$bb_manual_implem
 	bboxname=$(echo $R'Not Found!'$N)
 	bbCheck=$R" × "$N$W"Busybox $bboxname!"$N$R"\n   - Install Busybox properly.\n   - Osmosis or Stericson Busybox recommended.\n   - Quitting Script..."$N
 	sleep 3
-    exit 0
 fi
 
-sleep 1.5
+sleep 1
 
 # ----------------------------------------
 echo ''
@@ -379,7 +407,9 @@ LTEMP=$DIRECTORY/cache/ltemp
 PTEMP=$DIRECTORY/cache/ptemp
 STEMP=$DIRECTORY/cache/stemp
 HBP=$DIRECTORY/hosts-backup.gz
-curip=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} ads.nayemador.com' $HOST | sed 's/ads.nayemador.com//')
+lastUpdated=$(grep "Version Code" $FILTER | sed "s/! Version Code: //")
+dayOfYear=$(date +%j)
+curip=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' $HOST | sed 's/watchdog.energized.pro//')
 COUNT=1
 # ----------------------------------------
 
@@ -487,36 +517,39 @@ fi
 # Check Hosts Update
 # ----------------------------------------
 if [ "$autopack" != "null" ]; then
-
-wget --no-check-certificate -q -O $TREADME https://github.com/EnergizedProtection/block/raw/master/VERSION.md
-grep -q "Version Code" $TREADME
-cp $TREADME $BREADME
-if [ -f $FILTER ]; then
-	CURRENT=$(grep "Version Code" $TREADME)
-	LAST_UPDATED=$(sed '1q;d' $FILTER)
-	if [ "$LAST_UPDATED" != "$CURRENT" ]; then
-	  if [ "$(grep "watchdog.energized.pro" $HOST)" ]; then
-	    eupdate=$G'[ϟ] UPDATE AVAILABLE!'$N
-	    updateCheck=$Y"ϟ "$N$W"New hosts update available!"$N
-	  fi
-	else
-		eupdate=$W'[✓] UP-TO-DATE!'$N
-		updateCheck=$G"✓ "$N$W"Hosts is updated."$N
-	fi
+   if [ "$lastUpdated" -ne "$dayOfYear" ]; then
+       wget --no-check-certificate -T 3 -q -O $TREADME https://github.com/EnergizedProtection/block/raw/master/VERSION.md
+       grep -q "Version Code" $TREADME
+       cp $TREADME $BREADME
+       if [ -f $FILTER ]; then
+           CURRENT=$(grep "Version Code" $TREADME)
+           LAST_UPDATED=$(sed '1q;d' $FILTER)
+           if [ "$LAST_UPDATED" != "$CURRENT" ]; then
+              if [ "$(grep "watchdog.energized.pro" $HOST)" ]; then
+                  eupdate=$G'[ϟ] UPDATE AVAILABLE!'$N
+                  updateCheck=$Y"ϟ "$N$W"New hosts update available!"$N
+              fi
+           else
+              eupdate=$W'[✓] UP-TO-DATE!'$N
+              updateCheck=$G"✓ "$N$W"Hosts is updated."$N
+           fi
+       else
+           touch $FILTER
+           if [grep -q "EP0R9-P" $HOST] || [grep -q "EXR3G1094L-P" $HOST] || [grep -q "EX7R3M3-P" $HOST] || [grep -q "EXP0R9-P" $HOST] || [grep -q "EX50C14L-P" $HOST]; then
+              eupdate=$B'[*] Extension Applied'$N
+              updateCheck=$B"* "$N$W"Extension applied."$N
+           else
+              eupdate="[+] APPLY PACK FIRST!"
+              updateCheck=$B"+ "$N$W"Apply pack first."$N
+           fi
+       fi
+    else
+       eupdate=$W'[✓] UP-TO-DATE!'$N
+       updateCheck=$G"✓ "$N$W"Hosts is updated."$N
+    fi
 else
-	touch $FILTER
-	if [grep -q "EP0R9-P" $HOST] || [grep -q "EXR3G1094L-P" $HOST] || [grep -q "EX7R3M3-P" $HOST] || [grep -q "EXP0R9-P" $HOST] || [grep -q "EX50C14L-P" $HOST]; then
-	   eupdate=$B'[*] Extension Applied'$N
-	   updateCheck=$B"* "$N$W"Extension applied."$N
-	else
 	   eupdate="[+] APPLY PACK FIRST!"
 	   updateCheck=$B"+ "$N$W"Apply pack first."$N
-	fi
-fi
-
-else
-	eupdate="[+] APPLY PACK FIRST!"
-	updateCheck=$B"+ "$N$W"Apply pack first."$N
 fi
 # ----------------------------------------
 
@@ -540,7 +573,7 @@ sleep 0.1
 echo -e $W" $updateCheck"$N
 sleep 0.1
 echo -e $Y"$divider"$N 
-sleep 3
+sleep 1.5
 
 
 # Input
@@ -812,9 +845,8 @@ sleep 0.1
 		  echo "[+] Applying Porn Hosts to current hosts."
 		  gzip -d -c $SHOST > $PTEMP
 		  mv $HOST $TEMP
-		  rm -f $HOST
+		  truncate -s 0 $HOST
 		  cat $TEMP $PTEMP > $HOST
-		  awk '!a[$0]++' $HOST > $PTEMP && mv -f $PTEMP $HOST
 		  rm -f $TEMP $PTEMP $SHOST
 		  echo -e $G'[+] Done!'$N
 		  echo "[+] Returning..."
@@ -843,9 +875,8 @@ sleep 0.1
 		echo "[+] Applying Porn Lite Hosts to current hosts."
 		gzip -d -c $SHOST > $PTEMP
         mv $HOST $TEMP
-        rm -f $HOST
+        truncate -s 0 $HOST
 		cat $TEMP $PTEMP > $HOST
-		awk '!a[$0]++' $HOST > $PTEMP && mv -f $PTEMP $HOST
 		rm -f $TEMP $PTEMP $SHOST
 		echo -e $G'[+] Done!'$N
 		echo "[+] Returning..."
@@ -866,8 +897,8 @@ sleep 0.1
 		echo "[+] Applying Regional Hosts to current hosts."
 		gzip -d -c $SHOST > $STEMP
         mv $HOST $TEMP
+        truncate -s 0 $HOST
 		cat $TEMP $STEMP > $HOST
-		awk '!a[$0]++' $HOST > $STEMP && mv -f $STEMP $HOST
 		rm -f $TEMP $STEMP $SHOST
 		echo -e $G'[+] Done!'$N
 		echo "[+] Returning..."
@@ -888,8 +919,8 @@ sleep 0.1
 		echo "[+] Applying Social Hosts to current hosts."
 		gzip -d -c $SHOST > $STEMP
         mv $HOST $TEMP
+        truncate -s 0 $HOST
 		cat $TEMP $STEMP > $HOST
-		awk '!a[$0]++' $HOST > $STEMP && mv -f $STEMP $HOST
 		rm -f $TEMP $STEMP $SHOST
 		echo -e $G'[+] Done!'$N
 		echo "[+] Returning..."
@@ -927,9 +958,8 @@ sleep 0.1
 		  echo "[+] Applying Xtreme Hosts to current hosts."
 		  gzip -d -c $SHOST > $PTEMP
 		  mv $HOST $TEMP
-		  rm -f $HOST
+		  truncate -s 0 $HOST
 		  cat $TEMP $PTEMP > $HOST
-		  awk '!a[$0]++' $HOST > $PTEMP && mv -f $PTEMP $HOST 2>/dev/null
 		  rm -f $TEMP $PTEMP $SHOST
 		  echo -e $G'[+] Done!'$N
 		  echo "[+] Returning..."
@@ -1163,10 +1193,10 @@ sleep 0.1
 		echo -e $W'[+] Your Domain'$N $Y"$iw"$N
 		echo -n -e $W'[+] Are you sure?'$N $Y'[Y/N]:'$N
 		read answer
-		if [ "$answer" == "Y" ]; then
+		if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
 		  echo "[+] Applying $iw as whitelist..."
 		  grep -Fvx "$curip$iw" $HOST > $TEMP
-		  rm -f $HOST
+		  truncate -s 0 $HOST
 		  mv -f $TEMP $HOST
 		  echo "$iw" >> $WHITELIST
 		  echo -e $W'[+] Done'$N
@@ -1470,7 +1500,7 @@ sleep 0.1
 		echo -n -e $W'[+] Open Hosts File?'$N $Y'[Y/N]:'$N
 		read answer
 		if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
-		  am start -a android.intent.action.VIEW -d file://$HOST -t text/plain
+		  am start -a android.intent.action.VIEW -d file://$HOST -t text/plain > /dev/null 2>&1; 
 		else
 		  clear
 		  echo -n -e $W'[+] RETURNING '$N
@@ -1504,7 +1534,7 @@ sleep 0.1
 		sleep 3
 		am start -a android.intent.action.VIEW -d "https://app.energized.pro"
 		;;
-		thanks|thx|thnx|thax|thank|thanku|thankyou|THX|Thanks) am start -a android.intent.action.VIEW -d "$saythanks"
+		thanks|say|Say|SAY|thx|thnx|thax|thank|thanku|thankyou|THX|Thanks) am start -a android.intent.action.VIEW -d "$saythanks" 
 		;;
 		# Telegram
 		# ----------------------------------------
@@ -1574,7 +1604,7 @@ sleep 0.1
 		echo -n -e $R"E-"$N
 		touch $FILTER
 		echo -n -e $R"A-"$N
-		sleep 2
+		sleep 0.3
 		echo -e "# Energized Protection - https://energized.pro\n# Let's make an annoyance free better open internet, altogether!\n\n127.0.0.1 localhost\n::1" >> $HOST
 		echo -n -e $R"R-]\n"$N
 		sleep 0.3
@@ -1604,11 +1634,10 @@ sleep 0.1
 		if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
 		  echo "[+] Adding $ip as redirection IP..."
 		  rm -f $TEMP $STEMP $PTEMP
-		  sed -n '1,79p' $HOST > $PTEMP
+		  sed -n '1,78p' $HOST > $PTEMP 
 		  sed -e '1,78d' < $HOST > $TEMP
-		  rm -f $HOST
-		  sed -e 's/[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}/'"${ip}"'/g' $TEMP > $STEMP
-		  awk '!a[$0]++' $STEMP > $TEMP
+		  truncate -s 0 $HOST
+		  sed -ie 's/[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}/'"${ip}"'/g' $TEMP
 		  cat $PTEMP $TEMP > $HOST
 		  rm -f $TEMP $STEMP $PTEMP $LTEMP
 		  echo -e $W'[+] Done'$N
@@ -1629,7 +1658,9 @@ sleep 0.1
 		# ----------------------------------------
 		chk|check|Check|CHECK|ck) while true
 		do
+		curip=$(grep -o -m 1 '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' $HOST | sed 's/watchdog.energized.pro//')
 		clear
+		echo $curip
 		echo -e $Y"$divider"$N
 		echo -e $Y'ϟ C H E C K  D O M A I N'$N
 		sleep 0.1
