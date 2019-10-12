@@ -143,6 +143,10 @@ on_install() {
   # Extend/change the logic to whatever you want
   ui_print "- Extracting module files"
   unzip -o "$ZIPFILE" 'system/*' -d $MODPATH >&2
+  
+  # Symbolic link for lowercase/UPPERCASE support in terminal
+  [ -d "$MODPATH/system/bin/" ] || mkdir -p "$MODPATH/system/bin/"
+  ln -sf energized "$MODPATH/system/bin/Energized"
 }
 
 # Only some special files require specific permissions
@@ -162,7 +166,3 @@ set_permissions() {
 }
 
 # You can add more functions to assist your custom script code
-
-# Create symlink to avoid user confusion when they could typing 'Energized' or 'ENERGIZED'
-[ -d "$TMPDIR/system/bin/" ] || mkdir -p "$TMPDIR/system/bin/"
-ln -sf energized "$TMPDIR/system/bin/Energized"
