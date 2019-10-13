@@ -4,10 +4,10 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-pluot-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-éclairs-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Last Updated -->
-    <img src="https://img.shields.io/badge/Updated-Jul 26, 2019-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Updated-Oct 13, 2019-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
   <!-- Status -->
     <img src="https://img.shields.io/badge/Status-Stable-green.svg?longCache=true&style=flat-square"
@@ -102,7 +102,7 @@
  su  
  energized
  ```
-  *`Energized` or `ENERGIZED` would also work.*
+  *`Energized` would also work.*
  - Then follow the prompts to install host file of choice
 
 #### Whitelist (0.0.0.0) Instructions:
@@ -159,6 +159,13 @@
  - Run Clear Hosts by typing `c` and enter. It will clear your hosts file to stock state.
  
 ## Changelog
+
+v.éclairs
+ - Added Magisk 20.0 Compatibility.
+ - Fixed Magisk Version Detection.
+ - Fixed Symlink. Now you can type `Energized` also to run the script.
+ - Updated Check Function.
+ - Script Optimization & Improvement Patches Applied.
 
 v.pluot
  - Fixed shell check.
@@ -332,7 +339,7 @@ Energized Hosts are basically `hosts` files to block access to domains. If you d
 [SUPPORT THE DEVELOPMENT](https://opencollective.com/energizedprotection)
 
 ## License
-[CC BY-NC-SA 4.0](https://github.com/EnergizedProtection/block/blob/master/LICENSE.md)
+[MIT](https://github.com/EnergizedProtection/block/blob/master/LICENSE.md)
 
 ---
 

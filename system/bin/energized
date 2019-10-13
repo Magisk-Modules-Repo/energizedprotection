@@ -20,9 +20,6 @@ LG='\e[01;37m' > /dev/null 2>&1; # Light Gray
 N='\e[0m' > /dev/null 2>&1; # Null
 # ----------------------------------------
 
-
-# ----------------------------------------
-
 # Define Energized Protection Directory
 # ----------------------------------------
 DIRECTORY=/sdcard/EnergizedProtection
@@ -57,8 +54,8 @@ fi
 
 # Versioning & Date
 # ----------------------------------------
-version=$Y'pluot'$N > /dev/null 2>&1
-released=$G'Jul 26, 2019'$N > /dev/null 2>&1
+version=$Y'éclairs'$N > /dev/null 2>&1
+released=$G'Oct 13, 2019'$N > /dev/null 2>&1
 saythanks='https://saythanks.io/to/AdroitAdorKhan' > /dev/null 2>&1
 date=$(date "+%d.%m.%Y %H:%M:%S")
 # ----------------------------------------
@@ -411,7 +408,7 @@ COUNT=1
 
 # Check Energized Pack
 # ----------------------------------------
-	[ -f /system/etc/hosts ];
+	[ -f $HOST ];
 if grep -q "E84S1C-P" $HOST; then
 	echeck="Basic Protection"
 	autopack="basic"
@@ -491,6 +488,8 @@ if grep -q ads $HOST; then
 else
 	adblocker=$R"[×]"$N
 fi
+# ----------------------------------------
+
 # ----------------------------------------
 
 # Check Energized Protection 
@@ -591,7 +590,7 @@ echo -e $Y"   /___/_/|_/___/_/|_|\___/___/ /___/___/____/  "$N; sleep 0.1;
 echo ''
 sleep 0.1
 echo -e $Y'      P   R   O   T   E   C   T   I   O   N'$N
-echo "                                         v.$version"
+echo -e $W"                                       v.$version"$N
 sleep 0.1
 echo -e $Y"$divider"$N
 sleep 0.1
@@ -1677,15 +1676,11 @@ sleep 0.1
 		    echo "[+] Applying $domain as blacklist..."
 		    echo -e "\n# Instant Blacklist Applied on - $date" >> $HOST
 		    echo -e "$curip$domain" >> $HOST
-			echo -e $Y"$domain "$N$W"- blacklisted."$N
+			echo -e $W"[✓] "$N$Y"$domain "$N$W"- blacklisted."$N
 			sleep 0.6
 		    echo -e "\n# Applied on - $date" >> $BLACKLIST
 		    echo "$domain" >> $BLACKLIST
 		    echo -e $W'[+] Done'$N
-			echo -e $W'[+] Make sure to reboot once after applying.'$N
-			sleep 0.5
-		    echo -e $W'[+] Returning...'$N
-		    sleep 1
 		    echo -n -e $W'[+] Check Again?'$N $Y'[Y/N]:'$N
 		    read answer
 		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
@@ -1704,10 +1699,30 @@ sleep 0.1
 		else
 		  echo -e $G"[✓] $domain - "$N$W"is in the list!"$N
 		  sleep 1
-		  echo -n -e $W'[+] Check Again?'$N $Y'[y/n]:'$N
+		  echo -n -e $W'[+] Want to whitelist the domain?'$N $Y'[y/n]:'$N
 		  read answer
-		  if [[ "$answer" == "N" || "$answer" == "n" ]]; then
-		    break
+		  if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
+		    echo "[+] Applying $domain as whitelist..."
+		    grep -Fvx "$curip$domain" $HOST > $TEMP
+		    truncate -s 0 $HOST
+		    mv -f $TEMP $HOST
+		    echo -e $W"[✓] "$N$Y"$domain "$N$W"- whitelisted."$N
+		    echo "$domain" >> $WHITELIST
+		    echo -e $W'[+] Done'$N
+		    echo -n -e $W'[+] Check Again?'$N $Y'[y/n]:'$N
+		    read answer
+		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
+		      break
+		    fi
+		    clear
+		  else
+		    echo -n -e $W'[+] Check Again?'$N $Y'[y/n]:'$N
+		    read answer
+		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
+		      break
+		    fi
+		    clear
+		    echo -n -e $W'[+] RETURNING...'$N
 		  fi
 		fi
 		done
