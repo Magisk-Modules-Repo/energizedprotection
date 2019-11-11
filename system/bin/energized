@@ -1,7 +1,7 @@
 #!/system/bin/sh
 # ======================================================================
 # Module: Energized Protection
-# License: CC BY-NC-SA 4.0; https://energized.pro/license
+# License: MIT; https://energized.pro/license
 # Copyright (C) 2018-2019 Energized Protection.
 # ======================================================================
 # Script Begins -
@@ -81,7 +81,7 @@ sleep 0.1
 echo -e $Y'                  energized.pro'$N
 echo ""
 sleep 0.1
-echo "                 CC BY-NC-SA 4.0"
+echo "                 Licensed by MIT"
 echo ""
 sleep 0.3
 echo -n -e $Y'                        •'$N; sleep 0.2;
