@@ -4,10 +4,10 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-éclairs-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-4.9-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Last Updated -->
-    <img src="https://img.shields.io/badge/Updated-Oct 13, 2019-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Updated-Feb 23, 2020-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
   <!-- Status -->
     <img src="https://img.shields.io/badge/Status-Stable-green.svg?longCache=true&style=flat-square"
@@ -159,6 +159,11 @@
  - Run Clear Hosts by typing `c` and enter. It will clear your hosts file to stock state.
  
 ## Changelog
+
+v.4.9
+ - Added Magisk Canary support.
+ - Magisk 15-18 Support has been dropped. (Should or shouldn't work)
+ - Last update of old script. Newer and updated version is on the way, with improved features.
 
 v.éclairs
  - Added Magisk 20.0 Compatibility.
@@ -348,5 +353,3 @@ Energized Hosts are basically `hosts` files to block access to domains. If you d
 </div>
 
 <p align="center"><sub>A project by <a href="https://nayemador.com" target="_blank">Ador</a> with ❤<p>
-
-<p align="center"><a href="https://saythanks.io/to/AdroitAdorKhan" target="_blank"><img src="https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg?longCache=true&style=flat-square"></a><p>
