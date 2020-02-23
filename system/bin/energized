@@ -2,7 +2,7 @@
 # ======================================================================
 # Module: Energized Protection
 # License: MIT; https://energized.pro/license
-# Copyright (C) 2018-2019 Energized Protection.
+# Copyright (C) 2018-2020 Energized Protection.
 # ======================================================================
 # Script Begins -
 # ========================================
@@ -54,8 +54,8 @@ fi
 
 # Versioning & Date
 # ----------------------------------------
-version=$Y'éclairs'$N > /dev/null 2>&1
-released=$G'Oct 13, 2019'$N > /dev/null 2>&1
+version=$Y'4.9'$N > /dev/null 2>&1
+released=$G'Feb 23, 2020'$N > /dev/null 2>&1
 saythanks='https://saythanks.io/to/AdroitAdorKhan' > /dev/null 2>&1
 date=$(date "+%d.%m.%Y %H:%M:%S")
 # ----------------------------------------
@@ -81,8 +81,9 @@ sleep 0.1
 echo -e $Y'                  energized.pro'$N
 echo ""
 sleep 0.1
-echo "                 Licensed by MIT"
+echo "                 CC BY-NC-SA 4.0"; sleep 0.05;
 echo ""
+echo "    ~ NEW AND BETTER VERSION IS ON THE WAY ;) ~"
 sleep 0.3
 echo -n -e $Y'                        •'$N; sleep 0.2;
 echo -n -e $Y'•'$N; sleep 0.3;
@@ -131,8 +132,9 @@ clear
 
 # Magisk Check
 # ----------------------------------------
-magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
-MAGISK_VERSION=$($magisk -c | sed 's/-.*//')
+#magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
+printMagiskVersion=$(magisk -c | cut -d':' -f1)
+MAGISK_VERSION=$(magisk -V)
 case "$MAGISK_VERSION" in
 '15.'[1-9]*) # Version 15.1 - 15.9
     HOST=/sbin/.core/img/.core/hosts
@@ -150,15 +152,15 @@ case "$MAGISK_VERSION" in
     HOST=/sbin/.magisk/img/hosts/system/etc/hosts
 	BBOX_PATH=/sbin/.magisk/img/busybox-ndk
 ;;
-'18.'[0-9]*) # Version 18.x
+'18'[0-9]*) # Version 18.x
     HOST=/sbin/.magisk/img/hosts/system/etc/hosts
 	BBOX_PATH=/sbin/.magisk/img/busybox-ndk
 ;;
-'19.'[0-9a-zA-Z]*) # Version 19.x
+'19'[0-9a-zA-Z]*) # Version 19.x
 	HOST=/data/adb/modules/hosts/system/etc/hosts
 	BBOX_PATH=/data/adb/modules/busybox-ndk
 ;;
-'20.'[0-9a-zA-Z]*) # Version 20.x
+'20'[0-9a-zA-Z]*) # Version 20.x
 	HOST=/data/adb/modules/hosts/system/etc/hosts
 	BBOX_PATH=/data/adb/modules/busybox-ndk
 ;;
@@ -248,7 +250,7 @@ echo ''
 sleep 1
 echo -e $G"$divider"$N
 sleep 0.1
-echo -e $G' ϟ M A G I S K '$N$G"v$MAGISK_VERSION"$N
+echo -e $G' ϟ M A G I S K '$N$G"v$printMagiskVersion"$N
 sleep 0.1
 echo -e $G"$divider"$N
 sleep 0.1
