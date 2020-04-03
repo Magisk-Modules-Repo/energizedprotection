@@ -1,4 +1,4 @@
-![Cover](https://nayemador.com/assets/covers/energized_magisk_cover.svg)
+![Cover](https://energized.pro/assets/cover/energized_cover.svg)
 
 <h1 align="center">Energized Protection - Magisk ⚡</h1>
 
@@ -344,7 +344,7 @@ Energized Hosts are basically `hosts` files to block access to domains. If you d
 [SUPPORT THE DEVELOPMENT](https://opencollective.com/energizedprotection)
 
 ## License
-[MIT](https://github.com/EnergizedProtection/block/blob/master/LICENSE.md)
+[MIT](https://github.com/EnergizedProtection/block/blob/master/LICENSE)
 
 ---
 
