@@ -168,7 +168,7 @@ Usage: ep [options...]
 ```
 
 
-  *`Energized`, `energized` `Ep` & `epro` would also work, as symlink.*
+  *`Energized`, `energized`, `Ep`, `ep` & `epro` would also work, as symlink.*
  - Then follow the on screen prompts.
 
 Config Setup
@@ -191,7 +191,7 @@ Changelog
 v.1.3.0
 - Added back Magisk v20.0 - 20.3 support.
 
- _***Magisk v20.4+ users won't require seperate busybox module.**_
+ _***Magisk v20.4+ users won't require separate busybox module.**_
  
  _***Magisk v20.0-20.3 users will have to install Busybox for Android NDK module.**_
 
