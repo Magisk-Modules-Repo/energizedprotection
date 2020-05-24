@@ -1,42 +1,477 @@
 #!/system/bin/sh
 # ======================================================================
 # Module: Energized Protection
-# License: MIT; https://energized.pro/license
+# License: CC BY-NC-SA 4.0; https://energized.pro/license
 # Copyright (C) 2018-2020 Energized Protection.
 # ======================================================================
 # Script Begins -
 # ========================================
+
+# ----------------------------------------
+# Define Energized Protection directory
+# ----------------------------------------
+directory="/sdcard/EnergizedProtection"
+# Create directory
+if [ ! -d $directory ]; then
+    mkdir -p $directory;
+fi
+# ----------------------------------------
+# Load setup files and strings
+modPath="/sbin/.magisk/modules/energizedprotection/system/bin"
+. $modPath/setupFiles.sh
+. $modPath/mainMenu.sh
+. $modPath/strings.sh
+
+alias wget="$busybox wget"
+alias awk="$busybox awk"
+
+# ----------------------------------------
+# Config
+# ----------------------------------------
+config="$directory/ep.conf"
+getValue() { sed -n "s|^$1=||p" "$config"; }
+getFileSize() { ls -lah "$1" | awk '{print $5}'; }
+# ----------------------------------------
+
+# ----------------------------------------
 # Colors
 # ----------------------------------------
 BL='\e[01;90m' > /dev/null 2>&1; # Black
 R='\e[01;91m' > /dev/null 2>&1; # Red
+LR='\033[1;31m' > /dev/null 2>&1; # printf Red
 G='\e[01;92m' > /dev/null 2>&1; # Green
+LG='\033[1;32m' > /dev/null 2>&1; # printf Green
 Y='\e[01;93m' > /dev/null 2>&1; # Yellow
+LY='\033[1;33m' > /dev/null 2>&1; # printf Yellow
 B='\e[01;94m' > /dev/null 2>&1; # Blue
 P='\e[01;95m' > /dev/null 2>&1; # Purple
 C='\e[01;96m' > /dev/null 2>&1; # Cyan
+LC='\033[1;36m' > /dev/null 2>&1; # printf Cyan
 W='\e[01;97m' > /dev/null 2>&1; # White
-LG='\e[01;37m' > /dev/null 2>&1; # Light Gray
-N='\e[0m' > /dev/null 2>&1; # Null
+LW='\033[1;37m' > /dev/null 2>&1; # printf White
+N='\e[0m' > /dev/null 2>&1; # No color
+NC='\033[0m' > /dev/null 2>&1; # printf No color
 # ----------------------------------------
 
-# Define Energized Protection Directory
+hitWeb() { curl -sf http://go.energized.pro/web > /dev/null 2>&1; }
+
 # ----------------------------------------
-DIRECTORY=/sdcard/EnergizedProtection
-rm -f $DIRECTORY/filter
+# Mount and unmount system
+# ----------------------------------------
+mountSystem(){
+    mount -o remount,rw '/system' 2>> "${Output[0]}" 1>> "${Output[0]}"
+}
+unmountSystem(){
+    mount -o remount,ro '/system' 2>> "${Output[0]}" 1>> "${Output[0]}"
+}
 # ----------------------------------------
 
-# Deletes Unnecessary stuffs
 # ----------------------------------------
-DREADME=$DIRECTORY/cache/deltaReadme
-DFILTER=$DIRECTORY/cache/deltaFilter
+# Variables
+# ----------------------------------------
+userAgent='Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0'
+hostsGZ=$directory/hosts.gz
+versionInfo=$directory/cache/version.md
+versionBackup=$directory/cache/version.md.bck
+configBackup=$directory/cache/ep.conf.bck
+filter=$directory/cache/filter
+filterBackup=$directory/cache/filter.bck
+whitelist=$directory/whitelist
+blacklist=$directory/blacklist
+REDIRECTLIST=$directory/redirectlist
+temp=$directory/cache/temp
+atemp=$directory/cache/temp.a
+btemp=$directory/cache/temp.b
+ctemp=$directory/cache/temp.c
+dtemp=$directory/cache/temp.d
+etemp=$directory/cache/temp.e
+ltemp=$directory/cache/ltemp
+ptemp=$directory/cache/ptemp
+stemp=$directory/cache/stemp
+hostsBackup=$directory/hosts-backup.gz
+lastUpdated=$(grep "Version Code" $filter 2>/dev/null | sed "s/! Version Code: //")
+currentIP=$(grep -o -m 1 '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' "$hosts" | sed 's/watchdog.energized.pro//')
+# ----------------------------------------
 
-if [ -f $DREADME ]; then
-  rm -f $DREADME
-  rm -f $DFILTER
-  rm -f $DIRECTORY/deltaFilter
-  rm -f $DIRECTORY/deltaReadme
-fi
+# ----------------------------------------
+# Versioning & Date
+# ----------------------------------------
+version=$Y'1.2.5'$N > /dev/null 2>&1
+releaseDate=$G'May 24, 2020'$N > /dev/null 2>&1
+date=$(date "+%d.%m.%Y %H:%M:%S")
+# ----------------------------------------
+
+# ----------------------------------------
+# Check Directory
+# ----------------------------------------
+checkDirectory() {
+    # Create directory
+    if [ ! -d $directory ]; then
+        mkdir -p $directory;
+    fi
+    # Create cache folder
+    if [ ! -d $directory/cache ]; then
+        mkdir -p $directory/cache;
+    fi
+    # Check Blacklist
+    if [ ! -f $directory/blacklist ]; then
+        touch $directory/blacklist
+    fi
+    # Check Whitelist
+    if [ ! -f $directory/whitelist ]; then
+        touch $directory/whitelist
+    fi
+    # Check Redirectlist
+    if [ ! -f $directory/redirectlist ]; then
+        touch $directory/redirectlist
+    fi
+    # Check Temp
+    if [ ! -f $directory/cache/temp ]; then
+        touch $directory/cache/temp
+    fi
+    # Check P Temp
+    if [ ! -f $directory/cache/ptemp ]; then
+        touch $directory/cache/ptemp
+    fi
+    # Check S Temp
+    if [ ! -f $directory/cache/stemp ]; then
+        touch $directory/cache/stemp
+    fi
+    # Check Files
+    if [ ! -f $directory/whitelist ] && [ ! -f $directory/redirectlist ] && [ ! -f $directory/blacklist ] && [ ! -f $directory/cache/temp ] && [ ! -f $directory/cache/ptemp ] && [ ! -f $directory/cache/stemp ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Get file size from URL
+# ----------------------------------------
+urlFileSize() {
+    curl -sI "$1" | grep -i Content-Length | awk '{print $2/1024/1024}'
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Spin till pid dies
+# ----------------------------------------
+spinPID() {
+    # Spin var
+    spin[0]="-"
+    spin[1]="\\"
+    spin[2]="|"
+    spin[3]="/"
+    # Check for process
+    while kill -0 "$pid" 2> /dev/null; do
+        for i in "${spin[@]}"; do
+            echo -ne "$W""\r[";
+            echo -ne "$Y""$i";
+            echo -ne "$W""]" "$W""$1"; sleep 0.1;
+        done
+    done
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Cleanup
+# ----------------------------------------
+cleanup () {
+    # Filter
+    rm -f $directory/filter
+}
+# Cleanup temp files
+cleanupTemp () {
+    rm -f $versionInfo $temp $atemp $btemp $ctemp $dtemp $etemp $ltemp $stemp $ptemp
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Check for config file
+# ----------------------------------------
+checkConfig() {
+    if [ ! -f $config ]; then
+        wget --no-check-certificate -q -O $config "https://block.energized.pro/magisk/ep.conf"
+        checkConfig=$G"✓"$N
+    else
+        checkConfig=$R"×"$N
+    fi
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Check root permission
+# ----------------------------------------
+checkRoot() {
+    id="$(id)"; id="${id#*=}"; id="${id%%\(*}"; id="${id%% *}"
+    if [ "$id" != "0" ] && [ "$id" != "root" ]; then
+        root=$R"[×]"$N
+        return 0
+    else
+        root=$G"[✓]"$N
+        return 1
+    fi
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Check Other Adblocker
+# ----------------------------------------
+checkAdblockerApp() {
+    if [ -d /data/data/org.adaway/ ] || [ -d /system/app/org.adaway/ ] || [ -d /system/priv-app/org.adaway/ ]; then
+        adblockAppName=AdAway
+        return 1
+    elif [ -d /data/data/ru.dixl0f0s.unifiedhostsmanager/ ] || [ -d /system/app/ru.dixl0f0s.unifiedhostsmanager/ ] || [ -d /system/priv-app/ru.dixl0f0s.unifiedhostsmanager/ ]; then
+        adblockAppName=UHM
+        return 1
+    else
+	    adblockAppName=''
+        return 0
+    fi
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Check internet
+# ----------------------------------------
+checkInternetConnection(){
+    wget --no-check-certificate -q --spider -T '2' https://block.energized.pro 2>/dev/null
+    if [ $? -eq 0 ]; then
+        return 1
+    else
+        return 0
+    fi
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Check hosts update
+# ----------------------------------------
+checkUpdate() {
+    checkShell;
+    checkEP;
+    #checkInternetConnection
+    #### Read Config 'checkHostsUpdate=true'
+    if [ "$(getValue checkHostsUpdate)" == "true" ]; then
+        #if [ "$checkInternet" == "online" ]; then
+        ### Check Energized Protection pack
+        if [ "$autoPack" != "null" ]; then
+            ## Download Version Info
+            wget --no-check-certificate -T "3" -q -O $versionInfo https://block.energized.pro/VERSION.md
+            #grep -q "Version Code" $versionInfo
+            cp $versionInfo $versionBackup
+            # Check Filter Info
+            if [ -f $filter ]; then 2>/dev/null
+                CURRENT=$(grep "Version Code" $versionInfo)
+                LAST_UPDATED=$(sed '1q;d' $filter)
+                if [ "$LAST_UPDATED" != "$CURRENT" ]; then
+                    if [ "$(grep "watchdog.energized.pro" "$hosts")" ]; then
+                        eupdate=$G'[ϟ] UPDATE AVAILABLE!'$N
+                        checkUpdatePrint=$G"\r[ϟ] Update: Available.\n"$N
+                    fi
+                else
+                    eupdate=$W'[✓] UP-TO-DATE!'$N
+                    checkUpdatePrint=$G"\r[✓] Update: Already latest.\n"$N
+                fi
+            else
+                touch $filter
+                for x in "EP0R9-P" "EXR3G1094L-P" "EX7R3M3-P" "EXP0R9-P" "EX50C14L-P"; do
+                    if grep -q $x "$hosts"
+                    then
+                        eupdate=$B'[*] Extension Applied'$N
+                        checkUpdatePrint=$B"\r[+] Update: Extension applied.\n"$N
+                        break
+
+                    else
+                        eupdate="[+] APPLY PACK FIRST!"
+                        checkUpdatePrint=$Y"\r[+] Update: Apply pack first.\n"$N
+                    fi
+                done
+            fi
+        else
+            eupdate="[+] APPLY PACK FIRST!"
+            checkUpdatePrint=$Y"\r[+] Update: Apply pack first.\n"$N
+        fi
+    else
+        eupdate=""
+        checkUpdatePrint=$B"\r[*] Update: Disabled in config.\n"$N
+    fi
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Check Energized Protection pack
+# ----------------------------------------
+checkEPPack() {
+    if [ -f "$hosts" ]; then
+        if grep -q "E84S1C-P" "$hosts"; then
+            epPack="Basic Protection"
+            autoPack="basic"
+        elif grep -q "E5P4RK-P" "$hosts"; then
+            epPack="Spark Protection"
+            autoPack="spark"
+        elif grep -q "E8LU-P" "$hosts"; then
+            epPack="Blu Protection"
+            autoPack="blu"
+        elif grep -q "E8LUG0-P" "$hosts"; then
+            epPack="BluGo Protection"
+            autoPack="bluGo"
+        elif grep -q "EP0R9-P" "$hosts"; then
+            epPack="Porn Protection"
+            autoPack="porn"
+        elif grep -q "EUL71M473-P" "$hosts"; then
+            epPack="Ultimate Protection"
+            autoPack="ultimate"
+        elif grep -q "EU91F13D-P" "$hosts"; then
+            epPack="Unified Protection"
+            autoPack="unified"
+        else
+            if grep -q "/extensions/" "$hosts"; then
+                epPack="Extension"
+            else
+                epPack="-"
+                autoPack="null"
+            fi
+        fi
+    fi
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Check Energized Protection extension
+# ----------------------------------------
+checkEPExtensionPack() {
+    if [ -f "$hosts" ]; then
+        if grep -q "EP0R9-P" "$hosts"; then
+            ePCheck="✓"
+            epEPack="Porn"
+            autoExtension="porn"
+        else
+            ePCheck=""
+        fi
+        if grep -q "EXR3G1094L-P" "$hosts"; then
+            eRCheck="✓"
+            epEPack="Regional"
+            autoExtension="regional"
+        else
+            eRCheck=""
+        fi
+        if grep -q "EX7R3M3-P" "$hosts"; then
+            eXCheck="✓"
+            epEPack="Xtreme"
+            autoExtension="xtreme"
+        else
+            eXCheck=""
+        fi
+        if grep -q "EXP0R9-P" "$hosts"; then
+            ePLCheck="✓"
+            epEPack="Porn-lite"
+            autoExtension="porn-lite"
+        else
+            ePLCheck=""
+        fi
+        if grep -q "EX50C14L-P" "$hosts"; then
+            eSCheck="✓"
+            epEPack="Social"
+            autoExtension="social"
+        else
+            eSCheck=""
+        fi
+    fi
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Check Energized Protection service
+# ----------------------------------------
+checkEP() {
+    # Check Magisk hosts
+    if [ -f "$hosts" ]; then
+        # Check Energized Protection domain
+        if grep -q watchdog.energized.pro "$hosts"; then
+            eonoff=$G"[✓]"$N
+            energizedCheck=$G"✓ "$N$W"Energized Protection activated."$N
+        else
+            # Check extension(s)
+            if grep -q "/extensions/" "$hosts"; then
+                eonoff=$B"[*]"$N
+                energizedCheck=$B"* "$N$W"Energized Protection partially activated."$N
+            else
+                eonoff=$R"[×]"$N
+                energizedCheck=$R"× "$N$W"Energized Protection not activated."$N
+            fi
+            #
+        fi
+        #
+    fi
+    # Check Energized Protection packs
+    checkEPPack;
+    # Check Energized Protection extension packs
+    checkEPExtensionPack;
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Setup filter
+# ----------------------------------------
+setFilter() {
+    wget --no-check-certificate -q -O $versionInfo "https://block.energized.pro/VERSION.md"
+    cp $versionInfo $versionBackup
+    grep "Version Code" $versionInfo > $filter 2>/dev/null
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Setup minimum required stuffs
+# ----------------------------------------
+setupFilesMin() {
+    # Cleanup cache filter
+    cleanup;
+    # Setup directory
+    checkDirectory;
+    # Check Magisk setup
+    checkMagisk;
+    # Check systemless hosts
+    checkSystemlessHosts;
+    # Check busybox setup
+    checkBusybox;
+    # Check Energized Protection
+    checkEP;
+}
+# ----------------------------------------
+setupFilesMin;
+# ----------------------------------------
+# Setup required stuffs for menu
+# ----------------------------------------
+setupFiles() {
+    # Cleanup cache filter
+    cleanup;
+    # Setup directory
+    checkDirectory;
+    # Check systemless hosts
+    checkSystemlessHosts;
+    # Check config file
+    checkConfig;
+    # Check Magisk setup
+    checkMagisk;
+    # Check busybox setup
+    checkBusybox;
+    # Check Config
+    checkConfig;
+    # Check root
+    checkRoot;
+    # Check shell
+    checkShell;
+    # Check systemless hosts
+    checkSystemlessHosts;
+    # Check other adblocker App(s)
+    checkAdblockerApp;
+    # Check Energized Protection service
+    checkEP;
+    # Check hosts update
+    checkUpdate 2>/dev/null;
+}
 # ----------------------------------------
 
 # Divider
@@ -45,1776 +480,1653 @@ divider="-------------------------------------------------"
 divider2="================================================="
 divider3="_________________________________________________"
 
-# Create Energized Protection Directory
-# ----------------------------------------
-if [ ! -d $DIRECTORY ]; then
-    mkdir -p $DIRECTORY;
-fi
-# ----------------------------------------
-
-# Versioning & Date
-# ----------------------------------------
-version=$Y'4.9'$N > /dev/null 2>&1
-released=$G'Feb 23, 2020'$N > /dev/null 2>&1
-saythanks='https://saythanks.io/to/AdroitAdorKhan' > /dev/null 2>&1
-date=$(date "+%d.%m.%Y %H:%M:%S")
-# ----------------------------------------
-
-# Start Echos
-# ----------------------------------------
-clear
-echo ''
-echo -e $Y"      _____  _________  _____________  _______  "$N
-echo -e $Y"     / __/ |/ / __/ _ \/ ___/  _/_  / / __/ _ \ "$N
-echo -e $Y"    / _//    / _// , _/ (_ // /  / /_/ _// // / "$N
-echo -e $Y"   /___/_/|_/___/_/|_|\___/___/ /___/___/____/  "$N
-echo ''
-echo -e $Y'      P   R   O   T   E   C   T   I   O   N'$N
-sleep 0.1
-echo -e $W"$divider"$N
-echo "     Version: $version | Updated: $released"
-sleep 0.1
-echo -e $W"$divider"$N
-sleep 0.1
-echo ""
-sleep 0.1
-echo -e $Y'                  energized.pro'$N
-echo ""
-sleep 0.1
-echo "                 CC BY-NC-SA 4.0"; sleep 0.05;
-echo ""
-echo "    ~ NEW AND BETTER VERSION IS ON THE WAY ;) ~"
-sleep 0.3
-echo -n -e $Y'                        •'$N; sleep 0.2;
-echo -n -e $Y'•'$N; sleep 0.3;
-echo -n -e $Y'•'$N; sleep 0.2;
-sleep 2
-clear
-# ----------------------------------------
-
-# Disclaimer, Warning & Support
-# ----------------------------------------
-echo -e $R"$divider"$N
-echo -e $R'D I S C L A I M E R'$N
-echo -e $R"$divider"$N
-echo -e $R"THIS IS SIMPLY A MODULE TO CHANGE YOUR SYSTEMLESS"$N
-echo -e $R"HOSTS FILE. IF YOU DON'T KNOW WHAT YOU ARE DOING,"$N
-echo -e $R"PLEASE  DON'T  PROCEED. WE  WON'T BE  RESPONSIBLE"$N
-echo -e $R"FOR THE MESS YOU CREATE."$N
-echo -e $R"$divider"$N
-echo ''
-echo -e $Y"$divider"$N
-echo -e $Y'W A R N I N G'$N
-echo -e $Y"$divider"$N
-echo -e $Y"BASIC, PORN, ULTIMATE & UNIFIED PACKS ARE BIGGER"$N
-echo -e $Y"IN SIZE. USE THEM IF YOUR DEVICE CAN HANDLE"$N
-echo -e $Y"THE LOAD."$N
-echo -e $Y"$divider"$N
-echo ''
-echo -e $P"$divider"$N
-echo -e $P'S U P P O R T  D E V E L O P M E N T'$N
-echo -e $P"$divider"$N
-echo -e $P"IF YOU LOVED OUR WORK, CONSIDER DONATING; TO"$N
-echo -e $P"KEEP THE PROJECT ALIVE AND RUNNING."$N
-echo -e $P"$divider"$N
-echo ''
-echo -e $G"$divider"$N
-echo -e $G'S A Y  T H A N K S'$N
-echo -e $G"$divider"$N
-echo -e $G"I REALLY LOVE HEARING FROM YOU GUYS!"$N
-echo -e $G"TYPE THX AND TELL US MORE!"$N
-echo -e $G"$divider"$N
-curl -sf http://go.energized.pro/web > /dev/null 2>&1; 
-sleep 3
-clear
-# Systemless Hosts, BusyBox Management
-# ----------------------------------------
-
-# Magisk Check
-# ----------------------------------------
-#magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
-printMagiskVersion=$(magisk -c | cut -d':' -f1)
-MAGISK_VERSION=$(magisk -V)
-case "$MAGISK_VERSION" in
-'15.'[1-9]*) # Version 15.1 - 15.9
-    HOST=/sbin/.core/img/.core/hosts
-	BBOX_PATH=/sbin/.core/img/busybox-ndk
-;;
-'16.'[1-9]*) # Version 16.1 - 16.9
-    HOST=/sbin/.core/img/.core/hosts
-	BBOX_PATH=/sbin/.core/img/busybox-ndk
-;;
-'17.'[1-3]*) # Version 17.1 - 17.3
-    HOST=/sbin/.core/img/.core/hosts
-	BBOX_PATH=/sbin/.core/img/busybox-ndk
-;;
-'17.'[4-9]*) # Version 17.4 - 17.9
-    HOST=/sbin/.magisk/img/hosts/system/etc/hosts
-	BBOX_PATH=/sbin/.magisk/img/busybox-ndk
-;;
-'18'[0-9]*) # Version 18.x
-    HOST=/sbin/.magisk/img/hosts/system/etc/hosts
-	BBOX_PATH=/sbin/.magisk/img/busybox-ndk
-;;
-'19'[0-9a-zA-Z]*) # Version 19.x
-	HOST=/data/adb/modules/hosts/system/etc/hosts
-	BBOX_PATH=/data/adb/modules/busybox-ndk
-;;
-'20'[0-9a-zA-Z]*) # Version 20.x
-	HOST=/data/adb/modules/hosts/system/etc/hosts
-	BBOX_PATH=/data/adb/modules/busybox-ndk
-;;
-*)
-    echo "Unknown version: $MAGISK_VERSION"; sleep 5;
-;;
-esac
-# ----------------------------------------
-
-# Check Root
-# ----------------------------------------
-id="$(id)"; id="${id#*=}"; id="${id%%\(*}"; id="${id%% *}"
-if [ "$id" != "0" ] && [ "$id" != "root" ]; then
-    root="[×]"
-    rootCheck=$R"× "$N$W"Root permission was not granted."$N
-else
-    root=$G"[✓]"$N
-    rootCheck=$G"✓ "$N$W"Root permission was granted."$N
-fi
-# ----------------------------------------
-
-# Shell check
-# ----------------------------------------
-CUR_SHELL=$(ps $$ | tail -1 | awk '{print $NF}')
-if [ $(echo "$CUR_SHELL" | grep 'NAME') ]; then
-	CUR_SHELL=$(ps $$ | tail -1 | awk '{print $NF}' | sed 's/NAME //' | sed ':a;N;$!ba;s/\n//' | sed 's/NAME//') 2>/dev/null;
-fi
-case $CUR_SHELL in
-	/system/bin/bash|bash)
-		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
-		SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
-		# not in bash
-	;;
-	/system/bin/ksh|ksh)
-		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
-		SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
-		# not in ksh
-	;;
-	/system/bin/csh|csh)
-		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
-		SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
-		# not in csh
-	;;
-	/system/bin/zsh|zsh)
-		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
-		SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
-		# not in zsh
-	;;
-	/system/bin/ash|ash)
-		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
-		SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
-		# not in ash
-	;;
-	/system/bin/sh|sh)
-		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
-		SHELL_TYPE=$(echo -e $G" ✓ "$N$W"Script running in $CUR_SHELL mode. Great!"$N)
-		#Success
-	;;
-	*)
-		CUR_SHELL=$(echo "$CUR_SHELL" | sed 's/\/system\/bin\///' | sed 's/\/system\/sbin\///' | sed 's/\/bin\///' | sed 's/\/system\/xbin\///') 2>/dev/null;
-		SHELL_TYPE=$(echo -e $R" × "$N$W"Not compatible with $CUR_SHELL mode."$N$R"\n   - Only compatible with sh."$N)
-		# not in zsh or another..
-	;;
-esac
-
-# New UI
-clear
-echo -e $Y"$divider"$N
-sleep 0.1
-echo -e $Y'ϟ C O M P A T I B I L I T Y  I N F O -'$N
-sleep 0.1
-echo -e $Y"$divider"$N
-sleep 0.1
-echo ''
-sleep 0.1
-echo -e $B"$divider"$N
-sleep 0.1
-echo -e $B" ϟ T E R M I N A L"$N
-sleep 0.1
-echo -e $B"$divider"$N
-sleep 0.1
-echo -e $W"$SHELL_TYPE"$N
-sleep 0.1
-echo -e $B"$divider"$N
-sleep 0.1
-echo ''
-sleep 1
-echo -e $G"$divider"$N
-sleep 0.1
-echo -e $G' ϟ M A G I S K '$N$G"v$printMagiskVersion"$N
-sleep 0.1
-echo -e $G"$divider"$N
-sleep 0.1
-echo -e $W" $rootCheck"$N
-sleep 0.1
-# Systemless Hosts Check
-# ----------------------------------------
-if [ ! -f $HOST ]; then
-    echo -e $R" × "$N$W"Systemless Hosts is disabled."$N$R"\n   - Enable in 'Magisk Manager>Settings'.\n   - Reboot and re-run the script.\n   - Quitting Script..."$N
-    sleep 3
-    exit 0
-else
-    echo -e $G" ✓ "$N$W"Systemless Hosts is enabled."$N
-fi
-# ----------------------------------------
-sleep 0.1
-echo -e $G"$divider"$N
 
 # ----------------------------------------
-
-# Busybox Check
+# Confirmation
 # ----------------------------------------
-busybox=$(ls "$BBOX_PATH/system/bin/busybox" || ls "$BBOX_PATH/system/xbin/busybox") 2>/dev/null
-bb_auto_implement=$(ls /system/bin/busybox || ls /system/sbin/busybox || ls /system/xbin/busybox || ls /sbin/busybox) 2>/dev/null
-bb_manual_implement_gzip=$(ls /system/bin/gzip || ls /system/sbin/gzip || ls /system/xbin/gzip || ls /sbin/gzip) 2>/dev/null
-bb_manual_implement_wget=$(ls /system/bin/wget || ls /system/sbin/wget || ls /system/xbin/wget || ls /sbin/wget) 2>/dev/null
-bb_manual_implement_awk=$(ls /system/bin/awk || ls /system/sbin/awk || ls /system/xbin/awk || ls /sbin/awk) 2>/dev/null
-bb_manual_implement_sort=$(ls /system/bin/sort || ls /system/sbin/sort || ls /system/xbin/sort || ls /sbin/sort) 2>/dev/null
-bb_manual_implement_truncate=$(ls /system/bin/truncate || ls /system/sbin/truncate || ls /system/xbin/truncate || ls /sbin/truncate) 2>/dev/null
-
-if [ -n "$busybox" ]; then
-	bboxname=$(echo $("$busybox" | head -1 | cut -f 2 -d ' '))
-	bbCheck=$G" ✓ "$N$W"$bboxname is fully supported."$N
-
-elif [ -n "$bb_auto_implement" ]; then
-	bboxname=$(echo $("$bb_auto_implement" | head -1 | cut -f 2 -d ' '))
-	bbCheck=$G" ✓ "$N$W"$bboxname is fully supported."$N
-
-elif [ -n "$bb_manual_implement_gzip" ] && [ -n "$bb_manual_implement_wget" ] && [ -n "$bb_manual_implement_awk" ] && [ -n "$bb_manual_implement_sort" ] && [ -n "$bb_manual_implement_truncate" ]; then
-	bboxname=$(echo 'Busybox Applets')
-	bbCheck=$G" ✓ "$N$W"$bboxname are supported."$N
-	
-elif [ -z "$busybox" ] || [ -z "$bb_auto_implement" ] || [ -z "$bb_manual_implement_gzip" ] || [ -z "$bb_manual_implement_wget" ] || [ -z "$bb_manual_implement_awk" ] || [ -z "$bb_manual_implement_sort" ] || [ -z "$bb_manual_implement_truncate" ]; then
-	bboxname=$(echo $R'Not Found!'$N)
-	bbCheck=$R" × "$N$W"Busybox $bboxname!"$N$R"\n   - Install Busybox properly.\n   - Osmosis or Stericson Busybox recommended.\n   - Quitting Script..."$N
-	sleep 3
-fi
-
-sleep 1
-
-# ----------------------------------------
-echo ''
-echo -e $P"$divider"$N
-sleep 0.1
-echo -e $P' ϟ B U S Y B O X '$N$P"$bboxname"$N
-sleep 0.1
-echo -e $P"$divider"$N
-sleep 0.1
-echo -e $P"$bbCheck"$N
-sleep 0.1
-echo -e $P"$divider"$N
-sleep 0.1
-echo ''
-# Check Other Adblocker
-# ----------------------------------------
-if [ -d /data/data/org.adaway/ ] || [ -d /system/app/org.adaway/ ] || [ -d /system/priv-app/org.adaway/ ]; then
-    adbCheck=$R"× "$N$W"AdAway detected."$N$R"\n   - Disable to avoid conflict."$N
-elif [ -d /data/data/ru.dixl0f0s.unifiedhostsmanager/ ] || [ -d /system/app/ru.dixl0f0s.unifiedhostsmanager/ ] || [ -d /system/priv-app/ru.dixl0f0s.unifiedhostsmanager/ ]; then
-    adbCheck=$R"× "$N$W"UHM detected."$N$R"\n   - Disable to avoid conflict."$N
-else
-    adbCheck=$G"✓ "$N$W"No other adblocker detected."$N
-fi
+areYouSure() { echo -n -e "$W"'\n[+] Sure? Type "y" or "n" to cancel: '"$N"; read -r 'userAnswer'; }
 # ----------------------------------------
 
-# Check Energized Directory
+# ----------------------------------------
+# Check Again?
+# ----------------------------------------
+checkAgain() { echo -n -e "$W"'[+] Check again? Type "y" or "n" to cancel: '"$N"; read -r 'userAnswer'; }
 # ----------------------------------------
 
-# Create Cache Directory
 # ----------------------------------------
-if [ ! -d $DIRECTORY/cache ]; then
-    mkdir -p $DIRECTORY/cache;
-    dirCheck=$B"+ "$N$W"Directories have been created."$N
-else
-    dirCheck=$G"✓ "$N$W"Directories are properly set up."$N
-fi
-# Check Blacklist
+# Visit Telegram
 # ----------------------------------------
-if [ ! -f $DIRECTORY/blacklist ]; then
-   touch $DIRECTORY/blacklist
-fi
-# Check Whitelist
-# ----------------------------------------
-if [ ! -f $DIRECTORY/whitelist ]; then
-   touch $DIRECTORY/whitelist
-fi   
-# Check Redirectlist
-# ----------------------------------------
-if [ ! -f $DIRECTORY/redirectlist ]; then
-   touch $DIRECTORY/redirectlist
-fi
-# Check Lists
-# ----------------------------------------
-if [ ! -f $DIRECTORY/blacklist ] && [ ! -f $DIRECTORY/whitelist ] && [ ! -f $DIRECTORY/redirectlist ]; then
-   listsCheck=$R"× "$N$W"Required files are missing!"$N
-else
-   listsCheck=$G"✓ "$N$W"Required files are available."$N
-fi
-
-# Check Temp
-# ----------------------------------------
-if [ ! -f $DIRECTORY/cache/temp ]; then
-   touch $DIRECTORY/cache/temp
-fi
-# Check Porn Temp
-# ----------------------------------------
-if [ ! -f $DIRECTORY/cache/ptemp ]; then
-   touch $DIRECTORY/cache/ptemp
-fi
-# Check Social Temp
-# ----------------------------------------
-if [ ! -f $DIRECTORY/cache/stemp ]; then
-   touch $DIRECTORY/cache/stemp
-fi
-# Check Temp Files
-# ----------------------------------------
-if [ ! -f $DIRECTORY/cache/temp ] && [ ! -f $DIRECTORY/cache/ptemp ] && [ ! -f $DIRECTORY/cache/stemp ]; then
-   tempsCheck=$R"× "$N$W"Temp files not found!"$N
-else
-   tempsCheck=$G"✓ "$N$W"Temp files available."$N
-fi
-
-# Features & Main Parts
-# ----------------------------------------
-while true
-do
-# Aliases, Grep, Wget Variables
-# ----------------------------------------
-SHOST=$DIRECTORY/hosts.gz
-TREADME=$DIRECTORY/cache/readme
-BREADME=$DIRECTORY/cache/readme-backup
-DREADME=$DIRECTORY/cache/deltaReadme
-FILTER=$DIRECTORY/cache/filter
-BFILTER=$DIRECTORY/cache/filter-backup
-WHITELIST=$DIRECTORY/whitelist
-BLACKLIST=$DIRECTORY/blacklist
-REDIRECTLIST=$DIRECTORY/redirectlist
-TEMP=$DIRECTORY/cache/temp
-LTEMP=$DIRECTORY/cache/ltemp
-PTEMP=$DIRECTORY/cache/ptemp
-STEMP=$DIRECTORY/cache/stemp
-HBP=$DIRECTORY/hosts-backup.gz
-lastUpdated=$(grep "Version Code" $FILTER | sed "s/! Version Code: //")
-dayOfYear=$(date +%j)
-curip=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' $HOST | sed 's/watchdog.energized.pro//')
-COUNT=1
+visitTelegram() {
+    am start -a android.intent.action.VIEW -d "http://go.energized.pro/telegram" 2>/dev/null;
+    clear
+}
 # ----------------------------------------
 
-# Check Energized Pack
 # ----------------------------------------
-	[ -f $HOST ];
-if grep -q "E84S1C-P" $HOST; then
-	echeck="Basic Protection"
-	autopack="basic"
-elif grep -q "E5P4RK-P" $HOST; then
-	echeck="Spark Protection"
-	autopack="spark"
-elif grep -q "E8LU-P" $HOST; then
-	echeck="Blu Protection"
-	autopack="blu"
-elif grep -q "E8LUG0-P" $HOST; then
-	echeck="Blu Go Protection"
-	autopack="bluGo"
-elif grep -q "EP0R9-P" $HOST; then
-	echeck="Porn Protection"
-	autopack="porn"
-elif grep -q "EUL71M473-P" $HOST; then
-	echeck="Ultimate Protection"
-	autopack="ultimate"
-elif grep -q "EU91F13D-P" $HOST; then
-	echeck="Unified Protection"
-	autopack="unified"
-else
-    if grep -q "/extensions/" $HOST; then
-       echeck="Extension"
-	else
-	   echeck="No Pack Detected!"
-	   autopack="null"
+# Change redirection IP
+# ----------------------------------------
+changeRedirectionIP() { sed -ie 's/[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}/'"$1"'/g' "$hosts"; }
+# ----------------------------------------
+
+# ----------------------------------------
+# Ectract domain from URL
+# ----------------------------------------
+getDomain() {
+    domainOnly=$(echo "$1" | cut -d'/' -f3 | cut -d':' -f1 | cut -d'\@' -f2)
+    case $domainOnly in
+            (*[a-zA-Z]*)
+            for i in $domainOnly ; do
+                if [[ $i == *.* ]] ; then
+                    echo "$i"
+                else
+                    echo "0"
+                fi
+            done
+            ;;
+            (*)
+            echo "null"
+            ;;
+    esac
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Porn extension download
+# ----------------------------------------
+pornEDownload() {
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo -e "$Y"'[+] P O R N  E X T E N S I O N'"$N"; sleep 0.05;
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo -e "$Y""Adds Porn Blocking Pack to current hosts.""$N"; sleep 0.05;
+    echo -e $Y"$divider"$N; sleep 0.05;
+    wget --no-check-certificate -q -U "$userAgent" -O $hostsGZ "https://block.energized.pro/porn/formats/hosts.gz" & pid=$!
+    spinPID "Extension: Downloading";
+    gzip -d -c $hostsGZ > $stemp
+    mv "$hosts" $temp
+    truncate -s 0 "$hosts"
+    cat $temp $stemp > "$hosts"
+    checkEP;
+    echo -en "$W""\r[""$N""$Y""✓""$N""$W""] Extension: ""$N""$Y""Porn Extension\n""$N"
+    rm -f $temp $stemp $hostsGZ
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Porn-lite extension download
+# ----------------------------------------
+pornliteEDownload() {
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo -e "$Y"'[+] P O R N - L I T E  E X T E N S I O N'"$N"; sleep 0.05;
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo -e "$Y""Adds Porn Lite Blocking Pack to current hosts.""$N"; sleep 0.05;
+    echo -e $Y"$divider"$N; sleep 0.05;
+    wget --no-check-certificate -q -O $hostsGZ "https://block.energized.pro/extensions/porn-lite/formats/hosts.gz" & pid=$!
+    spinPID "Extension: Downloading";
+    gzip -d -c $hostsGZ > $stemp
+    mv "$hosts" $temp
+    truncate -s 0 "$hosts"
+    cat $temp $stemp > "$hosts"
+    checkEP;
+    echo -en "$W""\r[""$N""$Y""✓""$N""$W""] Extension: ""$N""$Y""Porn-lite Extension\n""$N"
+    rm -f $temp $stemp $hostsGZ
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Regional extension download
+# ----------------------------------------
+regionalEDownload() {
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo -e "$Y"'[+] R E G I O N A L  E X T E N S I O N'"$N"; sleep 0.05;
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo -e "$Y""Adds Regional Blocking Pack to current hosts.""$N"; sleep 0.05;
+    echo -e $Y"$divider"$N; sleep 0.05;
+    wget --no-check-certificate -q -U "$userAgent" -O $hostsGZ "https://block.energized.pro/extensions/regional/formats/hosts.gz" & pid=$!
+    spinPID "Extension: Downloading";
+    gzip -d -c $hostsGZ > $stemp
+    mv "$hosts" $temp
+    truncate -s 0 "$hosts"
+    cat $temp $stemp > "$hosts"
+    checkEP;
+    echo -en "$W""\r[""$N""$Y""✓""$N""$W""] Extension: ""$N""$Y""Regional Extension\n""$N"
+    rm -f $temp $stemp $hostsGZ
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Social extension download
+# ----------------------------------------
+socialEDownload() {
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo -e "$Y"'[+] S O C I A L  E X T E N S I O N'"$N"; sleep 0.05;
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo -e "$Y""Adds Social Blocking Pack to current hosts.""$N"; sleep 0.05;
+    echo -e "$Y"' > Blocks all social apps. (ex. Snapchat)'"$N"; sleep 0.05;
+    echo -e "$Y"' > Blocks all social sites. (ex. facebook.com)'"$N"; sleep 0.05;
+    echo -e $Y"$divider"$N; sleep 0.05;
+    wget --no-check-certificate -q -U "$userAgent" -O $hostsGZ "https://block.energized.pro/extensions/social/formats/hosts.gz" & pid=$!
+    spinPID "Extension: Downloading";
+    gzip -d -c $hostsGZ > $stemp
+    mv "$hosts" $temp
+    truncate -s 0 "$hosts"
+    cat $temp $stemp > "$hosts"
+    checkEP;
+    echo -en "$W""\r[""$N""$Y""✓""$N""$W""] Extension: ""$N""$Y""Social Extension\n""$N"
+    rm -f $temp $stemp $hostsGZ
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Xtreme extension download
+# ----------------------------------------
+xtremeEDownload() {
+    printWarning;
+    areYouSure;
+    if [[ "$userAnswer" == "Y" || "$userAnswer" == "y" ]]; then
+        clear
+        echo -e $Y"$divider"$N; sleep 0.05;
+        echo -e "$Y"'[+] X T R E M E  E X T E N S I O N'"$N"; sleep 0.05;
+        echo -e $Y"$divider"$N; sleep 0.05;
+        echo -e "$Y""Adds Xtreme Blocking Pack to current hosts.""$N"; sleep 0.05;
+        echo -e $Y"$divider"$N; sleep 0.05;
+        wget --no-check-certificate -q -O $hostsGZ "https://block.energized.pro/extensions/xtreme/formats/hosts.gz" & pid=$!
+        spinPID "Extension: Downloading";
+        gzip -d -c $hostsGZ > $stemp
+        mv "$hosts" $temp
+        truncate -s 0 "$hosts"
+        cat $temp $stemp > "$hosts"
+        checkEP;
+        echo -en "$W""\r[""$N""$Y""✓""$N""$W""] Extension: ""$N""$Y""Xtreme Extension\n""$N"
+        rm -f $temp $stemp $hostsGZ
+    else
+        clear
     fi
-fi
-# ----------------------------------------
-
-# Check Energized Extension Pack
-# ----------------------------------------
-	[ -f $HOST ];
-if grep -q "EP0R9-P" $HOST; then
-	ePCheck="✓"
-else
-	ePCheck=""
-fi
-
-if grep -q "EXR3G1094L-P" $HOST; then
-    eRCheck="✓"
-else
-	eRCheck=""
-fi
-
-if grep -q "EX7R3M3-P" $HOST; then
-    eXCheck="✓"
-else
-	eXCheck=""
-fi
-
-if grep -q "EXP0R9-P" $HOST; then
-	ePLCheck="✓"
-else
-	ePLCheck=""
-fi
-
-if grep -q "EX50C14L-P" $HOST; then
-	eSCheck="✓"
-else
-	eSCheck=""
-fi
-	
-# ----------------------------------------
-# Other Variables
-# ----------------------------------------
-update=$C"`date -r $HOST "+%a, %d %b %y %H:%M:%S"`"$N
-size=$P"`ls -lah $HOST | awk '{print $5}'`"$N
-# ----------------------------------------
-
-# Check Adblocker
-# ----------------------------------------
-   [ -f $HOST ];
-if grep -q ads $HOST; then
-	adblocker=$G"[✓]"$N
-else
-	adblocker=$R"[×]"$N
-fi
+}
 # ----------------------------------------
 
 # ----------------------------------------
-
-# Check Energized Protection 
+# Aut update extenstion
 # ----------------------------------------
-	[ -f $HOST ];
-if grep -q watchdog.energized.pro $HOST; then
-	eonoff=$G"[✓]"$N
-	energizedCheck=$G"✓ "$N$W"Energized activated successfully."$N
-else
-   if grep -q "/extensions/" $HOST; then
-      eonoff=$B"[*]"$N
-      energizedCheck=$B"* "$N$W"Energized is partially activated."$N
+autoUpdateExtension() {
+    cleanupTemp;
+    if [ "$1" == "porn" ]; then
+        hostsURL=https://block.energized.pro/porn/formats/hosts.gz
+    else
+        hostsURL=https://block.energized.pro/extensions/$1/formats/hosts.gz
+    fi
+    wget --no-check-certificate -q -U "$userAgent" -O $hostsGZ "$hostsURL"
+    gzip -d -c $hostsGZ > $stemp
+    mv "$hosts" $temp
+    truncate -s 0 "$hosts"
+    cat $temp $stemp > "$hosts"
+    rm -f $temp $stemp $hostsGZ
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Auto update hosts, whitelist, blacklist and extension(s)
+# ----------------------------------------
+updateHWBE() {
+    checkEP;
+    currentIP=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+    if [ -z "$currentIP" ]; then
+        currentIP=$(grep ' watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+    fi
+    if [ "$autoPack" == "null" ]; then
+        echo -e "$R""$divider""$N"; sleep 0.05;
+        echo -e "$R""[-] No pack applied yet!""$N"; sleep 0.05;
+        echo -e "$R""$divider""$N"; sleep 0.05;
+        sleep 3
+    else
+        echo -e $Y"$divider"$N; sleep 0.05;
+        echo -e "$Y""[+] Applying $epPack""$N"; sleep 0.05;
+        echo -e $Y"$divider"$N; sleep 0.05;
+        wget --no-check-certificate -q -U "$userAgent" -O $hostsGZ "https://block.energized.pro/$autoPack/formats/hosts.gz" & pid=$!
+        spinPID "Pack: Downloading";
+        gzip -d -c $hostsGZ > "$hosts"
+        rm -f $hostsGZ
+        checkEPPack;
+        echo -en "$W""\r[""$N""$Y""✓""$N""$W""] Pack: ""$N""$Y""$epPack\n""$N"
+        # Update cache filter
+        setFilter;
+        # Updating extension
+        if [ ! -z "$ePCheck" ]; then
+            autoUpdateExtension "porn" & pid=$!
+            spinPID "Porn Extension: Downloading"
+            echo -en "$W""\r[""$N""$Y""✓""$N""$W""] Porn Extension: ""$N""$Y""Applied successfully.\n""$N"; sleep 0.1;
+        else
+            echo -e "$Y"'[~] No porn extension'"$N"; sleep 0.1;
+        fi
+        if [ ! -z "$ePLCheck" ]; then
+            autoUpdateExtension "porn-lite" & pid=$!
+            spinPID "Porn-Lite Extension: Downloading"
+            echo -en "$W""\r[""$N""$Y""✓""$N""$W""] Porn-lite Extension: ""$N""$Y""Applied successfully.\n""$N"; sleep 0.1;
+        else
+            echo -e "$Y"'[~] No porn-lite extension'"$N"; sleep 0.1;
+        fi
+        if [ ! -z "$eRCheck" ]; then
+            autoUpdateExtension "regional" & pid=$!
+            spinPID "Regional Extension: Downloading"
+            echo -en "$W""\r[""$N""$Y""✓""$N""$W""] Regional Extension: ""$N""$Y""Applied successfully.\n""$N"; sleep 0.1;
+        else
+            echo -e "$Y"'[~] No regional extension'"$N"; sleep 0.1;
+        fi
+        if [ ! -z "$eSCheck" ]; then
+            autoUpdateExtension "social" & pid=$!
+            spinPID "Social Extension: Downloading"
+            echo -en "$W""\r[""$N""$Y""✓""$N""$W""] Social Extension: ""$N""$Y""Applied successfully.\n""$N"; sleep 0.1;
+        else
+            echo -e "$Y"'[~] No social extension'"$N"; sleep 0.1;
+        fi
+        if [ ! -z "$eXCheck" ]; then
+            autoUpdateExtension "xtreme" & pid=$!
+            spinPID "Xtreme Extension: Downloading"
+            echo -en "$W""\r[""$N""$Y""✓""$N""$W""] Xtreme Extension: ""$N""$Y""Applied successfully.\n""$N"; sleep 0.1;
+        else
+            echo -e "$Y"'[~] No xtreme extension'"$N"; sleep 0.1;
+        fi
+        # Change redirection IP
+        if [ "$currentIP" != "0.0.0.0" ]; then
+            changeRedirectionIP "$currentIP" & pid=$!
+            spinPID "Redirection IP: Changing to $currentIP"
+            echo -en "$W""\r[""$N""$Y""✓""$N""$W""] Redirection IP: ""$N""$Y""Updated to $currentIP\n""$N"; sleep 0.1;
+        fi
+        # Blacklisting
+        doBlacklist;
+        # Whitelisting
+        doWhitelist;
+        printDonate;
+    fi
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Open config file
+# ----------------------------------------
+openConfig() {
+    case "$2" in
+        show) clear
+            echo -e $Y"$divider"$N; sleep 0.05;
+            echo -e "$Y"'ϟ O P E N  C O N F I G  F I L E'"$N"; sleep 0.05;
+            echo -e $Y"$divider"$N; sleep 0.05;
+            echo "Open the config file."; sleep 0.05;
+            echo -e "$Y""$divider""$N"
+            echo ''; sleep 0.05;
+            head -n 30 $config
+            echo ''; sleep 0.05;
+            echo -n -e "$W"'[+] Open config file?'"$N" "$Y"'[y/n]:'"$N"
+            read answer
+            if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
+                am start -a android.intent.action.VIEW -d file://$config -t text/plain > /dev/null 2>&1;
+            fi
+            clear
+            ;;
+        edit) clear
+            am start -a android.intent.action.VIEW -d file://$config -t text/plain > /dev/null 2>&1;
+            ;;
+    esac
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Warning
+# ----------------------------------------
+printWarning() {
+    echo -e "$R""$divider""$N"; sleep 0.05;
+    echo -e "$R""W A R N I N G""$N"; sleep 0.05;
+    echo -e "$R""$divider""$N"; sleep 0.05;
+    echo -e "$R""This may break your internet usage experience.""$N"; sleep 0.05;
+    echo -e "$R""Because of its size or blocking pattern.""$N"; sleep 0.05;
+    echo -e "$R""For more info, https://block.energized.pro""$N"; sleep 0.05;
+    echo -e "$R""\nYou may proceed if you know what you are doing!""$N"; sleep 0.05;
+    echo -e "$R""$divider""$N"; sleep 0.05;
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Return
+# ----------------------------------------
+printReturn() {
+    echo -en "$W""[←] Returning ""$N"
+    echo -en "$Y""•""$N"; sleep 0.2;
+    echo -en "$Y""•""$N"; sleep 0.3;
+    echo -en "$Y""•""$N"; sleep 1;
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Donate
+# ----------------------------------------
+printDonate() {
+    sleep 0.1
+    echo -e "$Y""$divider""$N"; sleep 0.1
+    echo -e "$Y"'[+] If you loved our work, consider donating.'"$N"; sleep 0.1
+    echo -e "$B"'  > PayPal: paypal.me/shadmansaleh'"$N"
+    echo -e "$Y"'  > Support: energized.pro/support'"$N"
+    echo -e "$Y""$divider""$N"; sleep 0.1
+    sleep 0.1
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Backup Hosts
+# ----------------------------------------
+backupHosts() {
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo -e "$Y"'ϟ B A C K U P'"$N"; sleep 0.05;
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo -e "$Y""Make a backup of current hosts.""$N"; sleep 0.05;
+    echo -e $Y"$divider"$N; sleep 0.05;
+    if [ -f "$hosts" ]; then
+        gzip -9 -c "$hosts" > $hostsBackup & pid=$!
+        spinPID "Storing Hosts"
+        cp $filter $filterBackup
+        echo -en $W"\r["$N$Y"✓"$N$W"] Storing Hosts: "$N$Y"Completed."$N; sleep 0.1;
+        echo -e -n $W"\n[+] Backup Config file?"$N $Y"[Y/N]"$N "$answer"
+        read answer
+        if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
+            spinPID "Storing Config"
+            cp $config $configBackup
+            echo -en $W"\r["$N$Y"✓"$N$W"] Storing Config: "$N$Y"Completed.\n\n"$N; sleep 0.1;
+        else
+            echo -e $W"[×] Not backing up config.\n"$N; sleep 0.1;
+        fi
+        printDonate;
+    else
+        echo -e "$R""$divider""$N"; sleep 0.05;
+        echo -e "$R""[×] No hosts found.""$N"; sleep 0.05;
+        echo -e "$R""$divider\n\n""$N"; sleep 0.05;
+    fi
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Clear Hosts
+# ----------------------------------------
+clearHosts() {
+    checkBusybox;
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo -e "$Y"'ϟ C L E A N  H O S T S'"$N"; sleep 0.05;
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo -e "$Y""Revert back to stock hosts.""$N"; sleep 0.05;
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo ""; sleep 0.05;
+    echo -n -e "$W""[+] Cleaning ""$N"; sleep 0.05;
+    echo -n -e "$G""•""$N"; sleep 0.05;
+    truncate -s 0 "$hosts"
+    echo -n -e "$Y""•""$N"; sleep 0.05;
+    rm -f $filter
+    echo -n -e "$C""•""$N"; sleep 0.05;
+    touch $filter
+    echo -n -e "$B""•""$N"; sleep 0.05;
+    echo -e "# Energized Protection - https://energized.pro\n# Let's make an annoyance free better open internet, altogether!\n\n127.0.0.1 localhost\n::1" >> "$hosts"
+    echo -n -e "$R""•\n""$N"; sleep 0.05;
+    echo -e "$W""[+] Done.\n""$N"; sleep 0.05;
+    checkEP;
+    checkUpdate;
+    printCountedDomains;
+    printDonate;
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Restore Hosts
+# ----------------------------------------
+restoreHosts() {
+    checkBusybox;
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo -e "$Y"'ϟ R E S T O R E'"$N"; sleep 0.05;
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo -e "$Y""Restore the hosts backup.""$N"; sleep 0.05;
+    echo -e $Y"$divider"$N; sleep 0.05;
+    if [ -s $hostsBackup ]; then
+        gzip -d -c $hostsBackup > "$hosts" & pid=$!
+        spinPID "Restoring Hosts"
+        cp $filterBackup $filter
+        echo -en $W"\r["$N$Y"✓"$N$W"] Restoring Hosts: "$N$Y"Completed.\n"$N; sleep 0.1;
+        if [ -s $configBackup ]; then
+           echo -e -n $W"[+] Restore Config file?"$N $Y"[Y/N]"$N "$answer"
+           read answer
+           if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
+              spinPID "Restoring Config"
+              cp $configBackup $config
+              echo -en $W"\r["$N$Y"✓"$N$W"] Restoring Config: "$N$Y"Completed.\n\n"$N; sleep 0.1;
+              echo ''
+           else
+              echo -e $W"[×] Not restoring config.\n"$N; sleep 0.1;
+           fi
+        fi
+        printDonate;
+    else
+        echo -e $R"$divider"$N; sleep 0.05;
+        echo -e "$R""[×] No backup found.""$N"; sleep 0.05;
+        echo -e "$R""$divider\n\n""$N"; sleep 0.05;
+    fi
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Open Hosts File
+# ----------------------------------------
+openHosts() {
+    clear
+    checkBusybox
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo -e "$Y"'ϟ O P E N  H O S T S  F I L E'"$N"; sleep 0.05;
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo "Open the hosts file."; sleep 0.05;
+    echo -e "$Y""$divider""$N"
+    echo ''; sleep 0.05;
+    head -n 30 "$hosts"
+    echo ''; sleep 0.05;
+    echo -n -e "$W"'[+] Open Hosts File?'"$N" "$Y"'[Y/N]:'"$N"
+    read answer
+    if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
+        am start -a android.intent.action.VIEW -d file://"$hosts" -t text/plain > /dev/null 2>&1;
+    fi
+    clear
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Aut update hosts
+# ----------------------------------------
+autoUpdateHosts() {
+	cleanupTemp;
+	hostsURL="https://block.energized.pro/$DIR"
+	wget --no-check-certificate -q -U "$userAgent" -O $hostsGZ "$hostsURL"
+	gzip -d -c $hostsGZ > $hosts
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Download pack
+# ----------------------------------------
+downloadPack() {
+	echo ''
+	case "$2" in
+	    spark|Spark|SPARK|blugo|Blugo|bluGo|BLUGO|blu|Blu|BLU|basic|Basic|BASIC|porn|Porn|PORN|ultimate|Ultimate|ULTIMATE|unified|Unified|UNIFIED|porn-lite|pornlite|Porn-lite|PORN-LITE|xtreme|Xtreme|XTREME|regional|Regional|REGIONAL|social|Social|SOCIAL)
+	    if [[ "$2" == "spark" || "$2" == "Spark" || "$2" == "SPARK" ]]; then
+	      pack="spark"
+	      epPack="Spark Protection"
+	      DIR="/spark/formats/hosts.gz"
+	      autoUpdateHosts "$DIR" & pid=$!
+	      spinPID "Pack: Downloading";
+	      echo -en $W"\r["$N$Y"✓"$N$W"] Pack: "$N$Y"$epPack\n"$N
+	   elif [[ "$2" == "blu" || "$2" == "Blu" || "$2" == "BLU" ]]; then
+	      pack="blu"
+	      epPack="Blu Protection"
+	      DIR="/blu/formats/hosts.gz"
+	      autoUpdateHosts "$DIR" & pid=$!
+	      spinPID "Pack: Downloading";
+	      echo -en $W"\r["$N$Y"✓"$N$W"] Pack: "$N$Y"$epPack\n"$N
+	   elif [[ "$2" == "blugo" || "$2" == "bluGo" || "$2" == "Blugo" || "$2" == "BluGo" || "$2" == "BLUGO" ]]; then
+	      pack="bluGo"
+	      epPack="BluGo Protection"
+	      DIR="/bluGo/formats/hosts.gz"
+	      autoUpdateHosts "$DIR" & pid=$!
+	      spinPID "Pack: Downloading";
+	      echo -en $W"\r["$N$Y"✓"$N$W"] Pack: "$N$Y"$epPack\n"$N
+	   elif [[ "$2" == "basic" || "$2" == "Basic" || "$2" == "BASIC" ]]; then
+	      pack="basic"
+	      epPack="Basic Protection"
+	      DIR="/basic/formats/hosts.gz"
+	      autoUpdateHosts "$DIR" & pid=$!
+	      spinPID "Pack: Downloading";
+	      echo -en $W"\r["$N$Y"✓"$N$W"] Pack: "$N$Y"$epPack\n"$N
+	   elif [[ "$2" == "porn" || "$2" == "Porn" || "$2" == "PORN" ]]; then
+	      pack="porn"
+	      epPack="Porn Protection"
+	      DIR="/porn/formats/hosts.gz"
+	      autoUpdateHosts "$DIR" & pid=$!
+	      spinPID "Pack: Downloading";
+	      echo -en $W"\r["$N$Y"✓"$N$W"] Pack: "$N$Y"$epPack\n"$N
+	   elif [[ "$2" == "ultimate" || "$2" == "Ultimate" || "$2" == "ULTIMATE" ]]; then
+	      pack="ultimate"
+	      epPack="Ultimate Protection"
+	      DIR="/ultimate/formats/hosts.gz"
+	      autoUpdateHosts "$DIR" & pid=$!
+	      spinPID "Pack: Downloading";
+	      echo -en $W"\r["$N$Y"✓"$N$W"] Pack: "$N$Y"$epPack\n"$N
+	   elif [[ "$2" == "unified" || "$2" == "Unified" || "$2" == "UNIFIED" ]]; then
+	      pack="unified"
+	      epPack="Unified Protection"
+	      DIR="/unified/formats/hosts.gz"
+	      autoUpdateHosts "$DIR" & pid=$!
+	      spinPID "Pack: Downloading";
+	      echo -en $W"\r["$N$Y"✓"$N$W"] Pack: "$N$Y"$epPack\n"$N
+	   elif [[ "$2" == "xtreme" || "$2" == "Xtreme" || "$2" == "XTREME" ]]; then
+	      pack="extensions/xtreme"
+	      echo -e $R"[-] $2 - only extension can't be applied.\n"$N
+	      exit
+	   elif [[ "$2" == "porn-lite" || "$2" == "pornlite" || "$2" == "Porn-lite" || "$2" == "Pornlite" || "$2" == "PORN-LITE" || "$2" == "PORNLITE" ]]; then
+	      pack="extensions/porn-lite"
+	      echo -e $R"[-] $2 - only extension can't be applied.\n"$N
+	      exit
+	   elif [[ "$2" == "regional" || "$2" == "Regional" || "$2" == "REGIONAL" ]]; then
+	      pack="extensions/regional"
+	      echo -e $R"[-] $2 - only extension can't be applied.\n"$N
+	      exit
+	   elif [[ "$2" == "social" || "$2" == "Social" || "$2" == "SOCIAL" ]]; then
+	      pack="extensions/social"
+	      echo -e $R"[-] $2 - only extension can't be applied.\n"$N
+	      exit
+	   fi
+	   currentIP=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' $hosts | sed 's/ watchdog.energized.pro//')
+	   if [ -z "$currentIP" ]; then
+	      currentIP=$(grep ' watchdog.energized.pro' $hosts | sed 's/ watchdog.energized.pro//')
+	   fi 
+	   
+	   rm -f $hostsGZ
+	   
+	   case "$3" in
+	     -e|--extension) shift
+	         for i in $@
+	         do
+	         # Applying extension
+	         if [[ "$i" == "porn" || "$i" == "Porn" || "$i" == "PORN" ]]; then
+	            autoUpdateExtension "porn" & pid=$!
+	            spinPID "Porn Extension: Downloading"
+	            echo -en $W"\r["$N$Y"✓"$N$W"] Porn Extension: "$N$Y"Applied successfully.\n"$N; sleep 0.1;
+		     fi
+		     if [[ "$i" == "porn-lite" || "$i" == "pornlite" || "$i" == "Porn-lite" || "$i" == "Pornlite" || "$i" == "PORN-LITE" || "$i" == "PORNLITE" ]]; then
+		        autoUpdateExtension "porn-lite" & pid=$!
+		        spinPID "Porn-Lite Extension: Downloading"
+		        echo -en $W"\r["$N$Y"✓"$N$W"] Porn-lite Extension: "$N$Y"Applied successfully.\n"$N; sleep 0.1;
+		     fi
+		     if [[ "$i" == "regional" || "$i" == "Regional" || "$i" == "REGIONAL" ]]; then
+		        autoUpdateExtension "regional" & pid=$!
+		        spinPID "Regional Extension: Downloading"
+		        echo -en $W"\r["$N$Y"✓"$N$W"] Regional Extension: "$N$Y"Applied successfully.\n"$N; sleep 0.1;
+		     fi
+		     if [[ "$i" == "social" || "$i" == "Social" || "$i" == "SOCIAL" ]]; then
+		        autoUpdateExtension "social" & pid=$!
+		        spinPID "Social Extension: Downloading"
+		        echo -en $W"\r["$N$Y"✓"$N$W"] Social Extension: "$N$Y"Applied successfully.\n"$N; sleep 0.1;
+		     fi
+		     if [[ "$i" == "xtreme" || "$i" == "Xtreme" || "$i" == "XTREME" ]]; then
+		        autoUpdateExtension "xtreme" & pid=$!
+		        spinPID "Xtreme Extension: Downloading"
+		        echo -en $W"\r["$N$Y"✓"$N$W"] Xtreme Extension: "$N$Y"Applied successfully.\n"$N; sleep 0.1;
+		     fi
+		     
+		     done
+		     
+		     # Change redirection IP
+		     if [ "$currentIP" != "0.0.0.0" ]; then
+		        changeRedirectionIP "$currentIP" & pid=$!
+		        spinPID "Redirection IP: Changing to $currentIP"
+		        echo -en $W"\r["$N$Y"✓"$N$W"] Redirection IP: "$N$Y"Updated to $currentIP\n"$N; sleep 0.1;
+		     fi
+		     ;;
+		     
+	     *) echo -e $W"[*] No extension applied."$N
+	         ;;    
+	   esac
+	   size=`ls -lah $hosts | awk '{print $5}'`
+	   echo -e $W"[+] Size: "$N$Y"$size"$N
+	   setFilter & pid=$!
+	   cleanupTemp;
+	   spinPID "Filter: Updating";
+	   echo -en $W"\r["$N$Y"✓"$N$W"] Filter: "$N$Y"Updated \n\n"$N
+	   printDonate;
+	   ;; 
+    *) echo -e $R"[-] $2 invalid input.\n"$N
+       ;;
+    esac   
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Add extension to hosts
+# ----------------------------------------
+addExtension() {
+    currentIP=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+    if [ -z "$currentIP" ]; then
+        currentIP=$(grep ' watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+    fi
+    echo ''
+    case "$2" in
+        porn|Porn|PORN|ultimate|Ultimate|ULTIMATE|unified|Unified|UNIFIED|porn-lite|pornlite|Porn-lite|PORN-LITE|xtreme|Xtreme|XTREME|regional|Regional|REGIONAL|social|Social|SOCIAL) shift
+            for i in "$@"
+            do
+                # Applying extension
+                if [[ "$i" == "porn" || "$i" == "Porn" || "$i" == "PORN" ]]; then
+                    autoUpdateExtension "porn" & pid=$!
+                    spinPID "Porn Extension: Downloading"
+                    echo -en "$W""\r[""$N""$Y""✓""$N""$W""] Porn Extension: ""$N""$Y""Applied successfully.\n""$N"; sleep 0.1;
+                fi
+                if [[ "$i" == "porn-lite" || "$i" == "pornlite" || "$i" == "Porn-lite" || "$i" == "Pornlite" || "$i" == "PORN-LITE" || "$i" == "PORNLITE" ]]; then
+                    autoUpdateExtension "porn-lite" & pid=$!
+                    spinPID "Porn-Lite Extension: Downloading"
+                    echo -en "$W""\r[""$N""$Y""✓""$N""$W""] Porn-lite Extension: ""$N""$Y""Applied successfully.\n""$N"; sleep 0.1;
+                fi
+                if [[ "$i" == "regional" || "$i" == "Regional" || "$i" == "REGIONAL" ]]; then
+                    autoUpdateExtension "regional" & pid=$!
+                    spinPID "Regional Extension: Downloading"
+                    echo -en "$W""\r[""$N""$Y""✓""$N""$W""] Regional Extension: ""$N""$Y""Applied successfully.\n""$N"; sleep 0.1;
+                fi
+                if [[ "$i" == "social" || "$i" == "Social" || "$i" == "SOCIAL" ]]; then
+                    autoUpdateExtension "social" & pid=$!
+                    spinPID "Social Extension: Downloading"
+                    echo -en "$W""\r[""$N""$Y""✓""$N""$W""] Social Extension: ""$N""$Y""Applied successfully.\n""$N"; sleep 0.1;
+                fi
+                if [[ "$i" == "xtreme" || "$i" == "Xtreme" || "$i" == "XTREME" ]]; then
+                    autoUpdateExtension "xtreme" & pid=$!
+                    spinPID "Xtreme Extension: Downloading"
+                    echo -en "$W""\r[""$N""$Y""✓""$N""$W""] Xtreme Extension: ""$N""$Y""Applied successfully.\n""$N"; sleep 0.1;
+                fi
+
+            done
+
+            # Change redirection IP
+            if [ "$currentIP" != "0.0.0.0" ]; then
+                changeRedirectionIP "$currentIP" & pid=$!
+                spinPID "Redirection IP: Changing to $currentIP"
+                echo -en "$W""\r[""$N""$Y""✓""$N""$W""] Redirection IP: ""$N""$Y""Updated to $currentIP\n""$N"; sleep 0.1;
+            fi
+            echo ''
+            printDonate;
+            ;;
+
+        *) echo -e "$R""[-] $2 invalid input.\n""$N"
+            ;;
+    esac
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Blacklist
+# ----------------------------------------
+doBlacklist() {
+    currentIP=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+    if [ -z "$currentIP" ]; then
+        currentIP=$(grep ' watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+    fi
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo -e "$Y"'ϟ B L A C K L I S T I N G'"$N"; sleep 0.05;
+    echo -e $Y"$divider"$N; sleep 0.05;
+    # Begins
+    if [ ! -f $blacklist ]; then
+        echo -e "$R""\n[-] No Blacklist detected!""$N"
+        echo -e "$W""[+] Copy your blacklist to""$N" "$Y""$directory""$N"
+    else
+        if [ -f "$hosts" ]; then
+            if [ -s $blacklist ]; then
+                echo -e "$G"'[✓] Blacklist Found!'"$N"; sleep 0.05;
+                echo -e "$W"'[+] Applying Blacklist:\n'"$N"; sleep 0.05;
+                echo -e "$C"'[+] Blacklist Log -'"$N"; sleep 0.05;
+                rm -f $temp $stemp $ptemp $ltemp
+                sed 's/^ *//; s/ *$//; /^$/d; /^#/ d' $blacklist > $ltemp
+                sort -u $ltemp > $temp
+                NEWFILTERS="$(cat $temp)"
+                echo -e "\n# Applied on - $date" >> "$hosts"
+                printf '%s\n' "$NEWFILTERS" | while IFS= read -r linenew
+                do
+                    domain=$(getDomain "$linenew");
+                    # 1
+                    if [[ "$domain" == "null" ]]; then
+                        echo "$R""[×] Error: Wrong input.""$N"; sleep 2;
+                    else
+                        if [ ! "$(grep -x "$currentIP $domain" "$hosts")" ]; then
+                            echo -e "$currentIP $domain" >> "$hosts"
+                            echo -e "$W""  >""$N""$Y"" $domain ""$N""$W""- blacklisted.""$N"
+                        else
+                            echo -e "$W""  > ""$N""$R""$domain ""$N""$W""- already blacklisted.""$N"
+                        fi
+                    fi
+                done
+                rm -f $temp $stemp $ptemp $ltemp
+                echo -e "$G"'\n[✓] Done\n'"$N"; sleep 0.05;
+            else
+                echo -e "$R"'[-] Blacklist file is empty!'"$N"; sleep 0.05;
+                echo -e "$R"'[-] Nothing blacklisted!'"$N"; sleep 0.05;
+            fi
+        else
+            echo -e "$R"'\n[-] No hosts file detected!'"$N"; sleep 0.05;
+            echo -e "$Y"'[+] Apply a hosts file first\n'"$N"; sleep 0.05;
+            sleep 2
+        fi
+    fi
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Whitelist
+# ----------------------------------------
+doWhitelist() {
+    currentIP=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+    if [ -z "$currentIP" ]; then
+        currentIP=$(grep ' watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+    fi
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo -e "$Y"'ϟ W H I T E L I S T I N G'"$N"; sleep 0.05;
+    echo -e $Y"$divider"$N; sleep 0.05;
+    # Begins
+    if [ ! -f $whitelist ]; then
+        echo -e "$R""[-] No Whitelist Detected!""$N"; sleep 0.05;
+        echo -e "$W"'[+] Copy your whilelist to'"$N" "$Y"'$directory'"$N"; sleep 0.05;
+    else
+        if [ -f "$hosts" ]; then
+            if [ -s $whitelist ]; then
+                echo -e "$G""[✓] Whitelist Found!""$N"; sleep 0.05;
+                echo -e "$W""[+] Applying Whitelist:\n""$N"; sleep 0.05;
+                echo -e "$C"'[+] Whitelist Log -'"$N"; sleep 0.05;
+                rm -f $temp $stemp $ptemp $ltemp
+                sed 's/^ *//; s/ *$//; /^$/d; /^#/ d' $whitelist > $ltemp
+                sort -u $ltemp > $stemp
+                NEWFILTERS="$(cat $stemp)"
+                printf '%s\n' "$NEWFILTERS" | while IFS= read -r linenew
+                do
+                    domain=$(getDomain "$linenew");
+                    # 1
+                    if [[ "$domain" == "null" ]]; then
+                        echo "$R""[×] Error: Wrong input.""$N"; sleep 2;
+                    else
+                        if [ ! "$(grep -x "$currentIP $domain" "$hosts")" ]; then
+                            echo -e "$W""  >""$N""$G"" $domain ""$N""$W""- already whitelisted.""$N"
+                        else
+                            grep -Fvxf $stemp "$hosts" > $temp
+                            rm -f "$hosts"
+                            mv -f $temp "$hosts"
+                            grep -Fvf $stemp "$hosts" > $temp
+                            rm -f "$hosts"
+                            mv -f $temp "$hosts"
+                            grep -vxf $stemp "$hosts" > $temp
+                            rm -f "$hosts"
+                            mv -f $temp "$hosts"
+                            echo -e "$W""  >""$N""$Y"" $domain ""$N""$W""- whitelisted.""$N"
+                        fi
+                    fi
+                done
+                rm -f $temp $stemp $ptemp $ltemp
+                echo -e "$G"'\n[✓] Done\n'"$N"; sleep 0.05;
+            else
+                echo -e "$R"'[-] Whitelist file is empty!'"$N"; sleep 0.05;
+                echo -e "$R"'[-] Nothing whitelisted!'"$N"; sleep 0.05;
+            fi
+        else
+            echo -e "$R"'\n[-] No hosts file detected!'"$N"; sleep 0.05;
+            echo -e "$Y"'[+] Apply a hosts file first\n'"$N"; sleep 0.05;
+        fi
+    fi
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Instant blacklist
+# ----------------------------------------
+instantBlacklist() {
+    while true
+    do
+        currentIP=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+        if [ -z "$currentIP" ]; then
+            currentIP=$(grep ' watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+        fi
+        clear
+        echo -e $Y"$divider"$N; sleep 0.05;
+        echo -e "$Y"'ϟ I N S T A N T  B L A C K L I S T'"$N"; sleep 0.05;
+        echo -e $Y"$divider"$N; sleep 0.05;
+        echo -e "$W""Adds a domain to hosts as blacklisted.\n > Domain name only. (ex. xyz.com)\n > Subdomain also works. (ex. a.xyz.com)""$N"; sleep 0.05;
+        echo -e $Y"$divider"$N; sleep 0.05;
+        echo ""; sleep 0.05;
+        echo -en "$W"'[>] Domain: '"$N"
+        read ib
+        ##
+        domain=$(getDomain "$ib");
+        if [[ "$domain" == "0" ]]; then
+            echo "$R""[×] Error: $ib not a domain.""$N"; sleep 2;
+        else
+            if [ ! "$(grep -x "$currentIP $domain" "$hosts")" ]; then
+                echo -en "$W"'\n > blacklist '"$N""$Y""$domain ""$N""$W""?\n""$N"
+                areYouSure;
+                if [[ "$userAnswer" == "Y" || "$userAnswer" == "y" ]]; then
+                    echo -e "\n# Instant Blacklist Applied on - $date" >> "$hosts"
+                    echo -e "$currentIP $domain" >> "$hosts"
+                    echo -e "\n# Applied on - $date" >> $blacklist
+                    echo "$domain" >> $blacklist
+                    echo -e "$W""\n > ""$N""$Y""$domain ""$N""$W""- blacklisted.\n""$N"; sleep 0.05;
+                    echo -n -e "$W"'[>] Blacklist another domain?'"$N" "$Y"'[y/n]:'"$N"
+                    read answer
+                    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
+                        break
+                    fi
+                    clear
+                else
+                    clear
+                    echo -en "$W"'[+] Blacklist another domain?'"$N" "$Y"'[y/n]:'"$N"
+                    read answer
+                    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
+                        break
+                    fi
+                    printReturn
+                fi
+            else
+                echo -e "$G""\n[✓] ""$N""$Y""$domain""$N""$G"" - already blacklisted!\n""$N"
+                sleep 1
+                echo -en "$W"'[+] Blacklist another domain?'"$N" "$Y"'[y/n]:'"$N"
+                read answer
+                if [[ "$answer" == "N" || "$answer" == "n" ]]; then
+                    break
+                fi
+            fi
+            ##
+        fi
+    done
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Instant blacklist CLI
+# ----------------------------------------
+instantBlacklistCli() {
+    echo ''
+    currentIP=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+    if [ -z "$currentIP" ]; then
+        currentIP=$(grep ' watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+    fi
+    if [ -f "$hosts" ]; then
+        #
+        shift
+        for i in "$@"
+        do
+            ##
+            domain=$(getDomain "$i");
+            if [[ "$domain" == "0" ]]; then
+                echo "$R""[×] Error: $i not a domain.""$N"
+            else
+                if [ ! "$(grep -x "$currentIP $domain" "$hosts")" ]; then
+                    echo -e "$R""[×] ""$N""$Y""$domain""$N""$R"" - not blacklisted!""$N"; sleep 0.05;
+                    echo -e "\n# Instant Blacklist Applied on - $date" >> "$hosts"
+                    echo -e "$currentIP $domain" >> "$hosts"
+                    echo -e "$Y""[+] ""$N""$Y""$domain""$N""$Y"" - blacklisted!""$N"; sleep 0.05;
+                    echo -e "\n# Applied on - $date" >> $blacklist
+                    echo "$domain" >> $blacklist
+                else
+                    echo -e "$G""[✓] ""$N""$Y""$domain""$N""$G"" - already blacklisted!""$N"
+                fi
+            fi
+            ##
+        done
+        #
+    fi
+    echo ''
+    printDonate;
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Instant whitelist
+# ----------------------------------------
+instantWhitelist() {
+    while true
+    do
+        currentIP=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+        if [ -z "$currentIP" ]; then
+            currentIP=$(grep ' watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+        fi
+        clear
+        echo -e $Y"$divider"$N; sleep 0.05;
+        echo -e "$Y"'ϟ I N S T A N T  W H I T E L I S T'"$N"; sleep 0.05;
+        echo -e $Y"$divider"$N; sleep 0.05;
+        echo -e "$W""Removes a domain from hosts as whitelisted.\n > Domain name only. (ex. xyz.com)\n > Subdomain also works. (ex. a.xyz.com)""$N"; sleep 0.05;
+        echo -e $Y"$divider"$N; sleep 0.05;
+        echo ""; sleep 0.05;
+        echo -en "$W"'[>] Domain: '"$N"
+        read iw
+        ##
+        domain=$(getDomain "$iw");
+        if [[ "$domain" == "0" ]]; then
+            echo "$R""[×] Error: $iw not a domain.""$N"; sleep 2;
+        else
+            if [ ! "$(grep -x "$currentIP $iw" "$hosts")" ]; then
+                echo -e "$W""\n[✓] ""$N""$Y""$domain""$N""$W"" - not blacklisted!\n""$N"; sleep 0.05;
+                sleep 1
+                echo -n -e "$W"'[+] Whitelist another domain?'"$N" "$Y"'[y/n]:'"$N"
+                read answer
+                if [[ "$answer" == "N" || "$answer" == "n" ]]; then
+                    break
+                fi
+            else
+                echo -en "$W"'\n > whitelist '"$N""$Y""$domain ""$N""$W""?\n""$N"
+                areYouSure;
+                if [[ "$userAnswer" == "Y" || "$userAnswer" == "y" ]]; then
+                    grep -Fvx "$currentIP $domain" "$hosts" > $temp
+                    truncate -s 0 "$hosts"
+                    mv -f $temp "$hosts"
+                    echo "$domain" >> $whitelist
+                    echo -e "$W""\n > ""$N""$Y""$domain ""$N""$W""- whitelisted.\n""$N"; sleep 0.05;
+                    echo -n -e "$W"'[+] Whitelist another domain?'"$N" "$Y"'[y/n]:'"$N"
+                    read answer
+                    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
+                        break
+                    fi
+                else
+                    clear
+                    echo -n -e "$W"'[+] Whitelist another domain?'"$N" "$Y"'[y/n]:'"$N"
+                    read answer
+                    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
+                        break
+                    fi
+                fi
+            fi
+            ##
+        fi
+    done
+
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Instant whitelist CLI
+# ----------------------------------------
+instantWhitelistCli() {
+    echo ''
+    currentIP=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+    if [ -f "$hosts" ]; then
+        #
+        shift
+        for i in "$@"
+        do
+            ##
+            domain=$(getDomain "$i");
+            if [[ "$domain" == "0" ]]; then
+                echo "$R""[×] Error: $i not a domain.""$N"
+            else
+                if [ ! "$(grep -x "$currentIP $domain" "$hosts")" ]; then
+                    echo -e "$G""[✓] ""$N""$Y""$domain""$N""$G"" - already whitelisted!""$N"; sleep 0.05;
+                else
+                    echo -e "$R""[×] ""$N""$Y""$domain""$N""$R"" - not whitelisted!""$N"; sleep 0.05;
+                    grep -Fvx "$currentIP $domain" "$hosts" > $temp
+                    truncate -s 0 "$hosts"
+                    mv -f $temp "$hosts"
+                    echo -e "$Y""[+] ""$N""$Y""$domain""$N""$Y"" - whitelisted!""$N"; sleep 0.05;
+                    echo -e "\n# Applied on - $date" >> $whitelist
+                    echo "$domain" >> $whitelist
+                fi
+            fi
+            ##
+        done
+        #
+    fi
+    echo ''
+    printDonate;
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Redirectlist
+# ----------------------------------------
+doRedirect(){
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo -e "$Y"'ϟ R E D I R E C T'"$N"; sleep 0.05;
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo -e "$W""Redirects the domains in the list to an IP.""$N"; sleep 0.05;
+    echo ''; sleep 0.05;
+    # Begins
+    if [ ! -f $REDIRECTLIST ]; then
+        echo -e "$R"'\n[-] No Redirectlist detected!'"$N"
+        echo -e "$W"'[+] Copy your redirect list to'"$N" "$Y"'$directory'"$N"
+    else
+        if [ -f "$hosts" ]; then
+            if [ -s $REDIRECTLIST ]; then
+                echo -e "$G"'[+] Redirectlist Found!'"$N"
+                echo -e -n "$W""[+] Select IP Type -\n\n   > 1. IPV4\n   > 2. IPV6\n\n[+] Your choice -""$N" "$ipType"
+                read ipType
+                if [[ "$ipType" == "1" ]]; then
+                    while true
+                    do
+                        echo -n -e "$W"'[+] Enter Redirection IPV4:'"$N" "$ipInput"
+                        read ipInput
+                        ip=$(grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' <<< "$ipInput")
+                        if [ -z "$ip" ]; then
+                            echo -e "$R""\n[×] Error: $ipInput not an IPV4.\n > Must be an IP. (Ex. 0.0.0.0)\n > No non-numeric character.\n""$N"
+                            checkAgain;
+                            if [[ "$userAnswer" == "N" || "$userAnswer" == "n" ]]; then
+                                break
+                            fi
+                        else
+                            break
+                        fi
+                    done
+                else
+                    echo -n -e "$W"'[+] Enter Redirection IPV6:'"$N" "$ip"
+                    read ip
+                fi
+                echo -e "$W"'[+] Your IP:'"$N" "$Y""$ip""$N"
+                echo -n -e "$W"'[+] Are you sure?'"$N" "$Y"'[Y/N]:'"$N"
+                read answer
+                if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
+                    currentIP=$(grep -o -m 1 '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+                    if [ -z "$currentIP" ]; then
+                        currentIP=$(grep ' watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+                    fi
+                    echo -e "$W"'[+] Redirecting...'"$N"; sleep 0.05;
+                    echo -e "$C""[>] Redirect Log -""$N"
+                    rm -f $stemp
+                    echo nais1
+                    cp $REDIRECTLIST $stemp
+                    echo -e "\n# Applied on - $date" >> "$hosts"
+                    sed 's/^ *//; s/ *$//; /^$/d; /^#/d' $stemp > $temp
+                    echo nais2
+                    #truncate -s 0 $hosts
+                    NEWFILTERS="$(cat $temp)"
+                    printf '%s\n' "$NEWFILTERS" | while IFS= read -r linenew
+                    do
+                        echo nais3
+                        truncate -s 0 $stemp
+                        grep -Fvx "$currentIP $linenew" "$hosts" > $stemp
+                        echo nais4
+                        truncate -s 0 "$hosts"
+                        echo nais5
+                        mv -f $stemp "$hosts"
+                        #cat $temp >> $hosts
+                        echo nais6
+                        if [ ! "$(grep -Fx "$currentIP $linenew" "$hosts")" ]; then
+                            echo -e "$ip $linenew" >> "$hosts"
+                            echo nais7
+                            echo -e "$Y""$linenew ""$N""$W""- redirected to ""$N""$G""$ip""$N"
+                        fi
+                    done
+                else
+                    echo -e "$W"'[+] Returning...'"$N"
+                fi
+            else
+                echo -e "$R"'\n[-] Redirectlist file is empty!'"$N"
+                echo -e "$R"'[-] Nothing redirected!'"$N"
+            fi
+        else
+            echo -e "$R"'\[-] No hosts file detected!'"$N"
+            echo -e "$Y"'[+] Apply a hosts file first'"$N"
+        fi
+    fi
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Instant reditect domain
+# ----------------------------------------
+instantRedirect() {
+    while true
+    do
+        currentIP=$(grep -o -m 1 '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+        if [ -z "$currentIP" ]; then
+            currentIP=$(grep ' watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+        fi
+        echo -e $Y"$divider"$N; sleep 0.05;
+        echo -e "$Y"'ϟ I N S T A N T  R E D I R E C T'"$N"; sleep 0.05;
+        echo -e $Y"$divider"$N; sleep 0.05;
+        echo -e "$W""Instant redirect helps to redirect any specific\n domain to any IP.""$N"
+        echo -e $Y"$divider"$N; sleep 0.05;
+        echo ""
+        echo -n -e "$W"'[>] Enter Domain: '"$N"
+        read irD
+        domain=$(getDomain "$irD");
+        if [[ "$domain" == "0" ]]; then
+            echo "$R""[×] Error: $irD not a domain.""$N"; sleep 1;
+            checkAgain;
+            if [[ "$userAnswer" == "N" || "$userAnswer" == "n" ]]; then
+                break
+            fi
+        else
+            echo -e "$W"'[+] Domain:'"$N" "$Y""$domain""$N"
+        fi
+        echo -n -e "$W"'[+] Are you sure?'"$N" "$Y"'[Y/N]:'"$N"
+        read answer
+        if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
+            currentDomainIP=$(grep " $domain" "$hosts" | sed "s/ $domain//")
+            if [[ ! -z "$currentDomainIP" ]]; then
+                echo -e $W"\n > "$N$Y"$domain"$N$W" - already redirected to "$N$Y"$currentDomainIP\n"$N
+            fi    
+            grep -Fvx "$currentDomainIP $domain" "$hosts" > $temp
+            truncate -s 0 "$hosts"
+            mv -f $temp "$hosts"
+            echo -e -n "$W""[+] Select IP Type -\n\n   > 1. IPV4\n   > 2. IPV6\n\n[+] Your choice -""$N" "$ipType"
+            read ipType
+            if [[ "$ipType" == "1" ]]; then
+                while true
+                do
+                    echo -n -e "$W"'[+] Enter Redirection IPV4:'"$N" "$ipInput"
+                    read ipInput
+                    ip=$(grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' <<< "$ipInput")
+                    if [ -z "$ip" ]; then
+                        echo -e "$R""\n[×] Error: $ipInput not an IPV4.\n > Must be an IP. (Ex. 0.0.0.0)\n > No non-numeric character.\n""$N"
+                        checkAgain;
+                        if [[ "$userAnswer" == "N" || "$userAnswer" == "n" ]]; then
+                            break
+                        fi
+                    else
+                        break
+                    fi
+                done
+            else
+                echo -n -e "$W"'[+] Enter Redirection IPV6:'"$N" "$ip"
+                read ip
+            fi
+            echo -e "$W"'[+] IP: '"$N" "$Y""$ip""$N"
+            echo -e "$W""\n > Redirect ""$N""$Y""$domain""$N""$W"" to IP ""$N""$Y""$ip""$N""$W""?""$N"
+            echo -n -e "$W""[+] Are you sure?""$N" "$Y""[Y/N]:""$N"
+            read answer
+            if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
+                echo -e "\n$ip $domain" >> "$hosts"
+                echo -e "\n# Applied on - $date" >> $REDIRECTLIST
+                echo "$domain" >> $REDIRECTLIST
+                echo -e "$W""\n > ""$N""$Y""$domain""$N""$W"" redirected to IP ""$N""$Y""$ip\n""$N"
+            else
+                echo -e "\n$currentIP $domain" >> "$hosts"
+            fi
+            sleep 1
+            echo -n -e "$W"'[+] Redirect Another Domain?'"$N" "$Y"'[y/n]:'"$N"
+            read answer
+            if [[ "$answer" == "N" || "$answer" == "n" ]]; then
+                break
+            fi
+            clear
+        else
+
+            echo -n -e "$W"'[+] Redirect Another Domain?'"$N" "$Y"'[y/n]:'"$N"
+            read answer
+            if [[ "$answer" == "N" || "$answer" == "n" ]]; then
+                break
+            fi
+        fi
+    done
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Instant redirect CLI
+# ----------------------------------------
+instantRedirectCli() {
+    echo ''
+    currentIP=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+    if [ -z "$currentIP" ]; then
+        currentIP=$(grep ' watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+    fi
+    case "$2" in
+        -4|-v4|--ipv4|--ip4)
+            ip=$(grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' <<< "$3")
+            if [ -z "$ip" ]; then
+                echo -e "$R""\n[×] Error: $3 not an IPV4.\n > Must be an IP. (Ex. 0.0.0.0)\n > No non-numeric character.\n""$N"
+                exit
+            else
+                echo -e "$W""\n[+] Your Redirection IP""$N" "$Y""$ip""$N"
+            fi
+            shift
+            for i in "$@"
+            do
+                ##
+                domain=$(getDomain "$i");
+                if [[ "$domain" == "0" ]]; then
+                    echo "$R""\n[×] Error: $i not a domain.\n""$N"
+                    exit
+                else
+                    currentDomainIP=$(grep " $domain" "$hosts" | sed "s/ $domain//")
+                     if [[ ! -z "$currentDomainIP" ]]; then
+                         echo -e $W"\n > "$N$Y"$domain"$N$W" - already redirected to "$N$Y"$currentDomainIP\n"$N
+                     fi
+                    grep -Fvx "$currentDomainIP $domain" "$hosts" > $temp
+                    truncate -s 0 "$hosts"
+                    mv -f $temp "$hosts"
+                    echo -e "\n$ip $domain" >> "$hosts"
+                    echo -e "\n# Applied on - $date" >> $REDIRECTLIST
+                    echo "$domain" >> $REDIRECTLIST
+                    echo -e "$W""\n > ""$N""$Y""$domain""$N""$W"" redirected to IP ""$N""$Y""$ip""$N"
+                fi
+            done
+            echo ''
+            printDonate;
+            ;;
+        -6|-v6|--ipv6|--ip6)
+            ip=$(grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' <<< "$3")
+            if [ ! -z "$ip" ]; then
+                echo -e "$R""\n[×] Error: $3 not an IPV6.\n > Must be an IPV6. (Ex. ::1)\n""$N"
+                exit
+            else
+                echo -e "$W""\n[+] Your Redirection IP""$N" "$Y""$ip""$N"
+            fi
+            shift
+            for i in "$@"
+            do
+                ##
+                domain=$(getDomain "$i");
+                if [[ "$domain" == "0" ]]; then
+                    echo "$R""\n[×] Error: $i not a domain.\n""$N"
+                    exit
+                else
+                    currentDomainIP=$(grep " $domain" "$hosts" | sed "s/ $domain//")
+                     if [[ ! -z "$currentDomainIP" ]]; then
+                         echo -e $W"\n > "$N$Y"$domain"$N$W" - already redirected to "$N$Y"$currentDomainIP\n"$N
+                     fi
+                    grep -Fvx "$currentDomainIP $domain" "$hosts" > $temp
+                    truncate -s 0 "$hosts"
+                    mv -f $temp "$hosts"
+                    echo -e "\n$ip $domain" >> "$hosts"
+                    echo -e "\n# Applied on - $date" >> $REDIRECTLIST
+                    echo "$domain" >> $REDIRECTLIST
+                    echo -e "$W""\n > ""$N""$Y""$domain""$N""$W"" redirected to IP ""$N""$Y""$ip""$N"
+                fi
+            done
+            echo ''
+            printDonate;
+            ;;
+        *) echo -e "$R""\n[-] $2 invalid input.\n""$N"
+            ;;
+    esac
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Redirection IP
+# ----------------------------------------
+redirectIP() {
+    while true
+    do
+        currentIP=$(grep -o -m 1 '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+        echo -e $Y"$divider"$N; sleep 0.05;
+        echo -e "$Y"'ϟ R E D I R E C T I O N  I P'"$N"; sleep 0.05;
+        echo -e $Y"$divider"$N; sleep 0.05;
+        echo -e "$W""Add custom Redirection IP. It must be an IP.\nUsing anything else than IP, may cause issue with\nyour hosts.""$N"; sleep 0.05;
+        echo -e $Y"$divider"$N; sleep 0.05;
+        echo ""
+        if [ -z "$currentIP" ]; then
+            currentIP=$(grep ' watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+            echo -e "$W""[+] Current IPV6: ""$N""$Y""$currentIP""$N"
+        else
+            echo -e "$W""[+] Current IPV4: $currentIP""$N"
+        fi
+        echo -e -n "$W""[+] Select IP Type -\n\n > 1. IPV4\n > 2. IPV6\n\n[+] Your choice -""$N" "$ipType"
+        read ipType
+        if [[ "$ipType" == "1" ]]; then
+            while true
+            do
+                echo -n -e "$W"'[+] Enter Redirection IPV4:'"$N" "$ipInput"
+                read ipInput
+                ip=$(grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' <<< "$ipInput")
+                if [ -z "$ip" ]; then
+                    echo -e "$R""\n[×] Error: $ipInput not an IPV4.\n > Must be an IP. (Ex. 0.0.0.0)\n > No non-numeric character.\n""$N"
+                    checkAgain;
+                    if [[ "$userAnswer" == "N" || "$userAnswer" == "n" ]]; then
+                        break
+                    fi
+                else
+                    break
+                fi
+            done
+        else
+            echo -n -e "$W"'[+] Enter Redirection IPV6:'"$N" "$ip"
+            read ip
+        fi
+        echo -e "$W""[+] Your Redirection IP""$N" "$Y""$ip""$N"
+        echo -n -e "$W""[+] Are you sure?""$N" "$Y""[Y/N]:""$N"
+        read answer
+        if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
+            echo "$W""[+] Adding ""$N""$Y""$ip""$N""$W"" as redirection IP...""$N"
+            rm -f $temp $stemp $ptemp
+            #sed -ie 's/[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}/'"${ip}"'/g' $hosts
+            sed -i "s/$currentIP/$ip/g" "$hosts"
+            rm -f $temp $stemp $ptemp $ltemp
+        else
+            clear
+        fi
+        echo -n -e "$W"'[+] Change to another IP?'"$N" "$Y"'[y/n]:'"$N"
+        read answer
+        if [[ "$answer" == "N" || "$answer" == "n" ]]; then
+            break
+        fi
+    done
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Redirection IP CLI
+# ----------------------------------------
+redirectIPCli() {
+    currentIP=$(grep -o -m 1 '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+    if [ -z "$currentIP" ]; then
+        currentIP=$(grep ' watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+    fi
+    case "$2" in
+        -4|-v4|--ipv4|--ip4)
+            ip=$(grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' <<< "$3")
+            if [ -z "$ip" ]; then
+                echo -e "$R""\n[×] Error: $3 not an IPV4.\n > Must be an IP. (Ex. 0.0.0.0)\n > No non-numeric character.\n""$N"
+                exit
+            else
+                echo -e "$W""\n[+] Your Redirection IP""$N" "$Y""$ip""$N"
+                echo "$W""[+] Adding ""$N""$Y""$ip""$N""$W"" as redirection IP...""$N"
+                sed -i "s/$currentIP/$ip/g" "$hosts"
+            fi
+            echo ''
+            printDonate;
+            ;;
+        -6|-v6|--ipv6|--ip6)
+            ip=$(grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' <<< "$3")
+            if [ ! -z "$ip" ]; then
+                echo -e "$R""\n[×] Error: $3 not an IPV6.\n > Must be an IPV6. (Ex. ::1)\n""$N"
+                exit
+            else
+                echo -e "$W""\n[+] Your Redirection IP""$N" "$Y""$ip""$N"
+                echo "$W""[+] Adding ""$N""$Y""$ip""$N""$W"" as redirection IP...""$N"
+                sed -i "s/$currentIP/$ip/g" "$hosts"
+            fi
+            echo ''
+            printDonate;
+            ;;
+        *) echo -e "$R""\n[-] $2 invalid input.\n""$N"
+            ;;
+    esac
+
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Check for blocked domain
+# ----------------------------------------
+checkBlacklistDomain () {
+    while true
+    do
+        clear
+        # Get current IP
+        currentIP=$(grep -o -m 1 '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+        if [ -z "$currentIP" ]; then
+            currentIP=$(grep ' watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+        fi
+        echo -e $Y"$divider"$N; sleep 0.05;
+        echo -e "$Y"'ϟ C H E C K  D O M A I N'"$N"; sleep 0.05;
+        echo -e $Y"$divider"$N; sleep 0.05;
+        echo -e "$Y""Check any specific domain availability in hosts.""$N"; sleep 0.05;
+        echo -e $Y"$divider"$N; sleep 0.05;
+        echo ""; sleep 0.05;
+        echo -en "$W""[>] Domain: ""$N"
+        read dom
+        domain=$(getDomain "$dom");
+        # 1
+        if [[ "$domain" == "null" ]]; then
+            echo "$R""[×] Error: Wrong input.""$N"; sleep 2;
+        else
+            #
+            if [[ "$domain" == "0" ]]; then
+                echo "$R""[×] Error: $dom not a domain.""$N"; sleep 2;
+            else
+                if [ ! "$(grep -x "$currentIP $domain" "$hosts")" ]; then
+                    echo -e "$R""[×] $domain ""$N""$W""- is not in the list!""$N"; sleep 0.05;
+                    echo -e "$Y""[+] Want to blacklist?""$N"; sleep 0.05;
+                    areYouSure;
+                    if [[ "$userAnswer" == "Y" || "$userAnswer" == "y" ]]; then
+                        echo -e "$W""[+] Applying $domain as blacklist...""$N"; sleep 0.05;
+                        echo -e "\n# Instant Blacklist Applied on - $date" >> "$hosts"
+                        echo -e "$currentIP $domain" >> "$hosts"
+                        echo -e "\n# Applied on - $date" >> $blacklist
+                        echo "$domain" >> $blacklist
+                        echo -e "$W""[✓] ""$N""$Y""$domain ""$N""$W""- blacklisted.""$N" && sleep 0.5
+                        checkAgain;
+                        if [[ "$userAnswer" == "N" || "$userAnswer" == "n" ]]; then
+                            break
+                            exit
+                        fi
+                    else
+                        checkAgain;
+                        if [[ "$userAnswer" == "N" || "$userAnswer" == "n" ]]; then
+                            break
+                        fi
+                    fi
+                else
+                    echo -e "$G""[✓] $domain ""$N""$W""- already blacklisted!""$N"
+                    sleep 1
+                    echo -e "$W""[+] Want to whitelist?""$N"
+                    areYouSure;
+                    if [[ "$userAnswer" == "Y" || "$userAnswer" == "y" ]]; then
+                        echo "$W""[+] Applying $domain as whitelist...""$N"; sleep 0.05;
+                        grep -Fvx "$currentIP $domain" "$hosts" > $temp
+                        truncate -s 0 "$hosts"
+                        mv -f $temp "$hosts"
+                        echo "$domain" >> $whitelist
+                        echo -e "$W""[✓] ""$N""$Y""$domain ""$N""$W""- whitelisted.""$N"; sleep 0.05;
+                        checkAgain;
+                        if [[ "$userAnswer" == "N" || "$userAnswer" == "n" ]]; then
+                            break
+                        fi
+                        clear
+                    else
+                        checkAgain;
+                        if [[ "$userAnswer" == "N" || "$userAnswer" == "n" ]]; then
+                            break
+                        fi
+                    fi
+                fi
+                #fi
+            fi #2
+        fi #1
+    done
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Check for blocked domain CLI
+# ----------------------------------------
+checkBlacklistDomainCli () {
+    while true
+    do
+        echo ''
+        # Get current IP
+        currentIP=$(grep -o -m 1 '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+        if [ -z "$currentIP" ]; then
+            currentIP=$(grep ' watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+        fi
+        domain=$(getDomain "$2");
+        # 1
+        if [[ "$domain" == "null" ]]; then
+            echo "$R""[×] Error: Wrong input.""$N"; sleep 2;
+        else
+            #
+            if [[ "$domain" == "0" ]]; then
+                echo "$R""[×] Error: $2 not a domain.""$N"; sleep 2;
+            else
+                if [ ! "$(grep -x "$currentIP $domain" "$hosts")" ]; then
+                    echo -e "$R""[×] $domain ""$N""$W""- is not in the list!""$N"; sleep 0.05;
+                    echo -e "$Y""[+] Want to blacklist?""$N"; sleep 0.05;
+                    areYouSure;
+                    if [[ "$userAnswer" == "Y" || "$userAnswer" == "y" ]]; then
+                        echo -e "$W""[+] Applying $domain as blacklist...""$N"; sleep 0.05;
+                        echo -e "\n# Instant Blacklist Applied on - $date" >> "$hosts"
+                        echo -e "$currentIP $domain" >> "$hosts"
+                        echo -e "\n# Applied on - $date" >> $blacklist
+                        echo "$domain" >> $blacklist
+                        echo -e "$W""[✓] ""$N""$Y""$domain ""$N""$W""- blacklisted.""$N" && sleep 0.5
+                        echo ''
+                        printDonate;
+                    else
+                        exit
+                        echo ''
+                    fi
+                    exit
+                else
+                    echo -e "$G""[✓] $domain ""$N""$W""- already blacklisted!""$N"
+                    sleep 1
+                    echo -e "$W""[+] Want to whitelist?""$N"
+                    areYouSure;
+                    if [[ "$userAnswer" == "Y" || "$userAnswer" == "y" ]]; then
+                        echo "$W""[+] Applying $domain as whitelist...""$N"; sleep 0.05;
+                        grep -Fvx "$currentIP $domain" "$hosts" > $temp
+                        truncate -s 0 "$hosts"
+                        mv -f $temp "$hosts"
+                        echo "$domain" >> $whitelist
+                        echo -e "$W""[✓] ""$N""$Y""$domain ""$N""$W""- whitelisted.""$N"; sleep 0.05;
+                        echo ''
+                        printDonate;
+                    else
+                        exit
+                        echo ''
+                    fi
+                    exit
+                fi
+            fi #2
+        fi #1
+    done
+    echo ''
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Submit issue
+# ----------------------------------------
+submitIssue() {
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo -e "$Y"'ϟ S U B M I T  I S S U E'"$N"; sleep 0.05;
+    echo -e $Y"$divider"$N; sleep 0.05;
+    echo "$W""Got any whitelist/blacklist issue? or anything\nelse? No worry! Just Submit via Web App or Git Issue.""$N"
+    echo -e "$Y""$divider""$N"
+    echo ""
+    echo -e "$W""[+] Choose where to submit -\n""$N"
+    echo -e "$W"" > 1. Web App - app.energized.pro\n > 2. Git Issue\n""$N"
+    echo -n -e "$W""[+] Your option -""$N" "$answer"
+    read answer
+    if [[ "$answer" == "2" || "$answer" == "2" ]]; then
+        echo -e "$B"'You will be redirected Github Issues...'"$N"
+        am start -a android.intent.action.VIEW -d "https://github.com/EnergizedProtection/block/issues"
+    else
+        echo -e "$B"'You will be redirected Web App...'"$N"
+        am start -a android.intent.action.VIEW -d "https://app.energized.pro"
+    fi
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Restore stock settings
+# ----------------------------------------
+restoreStockSettings() {
+    checkBusybox;
+    # Mount system if needed
+    mountSystem;
+    # Stock Hosts
+    echo -e "# Energized Protection - https://energized.pro\n# Let's make an annoyance free better open internet, altogether!\n\n127.0.0.1 localhost\n::1" > '/data/adb/modules/hosts/system/etc/hosts' > '/system/etc/hosts'; chmod '644' '/data/adb/modules/hosts/system/etc/hosts' '/system/etc/hosts'; chown 'root:root' '/data/adb/modules/hosts/system/etc/hosts' '/system/etc/hosts'
+	# Unmount system
+	unmountSystem;
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Remove files and restore stock settings
+# ----------------------------------------
+uninstall(){
+	echo -e $Y"$divider"$N; sleep 0.05;
+	echo -e "$Y"'ϟ U N I N S T A L L'"$N"; sleep 0.05;
+	echo -e $Y"$divider"$N; sleep 0.05;
+	echo "$W""Uninstall module and remove files.""$N"
+	echo -e "$Y""$divider""$N"
+	echo ""
+	areYouSure;
+	if [[ "$userAnswer" == "Y" || "$userAnswer" == "y" ]]; then
+	   # Restore stock settings
+	   restoreStockSettings;
+	   # Uninstall
+	   rm -rf '/system/bin/energized' '/system/bin/ENERGIZED' '/data/adb/modules/energizedprotection' '/sbin/.magisk/modules/energizedprotection' '/sdcard/EnergizedProtection' > /dev/null 2>&1;
+	   clear
+	   echo -e "$W""\nIt's sad to see you go!""$N"
+	   echo -e "$W""But ""$N""$Y""https://energized.pro""$N""$W"" is always there for you!""$N"
+	   echo -e "$W""Reboot once to remove stales.""$N"
 	else
-	  eonoff=$R"[×]"$N
-	  energizedCheck=$R"× "$N$W"Energized is not activated."$N
+	   echo -e "$Y""\nGlad you didn't go! Thank you! :)\n""$N"
+	   return
 	fi
-fi
+}
 # ----------------------------------------
 
-# Check Hosts Update
 # ----------------------------------------
-if [ "$autopack" != "null" ]; then
-   if [ "$lastUpdated" -ne "$dayOfYear" ]; then
-       wget --no-check-certificate -T 3 -q -O $TREADME https://github.com/EnergizedProtection/block/raw/master/VERSION.md
-       grep -q "Version Code" $TREADME
-       cp $TREADME $BREADME
-       if [ -f $FILTER ]; then
-           CURRENT=$(grep "Version Code" $TREADME)
-           LAST_UPDATED=$(sed '1q;d' $FILTER)
-           if [ "$LAST_UPDATED" != "$CURRENT" ]; then
-              if [ "$(grep "watchdog.energized.pro" $HOST)" ]; then
-                  eupdate=$G'[ϟ] UPDATE AVAILABLE!'$N
-                  updateCheck=$Y"ϟ "$N$W"New hosts update available!"$N
-              fi
-           else
-              eupdate=$W'[✓] UP-TO-DATE!'$N
-              updateCheck=$G"✓ "$N$W"Hosts is updated."$N
-           fi
-       else
-           touch $FILTER
-           if [grep -q "EP0R9-P" $HOST] || [grep -q "EXR3G1094L-P" $HOST] || [grep -q "EX7R3M3-P" $HOST] || [grep -q "EXP0R9-P" $HOST] || [grep -q "EX50C14L-P" $HOST]; then
-              eupdate=$B'[*] Extension Applied'$N
-              updateCheck=$B"* "$N$W"Extension applied."$N
-           else
-              eupdate="[+] APPLY PACK FIRST!"
-              updateCheck=$B"+ "$N$W"Apply pack first."$N
-           fi
+# Print counted domains
+# ----------------------------------------
+printCountedDomains() {
+    if [ -f "$hosts" ]; then
+    if [ "$(grep "watchdog.energized.pro" "$hosts")" ]; then
+       countDomains;
+       if [ "$totalDomainsNum" -gt 10000 ]; then
+          totalDomains="$totalDomains  "
+       elif [ "$totalDomainsNum" -gt 100000 ]; then
+          totalDomains="$totalDomains"
+       elif [ "$totalDomainsNum" -lt 100 ]; then
+          if [ "$totalDomainsNum" == "2" ]; then
+             totalDomains="-       "
+          else
+             totalDomains="$totalDomains       "
+          fi
        fi
     else
-       eupdate=$W'[✓] UP-TO-DATE!'$N
-       updateCheck=$G"✓ "$N$W"Hosts is updated."$N
+       totalDomains="-       "
     fi
-else
-	   eupdate="[+] APPLY PACK FIRST!"
-	   updateCheck=$B"+ "$N$W"Apply pack first."$N
-fi
+    else
+       totalDomains="-       "
+    fi
+}
 # ----------------------------------------
 
-sleep 0.1
-echo -e $Y"$divider"$N
-sleep 0.1
-echo -e $Y" ϟ E N E R G I Z E D  P R O T E C T I O N"$N
-sleep 0.1
-echo -e $Y"$divider"$N
-sleep 0.1
-echo -e $W" $adbCheck"$N
-sleep 0.1
-echo -e $W" $dirCheck"$N
-sleep 0.1
-echo -e $W" $listsCheck"$N
-sleep 0.1
-echo -e $W" $tempsCheck"$N
-sleep 0.1
-echo -e $W" $energizedCheck"$N
-sleep 0.1
-echo -e $W" $updateCheck"$N
-sleep 0.1
-echo -e $Y"$divider"$N 
-sleep 1.5
-
-
-# Input
 # ----------------------------------------
-INPUT=$(eval "echo \$$COUNT")
-	if [ ! "$INPUT" ]; then
-		if [ "$1" ]; then
-			rm -f $TREADME
-			exit 0
-		fi
-# Starts Screen Echos
+# Count domains
 # ----------------------------------------
-clear
-echo ''
-echo -e $Y"      _____  _________  _____________  _______  "$N; sleep 0.1;
-echo -e $Y"     / __/ |/ / __/ _ \/ ___/  _/_  / / __/ _ \ "$N; sleep 0.1;
-echo -e $Y"    / _//    / _// , _/ (_ // /  / /_/ _// // / "$N; sleep 0.1;
-echo -e $Y"   /___/_/|_/___/_/|_|\___/___/ /___/___/____/  "$N; sleep 0.1;
-echo ''
-sleep 0.1
-echo -e $Y'      P   R   O   T   E   C   T   I   O   N'$N
-echo -e $W"                                       v.$version"$N
-sleep 0.1
-echo -e $Y"$divider"$N
-sleep 0.1
-echo -e $Y'ϟ B A S I C  I N F O -'$N
-sleep 0.1
-echo -e $Y"$divider"$N
-sleep 0.1
-echo -e $root$W" ROOT           "$N$W"[+] BUSYBOX: "$N$C"$bboxname"$N
-sleep 0.1
-echo -e $eonoff$W" ENERGIZED      "$N$W"[+] PACK: "$N$B"$echeck"$N
-sleep 0.1
-echo -e $adblocker$W" ADBLOCKER      "$N$W"[+] SIZE: $size"$N
-sleep 0.1
-echo -e $W"[+] LAST UPDATED: $update"$N
-sleep 0.1
-echo -e $Y"$divider"$N
-sleep 0.1
-# Packs
-# ----------------------------------------
-echo -e $Y"ϟ P A C K s -             $eupdate"$N
-sleep 0.1
-echo -e $Y"$divider"$N
-sleep 0.1
-echo -e $W"[1] Spark         [3] Blu          [5] Ultimate"$N
-sleep 0.1
-echo -e $W"[2] Blu Go        [4] Basic        [6] Unified"$N
-sleep 0.1
-echo -e $Y"$divider"$N
-sleep 0.1
-echo -e $Y"ϟ E X T E N S I O N s -"$N
-sleep 0.1
-echo -e $Y"$divider"$N
-sleep 0.1
-echo -e $G"$ePCheck"$N$W"[p] Porn         "$N$G"$eRCheck"$N$W"[rl] Regional    "$N$G"$eXCheck"$N$W"[x] Xtreme"$N
-sleep 0.1
-echo -e $G"$ePLCheck"$N$W"[pl] Porn Lite    "$N$G"$eSCheck"$N$W"[s] Social"$N
-sleep 0.1
-# Options
-# ----------------------------------------
-echo -e $Y"$divider"$N
-sleep 0.1
-echo -e $Y'ϟ O P T I O N s -'$N
-sleep 0.1
-echo -e $Y"$divider"$N
-sleep 0.1
-echo -e $W'[o] Open Hosts File       [ip] Redirection IP'$N
-sleep 0.1
-echo -e $W'[w] Apply Whitelist       [iw] Instant Whitelist'$N
-sleep 0.1
-echo -e $W'[b] Apply Blacklist       [ib] Instant Blacklist'$N
-sleep 0.1
-echo -e $W'[r] Redirect Domains      [ir] Instant Redirect'$N
-sleep 0.1
-# Misc
-# ----------------------------------------
-echo -e $Y"$divider"$N
-sleep 0.1
-echo -e $Y'ϟ M I S C -'$N
-sleep 0.1
-echo -e $Y"$divider"$N
-sleep 0.1
-echo -e $W'[bp] Backup       [rs] Restore        [ck] Check'$N
-sleep 0.1
-echo -e $W'[u] Update H&WB   [in] Instructions   [i] Info'$N
-sleep 0.1
-echo -e $R'[c] Clear Hosts   '$N$G'[si] Submit Issue   '$N$R'[q] Quit.'$N
-sleep 0.1
-echo -e $Y"$divider"$N
-sleep 0.1
-# Read Input
-# ----------------------------------------
-		echo -n $Y"[+] Your Input - "$N
-		read -r INPUT
-		if [ "$INPUT" != "m" ]; then
-			INPUT="$(echo "$INPUT" | sed 's/m//g')"
-			clear
-		fi
-		DIR=""
+countDomains() {
+	cleanupTemp;
+	currentIP=$(grep -o -m 1 '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
+	if [ -z "$currentIP" ]; then
+	   currentIP=$(grep ' watchdog.energized.pro' "$hosts" | sed 's/ watchdog.energized.pro//')
 	fi
-	case "$INPUT" in
-	    # Spark Protection
-	    # ----------------------------------------
-		1|spark|Spark|SPARK) DIR="master/spark/formats/hosts.gz"
-		clear
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e $Y'[+] Applying Energized Spark Protection'$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		;;
-		# Blu Go Protection
-		# ----------------------------------------
-		2|blugo|BluGo|bluGo|BLUGO) DIR="master/bluGo/formats/hosts.gz"
-		clear
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e $Y'[+] Applying Energized Blu Go Protection'$N
-		echo -e $Y"$divider"$N
-		;;
-		# Blu Protection
-		# ----------------------------------------
-		3|blu|Blu|BLU) DIR="master/blu/formats/hosts.gz"
-		clear
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e $Y'[+] Applying Energized Blu Protection'$N
-		echo -e $Y"$divider"$N
-		;;
-		# Basic Protection
-		# ----------------------------------------
-		4|basic|Basic|BASIC) clear
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e $Y"Hold on a sec!"$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e $W"Energized Basic is more than 12MB in size, and"$N
-		sleep 0.1
-		echo -e $W"may slow down your browsing experience (If your"$N
-		sleep 0.1
-		echo -e $W"device can't handle the load.)"$N
-		echo ''
-		sleep 0.1
-		echo -n -e $W'[+] PROCEED?'$N $Y'[Y/N]:'$N
-		read answer
-		if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
-		  echo "[+] Applying Energized Basic..."
-		  DIR="master/basic/formats/hosts.gz"
-		  clear
-		  echo -e $Y"$divider"$N
-		  sleep 0.1
-		  echo -e $Y'[+] Applying Energized Basic Protection'$N
-		  echo -e $Y"$divider"$N
-		  sleep 0.3
-		else
-		  clear
-		  echo -n -e $W'[+] RETURNING '$N
-		  echo -n -e $Y'•'$N; sleep 0.2;
-		  echo -n -e $Y'•'$N; sleep 0.3;
-		  echo -n -e $Y'•'$N; sleep 0.2;
-		  sleep 0.1
-		fi
-		;;
-		# Ultimate Protection
-		# ----------------------------------------
-		5|ultimate|Ultimate|ULTIMATE) clear
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e $Y"Hold on a sec!"$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e $W"Energized Ultimate is more than 17MB in size, and"$N
-		sleep 0.1
-		echo -e $W"may slow down your browsing experience (If your"$N
-		sleep 0.1
-		echo -e $W"device can't handle the load.)"$N
-		echo ''
-		sleep 0.1
-		echo -n -e $W'[+] PROCEED?'$N $Y'[Y/N]:'$N
-		read answer
-		if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
-		  echo "[+] Applying Energized Ultimate..."
-		  DIR="master/ultimate/formats/hosts.gz"
-		  clear
-		  echo -e $Y"$divider"$N
-		  sleep 0.1
-		  echo -e $Y'[+] Applying Energized Ultimate Protection'$N
-		  echo -e $Y"$divider"$N
-		  sleep 0.3
-		else
-		  clear
-		  echo -n -e $W'[+] RETURNING '$N
-		  echo -n -e $Y'•'$N; sleep 0.2;
-		  echo -n -e $Y'•'$N; sleep 0.3;
-		  echo -n -e $Y'•'$N; sleep 0.2;
-		  sleep 0.1
-		fi
-		;;
-		# Unified Protection
-		# ----------------------------------------
-		6|unified|Unified|UNIFIED) clear
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e $Y"Hold on a sec!"$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e $W"Energized Unified is more than 30MB in size, and"$N
-		sleep 0.1
-		echo -e $W"may slow down your browsing experience (If your"$N
-		sleep 0.1
-		echo -e $W"device can't handle the load.)"$N
-		echo ''
-		sleep 0.1
-		echo -n -e $W'[+] PROCEED?'$N $Y'[Y/N]:'$N
-		read answer
-		if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
-		  echo "[+] Applying Energized Unified..."
-		  DIR="master/unified/formats/hosts.gz"
-		  clear
-		  echo -e $Y"$divider"$N
-		  sleep 0.1
-		  echo -e $Y'[+] Applying Energized Unified Protection'$N
-		  echo -e $Y"$divider"$N
-		  sleep 0.3
-		else
-		  clear
-		  echo -n -e $W'[+] RETURNING '$N
-		  echo -n -e $Y'•'$N; sleep 0.2;
-		  echo -n -e $Y'•'$N; sleep 0.3;
-		  echo -n -e $Y'•'$N; sleep 0.2;
-		  sleep 0.1
-		fi
-		;;
-		# Porn Extension
-		# ----------------------------------------
-        p|porn|Porn|PORN) clear
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e $Y"Hold on a sec!"$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e $W"Energized Porn is more than 15MB in size, and"$N
-		sleep 0.1
-		echo -e $W"may slow down your browsing experience (If your"$N
-		sleep 0.1
-		echo -e $W"device can't handle the load.)"$N
-		echo ''
-		sleep 0.1
-		echo -n -e $W'[+] PROCEED?'$N $Y'[Y/N]:'$N
-		read answer
-		if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
-		  clear
-		  echo -e $Y"$divider"$N
-		  echo -e $Y'[+] PORN HOSTS EXTENSION'$N
-		  sleep 0.1
-		  echo -e $Y"$divider"$N
-		  sleep 0.1
-		  echo "Adds Porn Blocking Pack to current hosts."
-		  echo -e $Y"$divider"$N
-		  echo ""
-		  wget --no-check-certificate -O $SHOST https://github.com/EnergizedProtection/block/raw/master/porn/formats/hosts.gz
-		  echo "[+] Applying Porn Hosts to current hosts."
-		  gzip -d -c $SHOST > $PTEMP
-		  mv $HOST $TEMP
-		  truncate -s 0 $HOST
-		  cat $TEMP $PTEMP > $HOST
-		  rm -f $TEMP $PTEMP $SHOST
-		  echo -e $G'[+] Done!'$N
-		  echo "[+] Returning..."
-		  sleep 1
-		else
-		  clear
-		  echo -n -e $W'[+] RETURNING '$N
-		  echo -n -e $Y'•'$N; sleep 0.2;
-		  echo -n -e $Y'•'$N; sleep 0.3;
-		  echo -n -e $Y'•'$N; sleep 0.2;
-		  sleep 0.1
-		fi
-		;;
-		# Porn Lite Extension
-		# ----------------------------------------
-        pl)  clear
-		echo -e $Y"$divider"$N
-		echo -e $Y'[+] PORN LITE HOSTS EXTENSION'$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo "Adds Porn Lite Blocking Pack to current hosts."
-		echo -e $Y"$divider"$N
-		echo ""
-		wget --no-check-certificate -O $SHOST https://github.com/EnergizedProtection/block/raw/master/extensions/porn-lite/formats/hosts.gz
-		echo "[+] Applying Porn Lite Hosts to current hosts."
-		gzip -d -c $SHOST > $PTEMP
-        mv $HOST $TEMP
-        truncate -s 0 $HOST
-		cat $TEMP $PTEMP > $HOST
-		rm -f $TEMP $PTEMP $SHOST
-		echo -e $G'[+] Done!'$N
-		echo "[+] Returning..."
-		sleep 1
-		;;
-		# Regional Extension
-		# ----------------------------------------
-		rl|rg|regional|Regional|REGIONAL|REG|reg)  clear
-		echo -e $Y"$divider"$N
-		echo -e $Y'[+] REGIONAL HOSTS EXTENSION'$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo "Adds Regional Blocking Pack to current hosts."
-		echo -e $Y"$divider"$N
-		echo ""
-		wget --no-check-certificate -O $SHOST https://github.com/EnergizedProtection/block/raw/master/extensions/regional/formats/hosts.gz
-		echo "[+] Applying Regional Hosts to current hosts."
-		gzip -d -c $SHOST > $STEMP
-        mv $HOST $TEMP
-        truncate -s 0 $HOST
-		cat $TEMP $STEMP > $HOST
-		rm -f $TEMP $STEMP $SHOST
-		echo -e $G'[+] Done!'$N
-		echo "[+] Returning..."
-		sleep 1
-		;;
-		# Social Extension
-		# ----------------------------------------
-		s|social|Social|SOCIAL)  clear
-		echo -e $Y"$divider"$N
-		echo -e $Y'[+] SOCIAL HOSTS EXTENSION'$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo "Adds Social Blocking Pack to current hosts."
-		echo -e $Y"$divider"$N
-		echo ""
-		wget --no-check-certificate -O $SHOST https://github.com/EnergizedProtection/block/raw/master/extensions/social/formats/hosts.gz
-		echo "[+] Applying Social Hosts to current hosts."
-		gzip -d -c $SHOST > $STEMP
-        mv $HOST $TEMP
-        truncate -s 0 $HOST
-		cat $TEMP $STEMP > $HOST
-		rm -f $TEMP $STEMP $SHOST
-		echo -e $G'[+] Done!'$N
-		echo "[+] Returning..."
-		sleep 1
-		;;
-		# Xtreme Extension
-		# ----------------------------------------
-		x|X|xtreme|XTRM|xtrm|Xtrm|Xtreme) clear
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e $Y"Hold on a sec!"$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e $W"Energized Xtreme Extension strictly blocks every"$N
-		sleep 0.1
-		echo -e $W"annoyance out there. Which may break app(s) and"$N
-		sleep 0.1
-		echo -e $W"website(s)."$N
-		echo ''
-		sleep 0.1
-		echo -n -e $W'[+] PROCEED?'$N $Y'[Y/N]:'$N
-		read answer
-		if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
-		  clear
-		  echo -e $Y"$divider"$N
-		  echo -e $Y'[+] XTREME HOSTS EXTENSION'$N
-		  sleep 0.1
-		  echo -e $Y"$divider"$N
-		  sleep 0.1
-		  echo "Adds Xtreme Blocking Pack to current hosts."
-		  echo -e $Y"$divider"$N
-		  echo ""
-		  wget --no-check-certificate -O $SHOST https://github.com/EnergizedProtection/block/raw/master/extensions/xtreme/formats/hosts.gz
-		  echo "[+] Applying Xtreme Hosts to current hosts."
-		  gzip -d -c $SHOST > $PTEMP
-		  mv $HOST $TEMP
-		  truncate -s 0 $HOST
-		  cat $TEMP $PTEMP > $HOST
-		  rm -f $TEMP $PTEMP $SHOST
-		  echo -e $G'[+] Done!'$N
-		  echo "[+] Returning..."
-		  sleep 2
-		else
-		  clear
-		  echo -n -e $W'[+] RETURNING '$N
-		  echo -n -e $Y'•'$N; sleep 0.2;
-		  echo -n -e $Y'•'$N; sleep 0.3;
-		  echo -n -e $Y'•'$N; sleep 0.2;
-		  sleep 0.1
-		fi
-		;;
-		# Update H&WB
-		# ----------------------------------------
-		u) clear
-		if [ "$autopack" == "null" ]; then
-		  echo -e $R"[-] No Energized Pack Applied Yet!"$N
-		  sleep 3
-		else
-		  echo -e $Y"$divider"$N
-		  sleep 0.1
-		  echo -e $Y"[+] Applying $echeck"$N
-		  sleep 0.1
-		  echo -e $Y"$divider"$N
-		  echo ''
-		  wget --no-check-certificate -O $SHOST https://github.com/EnergizedProtection/block/raw/master/$autopack/formats/hosts.gz
-		  gzip -d -c $SHOST > $HOST
-		  rm -f $SHOST
-		  echo -e $G"[+] Done Applying!"$N
-		  sleep 1
-		  echo -e $Y"$divider"$N
-		  grep "Version Code" $TREADME > $FILTER
-		  sleep 0.3
-		  # Whitelisting
-		  # ----------------------------------------
-		    echo -e $Y"$divider"$N
-		    sleep 0.1
-		    echo -e $Y'[+] WHITELISTING'$N
-		    sleep 0.1
-		    echo -e $Y"$divider"$N
-		    sleep 0.1
-		    # Begins
-		    if [ ! -f $WHITELIST ]; then
-				echo ""
-				echo -e $R'[-] No Whitelist Detected!'$N
-				sleep 0.5
-				echo -e $W'[+] Copy your whilelist to'$N $Y'/sdcard/EnergizedProtection'$N
-				sleep 2
-		    else
-				if [ -f "$HOST" ]; then
-				 if [ -s $WHITELIST ]; then
-					echo -e $G'[+] Whitelist Found!'$N
-					echo -e $W'[+] Applying Whitelist'$N
-					sleep 0.3
-					grep -Fvxf $WHITELIST $HOST > $TEMP
-					rm -f $HOST
-					mv -f $TEMP $HOST
-					sleep 0.5
-					grep -Fvf $WHITELIST $HOST > $TEMP
-					rm -f $HOST
-					mv -f $TEMP $HOST
-					sleep 0.5
-					grep -vxf $WHITELIST $HOST > $TEMP
-					rm -f $HOST
-					mv -f $TEMP $HOST
-					sleep 0.1
-					echo -e $G'[+] Done'$N
-					echo -e $W'[+] Make sure to reboot once after applying.'$N
-					sleep 1
-				 else
-				    echo -e $R'[-] Whitelist file is empty!'$N
-				    sleep 1
-				    echo -e $R'[-] Nothing whitelisted!'$N
-				    sleep 0.1
-				    echo -e $W'[+] Returning...'$N
-				    sleep 1.5
-				 fi
-				else
-					echo ""
-					echo -e $R'[-] No hosts file detected!'$N
-					sleep 1
-					echo -e $Y'[+] Apply a hosts file first'$N
-					sleep 2
-				fi
-		    fi
-		    sleep 0.1
-		    echo -e $Y"$divider"$N
-		    # Blacklisting
-		    # ----------------------------------------
-		    echo -e $Y"$divider"$N
-		    sleep 0.1
-		    echo -e $Y'[+] BLACKLISTING'$N
-		    sleep 0.1
-		    echo -e $Y"$divider"$N
-		    sleep 0.1
-		    # Begins
-		    if [ ! -f $BLACKLIST ]; then
-				echo ""
-				echo -e $R'[-] No Blacklist detected!'$N
-				echo -e $W'[+] Copy your blacklist to'$N $Y'/sdcard/EnergizedProtection'$N
-			else
-				if [ -f "$HOST" ]; then
-					if [ -s $BLACKLIST ]; then
-						echo -e $G'[+] Blacklist Found!'$N
-						echo -e $W'[+] Applying Blacklist...'$N
-						sleep 0.1
-						echo -e $W'[+] May take a while, depending on hosts size.'$N
-						sleep 0.1
-						echo -e $C'[+] Blacklist Log -'$N
-						sleep 0.1
-						rm -f $TEMP $STEMP $PTEMP $LTEMP
-						sed 's/^ *//; s/ *$//; /^$/d; /^#/ d' $BLACKLIST > $LTEMP
-						sort -u $LTEMP > $TEMP
-						NEWFILTERS="$(cat $TEMP)"
-						echo -e "\n# Applied on - $date" >> $HOST
-						printf '%s\n' "$NEWFILTERS" | while IFS= read -r linenew
-						do
-						  if [ ! "$(grep -x "$curip$linenew" $HOST)" ]; then
-						    echo -e "$curip$linenew" >> $HOST
-						    echo -e $Y"$linenew "$N$W"- blacklisted."$N
-						  else
-						    echo -e $R"$linenew "$N$W"- already blacklisted."$N
-						  fi
-						done
-				        rm -f $TEMP $STEMP $PTEMP $LTEMP
-				        echo -e $G'[+] Done'$N
-						echo -e $W'[+] Make sure to reboot once after applying.'$N
-						sleep 0.5
-						echo "[+] Returning..."
-						sleep 1
-					else
-						echo -e $R'[-] Blacklist file is empty!'$N
-						sleep 1
-						echo -e $R'[-] Nothing blacklisted!'$N
-						sleep 0.1
-						echo -e $W'[+] Returning...'$N
-						sleep 2
-					fi
-				else
-					echo ""
-					echo -e $R'[-] No hosts file detected!'$N
-					sleep 1
-					echo -e $Y'[+] Apply a hosts file first'$N
-					sleep 2
-				fi
-		    fi
-		fi
-		;;
-		# Whitelist
-		# ----------------------------------------
-		w) clear
-		echo -e $Y"$divider"$N
-		echo -e $Y'ϟ W H I T E L I S T I N G'$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo ""
-		# Begins
-		if [ ! -f $WHITELIST ]; then
-				echo ""
-				echo -e $R'[-] No Whitelist Detected!'$N
-				sleep 0.5
-				echo -e $W'[+] Copy your whilelist to'$N $Y'$DIRECTORY'$N
-				sleep 2
-		    else
-				if [ -f "$HOST" ]; then
-				  if [ -s $WHITELIST ]; then
-					echo -e $G'[+] Whitelist Found!'$N
-					echo -e $W'[+] Applying Whitelist'$N
-					echo -e $W'[+] May take a while, depending on hosts size.'$N
-					NEWFILTERS="$(cat $WHITELIST)"
-					printf '%s\n' "$NEWFILTERS" | while IFS= read -r linenew
-					do
-					  if [ ! "$(grep -x "$curip$linenew" $HOST)" ]; then
-					    echo -e $G"$linenew "$N$W"- already whitelisted."$N
-					  else
-					    echo -e $Y"$linenew "$N$W"- whitelisted."$N
-					  fi
-					done
-					sleep 0.3
-					grep -Fvxf $WHITELIST $HOST > $TEMP
-					rm -f $HOST
-					mv -f $TEMP $HOST
-					sleep 0.3
-					grep -Fvf $WHITELIST $HOST > $TEMP
-					rm -f $HOST
-					mv -f $TEMP $HOST
-					sleep 0.3
-					grep -vxf $WHITELIST $HOST > $TEMP
-					rm -f $HOST
-					mv -f $TEMP $HOST
-					sleep 0.1
-					echo -e $G'[+] Done'$N
-					echo -e $W'[+] Make sure to reboot once after applying.'$N
-					sleep 0.5
-					echo "[+] Returning..."
-					sleep 1
-				  else
-				    echo -e $R'[-] Whitelist file is empty!'$N
-				    sleep 0.1
-				    echo -e $R'[-] Nothing whitelisted!'$N
-				    sleep 0.1
-				    echo -e $W'[+] Returning...'$N
-				    sleep 1.5
-				  fi
-				else
-					echo ""
-					echo -e $R'[-] No hosts file detected!'$N
-					sleep 1
-					echo -e $Y'[+] Apply a hosts file first'$N
-					sleep 2
-				fi
-		    fi
-		;;
-		# Instant Whitelist
-		# ----------------------------------------
-		iw) while true
-		do
-		clear
-		echo -e $Y"$divider"$N
-		echo -e $Y'ϟ I N S T A N T  W H I T E L I S T'$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e "Instant whitelist will let you add a domain at a\ntime to add to your hosts as whitelisted.\nNote. To Whitelist more domains, use 'w' method."
-		echo -e $Y"$divider"$N
-		echo ""
-		echo -n -e $W'[+] Enter Domain Name Only: '$N
-		read iw
-		echo -e $W'[+] Your Domain'$N $Y"$iw"$N
-		echo -n -e $W'[+] Are you sure?'$N $Y'[Y/N]:'$N
-		read answer
-		if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
-		  echo "[+] Applying $iw as whitelist..."
-		  grep -Fvx "$curip$iw" $HOST > $TEMP
-		  truncate -s 0 $HOST
-		  mv -f $TEMP $HOST
-		  echo "$iw" >> $WHITELIST
-		  echo -e $W'[+] Done'$N
-		  echo -e $W'[+] Make sure to reboot once after applying.'$N
-		  sleep 0.5
-		  echo -e $W'[+] Returning...'$N
-		  sleep 1
-		  echo -n -e $W'[+] Whitelist Another Domain?'$N $Y'[y/n]:'$N
-		  read answer
-		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
-		      break
-		    fi
-		else
-		  clear
-		  echo -n -e $W'[+] Whitelist Another Domain?'$N $Y'[y/n]:'$N
-		  read answer
-		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
-		      break
-		    fi
-		  echo -n -e $W'[+] RETURNING '$N
-		  echo -n -e $Y'•'$N; sleep 0.2;
-		  echo -n -e $Y'•'$N; sleep 0.3;
-		  echo -n -e $Y'•'$N; sleep 0.2;
-		  sleep 0.3
-		fi
-		done
-		;;
-		# Blacklist
-		# ----------------------------------------
-		b)  clear
-		echo -e $Y"$divider"$N
-		echo -e $Y'ϟ B L A C K L I S T I N G'$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo ""
-		# Begins
-		    if [ ! -f $BLACKLIST ]; then
-				echo ""
-				echo -e $R'[-] No Blacklist detected!'$N
-				echo -e $W'[+] Copy your blacklist to'$N $Y'$DIRECTORY'$N
-			else
-				if [ -f "$HOST" ]; then
-					if [ -s $BLACKLIST ]; then
-						echo -e $G'[+] Blacklist Found!'$N
-						echo -e $W'[+] Applying Blacklist...'$N
-						sleep 0.1
-						echo -e $W'[+] May take a while, depending on hosts size.'$N
-						sleep 0.1
-						echo -e $C'[+] Blacklist Log -'$N
-						sleep 0.1
-						rm -f $TEMP $STEMP $PTEMP $LTEMP
-						sed 's/^ *//; s/ *$//; /^$/d; /^#/ d' $BLACKLIST > $LTEMP
-						sort -u $LTEMP > $TEMP
-						NEWFILTERS="$(cat $TEMP)"
-						echo -e "\n# Applied on - $date" >> $HOST
-						printf '%s\n' "$NEWFILTERS" | while IFS= read -r linenew
-						do
-						  if [ ! "$(grep -x "$curip$linenew" $HOST)" ]; then
-						    echo -e "$curip$linenew" >> $HOST
-						    echo -e $Y"$linenew "$N$W"- blacklisted."$N
-						  else
-						    echo -e $R"$linenew "$N$W"- already blacklisted."$N
-						  fi
-						done
-				        rm -f $TEMP $STEMP $PTEMP $LTEMP
-				        echo -e $G'[+] Done'$N
-						echo -e $W'[+] Make sure to reboot once after applying.'$N
-						sleep 0.5
-						echo "[+] Returning..."
-						sleep 1
-					else
-					    echo -e $R'[-] Blacklist file is empty!'$N
-						sleep 1
-						echo -e $R'[-] Nothing blacklisted!'$N
-						sleep 0.1
-						echo "[+] Returning..."
-						sleep 2
-					fi
-				else
-                    echo ""
-					echo -e $R'[-] No hosts file detected!'$N
-					sleep 1
-					echo -e $Y'[+] Apply a hosts file first'$N
-					sleep 2
-				fi
-			fi
-		;;
-		# Instant Blacklist
-		# ----------------------------------------
-		ib) while true
-		do
-		clear
-		echo -e $Y"$divider"$N
-		echo -e $Y'ϟ I N S T A N T  B L A C K L I S T'$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e "Instant Blacklist will let you add a domain at a\ntime to add to your hosts as blacklisted.\nNote. To Blacklist more domains, use 'b' method."
-		echo -e $Y"$divider"$N
-		echo ""
-		echo -n -e $W'[+] Enter Domain Name Only: '$N
-		read ib
-		if [ ! "$(grep -x "$curip$ib" $HOST)" ]; then
-		  echo -e $W'[+] Your Domain(s)'$N $Y"$ib"$N
-		  echo -n -e $W'[+] Are you sure?'$N $Y'[Y/N]:'$N
-		  read answer
-		  if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
-		    echo "[+] Applying $ib as blacklist..."
-		    echo -e "\n# Instant Blacklist Applied on - $date" >> $HOST
-		    echo -e "$curip$ib" >> $HOST
-			echo -e $Y"$ib "$N$W"- blacklisted."$N
-			sleep 0.6
-		    echo -e "\n# Applied on - $date" >> $BLACKLIST
-		    echo "$ib" >> $BLACKLIST
-		    echo -e $W'[+] Done'$N
-			echo -e $W'[+] Make sure to reboot once after applying.'$N
-			sleep 0.5
-		    echo -e $W'[+] Returning...'$N
-		    sleep 0.4
-		    echo -n -e $W'[+] Blacklist Another Domain?'$N $Y'[y/n]:'$N
-		    read answer
-		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
-		      break
-		    fi
-		    clear
-		  else
-		    clear
-		    echo -n -e $W'[+] Blacklist Another Domain?'$N $Y'[y/n]:'$N
-		    read answer
-		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
-		      break
-		    fi
-		    echo -n -e $W'[+] RETURNING '$N
-		  echo -n -e $Y'•'$N; sleep 0.2;
-		  echo -n -e $Y'•'$N; sleep 0.3;
-		  echo -n -e $Y'•'$N; sleep 0.2;
-		    sleep 0.3
-		  fi
-		else
-		  echo -e $G'[+] Domain was already being added to the hosts!'$N
-		  sleep 1
-		  echo -n -e $W'[+] Blacklist Another Domain?'$N $Y'[y/n]:'$N
-		  read answer
-		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
-		      break
-		    fi
-		  fi
-		done
-		;;
-		# Redirect
-		# ----------------------------------------
-		r) clear
-		echo -e $Y"$divider"$N
-		echo -e $Y'ϟ R E D I R E C T'$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		sleep 0.1
-		echo -e $W"Redirects the domains in the list to an IP."$N
-		echo ''
-		# Begins
-		    if [ ! -f $REDIRECTLIST ]; then
-				echo ""
-				echo -e $R'[-] No Redirectlist detected!'$N
-				echo -e $W'[+] Copy your redirect list to'$N $Y'$DIRECTORY'$N
-			else
-				if [ -f "$HOST" ]; then
-					if [ -s $REDIRECTLIST ]; then
-					echo -e $G'[+] Redirectlist Found!'$N
-					echo ''
-					echo -n -e $W'[+] Enter IP (v4 or v6):'$N $ip
-					read ip
-					echo -e $W'[+] Your IP:'$N $Y"$ip"$N
-					echo -n -e $W'[+] Are you sure?'$N $Y'[Y/N]:'$N
-					read answer
-					if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
-						echo -e $W'[+] Redirecting...'$N
-						sleep 0.1
-						echo -e $W'[+] May take a while, depending on hosts size.'$N
-						sleep 0.1
-						echo -e $C"[+] Redirect Log -"$N
-						rm -f $STEMP
-						cp $REDIRECTLIST $STEMP
-						echo -e "\n# Applied on - $date" >> $HOST
-						sed 's/^ *//; s/ *$//; /^$/d; /^#/d' $STEMP > $TEMP
-						rm -f $STEMP
-						NEWFILTERS="$(cat $TEMP)"
-						printf '%s\n' "$NEWFILTERS" | while IFS= read -r linenew
-						do
-						grep -Fvx "$curip$linenew" $HOST > $STEMP
-						rm -f $HOST
-						mv -f $TEMP $HOST
-						  if [ ! "$(grep -Fx "$curip$linenew" $HOST)" ]; then
-							echo -e "$ip $linenew" >> $HOST
-							echo -e $Y"$linenew "$N$W"- redirected to "$N$G"$ip"$N
-						  fi
-						done
-						echo -e $G'[+] Done'$N
-						echo -e $W'[+] Make sure to reboot once after applying.'$N
-						sleep 0.5
-						echo -e $W'[+] Returning...'$N
-						sleep 1
-						else
-						echo -e $W'[+] Returning...'$N
-						fi
-					else
-						echo -e $R'[-] Redirectlist file is empty!'$N
-						sleep 1
-						echo -e $R'[-] Nothing redirected!'$N
-						sleep 0.1
-						echo -e $W'[+] Returning...'$N
-						sleep 1.5
-					fi
-				else
-					echo ""
-					echo -e $R'[-] No hosts file detected!'$N
-					sleep 1
-					echo -e $Y'[+] Apply a hosts file first'$N
-					sleep 2
-				fi
-		    fi
-		;;
-		# Instant Redirect
-		# ----------------------------------------
-		ir) while true
-		do
-		clear
-		echo -e $Y"$divider"$N
-		echo -e $Y'ϟ I N S T A N T  R E D I R E C T'$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e "Instant redirect helps to redirect any specific\n domain to any IP."
-		echo -e $Y"$divider"$N
-		echo ""
-		echo -n -e $W'[+] Enter Domain Name Only: '$N
-		read iw
-		echo -e $W'[+] Your Domain'$N $Y"$iw"$N
-		echo -n -e $W'[+] Are you sure?'$N $Y'[Y/N]:'$N
-		read answer
-		if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
-		  grep -Fvx "$curip$iw" $HOST > $TEMP
-		  rm -f $HOST
-		  mv -f $TEMP $HOST
-		  echo -n -e $W'[+] Enter IP (v4 or v6):'$N $ip
-		  read ip
-		  echo -e $W'[+] Your IP'$N $Y"$ip"$N
-		  echo -n -e $W'[+] Are you sure?'$N $Y'[Y/N]:'$N
-		  read answer
-		  if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
-		    echo -e "\n$ip $iw" >> $HOST
-		    echo -e "\n# Applied on - $date" >> $REDIRECTLIST
-		    echo "$ip $iw" >> $REDIRECTLIST
-		    else
-		    echo -e "\n$curip $iw" >> $HOST
-		  fi
-		  echo -e $W'[+] Done'$N
-		  echo -e $W'[+] Make sure to reboot once after applying.'$N
-		  sleep 0.5
-		  echo -e $W'[+] Returning...'$N
-		  sleep 1
-		  echo -n -e $W'[+] Redirect Another Domain?'$N $Y'[y/n]:'$N
-		  read answer
-		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
-		      break
-		    fi
-		else
-		  clear
-		  echo -n -e $W'[+] Redirect Another Domain?'$N $Y'[y/n]:'$N
-		  read answer
-		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
-		      break
-		    fi
-		  echo -n -e $W'[+] RETURNING '$N
-		  echo -n -e $Y'•'$N; sleep 0.2;
-		  echo -n -e $Y'•'$N; sleep 0.3;
-		  echo -n -e $Y'•'$N; sleep 0.2;
-		  sleep 0.3
-		fi
-		done
-		;;
-		# Systemless Hosts
-		# ----------------------------------------
-		mg|magisk|Magisk|MAGISK) am start -n com.topjohnwu.magisk/a.c
-		;;
-		# Read Hosts File
-		# ----------------------------------------
-		o|O|oh|OH|openhosts|OpenHosts|hosts) clear
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e $Y'ϟ O P E N  H O S T S  F I L E'$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo "Open the hosts file."
-		echo -e $Y"$divider"$N
-		echo ''
-		head -n 30 $HOST
-		echo ''
-		echo -n -e $W'[+] Open Hosts File?'$N $Y'[Y/N]:'$N
-		read answer
-		if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
-		  am start -a android.intent.action.VIEW -d file://$HOST -t text/plain > /dev/null 2>&1; 
-		else
-		  clear
-		  echo -n -e $W'[+] RETURNING '$N
-		  echo -n -e $Y'•'$N; sleep 0.2;
-		  echo -n -e $Y'•'$N; sleep 0.3;
-		  echo -n -e $Y'•'$N; sleep 0.2;
-		  sleep 0.3
-		fi
-		;;
-		# Info
-		# ----------------------------------------
-		i|info|Info|INFO) am start -a android.intent.action.VIEW -d "https://energized.pro"
-		;;
-		# Instructions
-		# ----------------------------------------
-		Guide|guide|in|instructions|instruction|IN|INSTRUCTION|INSTRUCTIONS) am start -a android.intent.action.VIEW -d "http://link.nayemador.com/epmagiskusage"
-		;;
-		# Submit Issue
-		# ----------------------------------------
-		si|SI|webapp|WEBAPP|WebApp|app|submit|Submit|issue|Submit|is|SUBMIT|ISSUE|IS) clear
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e $Y'ϟ B O X  W E B  A P P'$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo "Got any whitelist/blacklist issue? or anything\nelse? No worry! Just Submit via Web App."
-		echo -e $Y"$divider"$N
-		echo ""
-		echo -e $B'You will be redirected in 3 seconds...'$N
-		sleep 3
-		am start -a android.intent.action.VIEW -d "https://app.energized.pro"
-		;;
-		thanks|say|Say|SAY|thx|thnx|thax|thank|thanku|thankyou|THX|Thanks) am start -a android.intent.action.VIEW -d "$saythanks" 
-		;;
-		# Telegram
-		# ----------------------------------------
-		tg|telegram|Telegram|TELEGRAM) am start -a android.intent.action.VIEW -d "http://go.energized.pro/telegram"
-		;;
-		# Backup Hosts
-		# ----------------------------------------
-		bp) clear
-		echo -e $Y"$divider"$N
-		echo -e $Y'ϟ B A C K U P'$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo "Makes a backup of your current hosts."
-		echo -e $Y"$divider"$N
-		echo ""
-		echo -e $G'[+] Backup In Process...'$N
-		gzip -9 -c $HOST > $HBP
-		cp $FILTER $BFILTER
-		sleep 0.5
-		echo -e $W'[+] Done!'$N
-		sleep 0.5
-		;;
-		# Restore Hosts
-		# ----------------------------------------
-		rs|restore|Restore|RESTORE) clear
-		echo -e $Y"$divider"$N
-		echo -e $Y'ϟ R E S T O R E'$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo "Restores the hosts backup."
-		echo -e $Y"$divider"$N
-		echo ""
-		if [ -s $HBP ]; then
-		echo -e $G'[+] Restoring...'$N
-		gzip -d -c $HBP > $HOST
-		cp $BFILTER $FILTER
-		sleep 0.5
-		echo -e $W'[+] Done!'$N
-		sleep 1.3
-		else
-		echo -e $R"[×] NO BACKUP FOUND!"$N
-		sleep 1
-		fi
-		;;
-		# Clear Hosts
-		# ----------------------------------------
-		c|clear|Clear|CLEAR) clear
-		echo -e $Y"$divider"$N
-		echo -e $Y'ϟ C L E A N  H O S T S'$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e $W"Clean your current hosts to default."$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		echo ""
-		sleep 0.1
-		echo -e $R"[+] Clearing Hosts File..."$N
-		echo ''
-		sleep 0.1
-		echo -n -e $R"[-C-"$N
-		truncate -s 0 $HOST
-		echo -n -e $R"L-"$N
-		rm -f $FILTER
-		echo -n -e $R"E-"$N
-		touch $FILTER
-		echo -n -e $R"A-"$N
-		sleep 0.3
-		echo -e "# Energized Protection - https://energized.pro\n# Let's make an annoyance free better open internet, altogether!\n\n127.0.0.1 localhost\n::1" >> $HOST
-		echo -n -e $R"R-]\n"$N
-		sleep 0.3
-		echo ''
-        echo -e $W"[+] Done Clearing Hosts!"$N
-        sleep 0.1
-        echo -e $W"[+] Returning..."$N
-        sleep 2
-        clear
-        ;;
-		# Redirection IP
-		# ----------------------------------------
-		ip) clear
-		echo -e $Y"$divider"$N
-		echo -e $Y'ϟ R E D I R E C T I O N  I P'$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e "Add your custom Redirection IP. It must be an IP.\nUsing anything else than IP, may cause issue with\nyour hosts."
-		echo -e $Y"$divider"$N
-		echo ""
-		echo -n -e $W'[+] Enter Redirection IP:'$N $ip
-		read ip
-		echo -e $W'[+] Your Redirection IP'$N $Y"$ip"$N
-		echo -n -e $W'[+] Are you sure?'$N $Y'[Y/N]:'$N
-		read answer
-		if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
-		  echo "[+] Adding $ip as redirection IP..."
-		  rm -f $TEMP $STEMP $PTEMP
-		  sed -n '1,78p' $HOST > $PTEMP 
-		  sed -e '1,78d' < $HOST > $TEMP
-		  truncate -s 0 $HOST
-		  sed -ie 's/[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}/'"${ip}"'/g' $TEMP
-		  cat $PTEMP $TEMP > $HOST
-		  rm -f $TEMP $STEMP $PTEMP $LTEMP
-		  echo -e $W'[+] Done'$N
-		  echo -e $W'[+] Make sure to reboot once after applying.'$N
-		  sleep 0.5
-		  echo -e $W'[+] Returning...'$N
-		  sleep 1
-		else
-		  clear
-		  echo -n -e $W'[+] RETURNING '$N
-		  echo -n -e $Y'•'$N; sleep 0.2;
-		  echo -n -e $Y'•'$N; sleep 0.3;
-		  echo -n -e $Y'•'$N; sleep 0.2;
-		  sleep 0.1
-		fi
-		;;
-		# Check Domain In Hosts
-		# ----------------------------------------
-		chk|check|Check|CHECK|ck) while true
-		do
-		curip=$(grep -o -m 1 '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} watchdog.energized.pro' $HOST | sed 's/watchdog.energized.pro//')
-		clear
-		echo $curip
-		echo -e $Y"$divider"$N
-		echo -e $Y'ϟ C H E C K  D O M A I N'$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e "Check any specific domain availability in hosts."
-		echo -e $Y"$divider"$N
-		echo ""
-		echo -n -e $W'[+] Enter Domain Name Only: '$N
-		read domain
-		echo -e $W"[+] Your Domain"$N $Y"$domain"$N
-		if [ ! "$(grep -x "$curip$domain" $HOST)" ]; then
-		  echo -e $R"[×] $domain - "$N$W"is not in the list!"$N
-		  sleep 1
-		  echo -n -e $W'[+] Want to block the domain?'$N $Y'[y/n]:'$N
-		  read answer
-		  if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
-		    echo "[+] Applying $domain as blacklist..."
-		    echo -e "\n# Instant Blacklist Applied on - $date" >> $HOST
-		    echo -e "$curip$domain" >> $HOST
-			echo -e $W"[✓] "$N$Y"$domain "$N$W"- blacklisted."$N
-			sleep 0.6
-		    echo -e "\n# Applied on - $date" >> $BLACKLIST
-		    echo "$domain" >> $BLACKLIST
-		    echo -e $W'[+] Done'$N
-		    echo -n -e $W'[+] Check Again?'$N $Y'[Y/N]:'$N
-		    read answer
-		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
-		      break
-		    fi
-		    clear
-		  else
-		    echo -n -e $W'[+] Check Again?'$N $Y'[y/n]:'$N
-		    read answer
-		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
-		      break
-		    fi
-		    clear
-		    echo -n -e $W'[+] RETURNING...'$N
-		  fi
-		else
-		  echo -e $G"[✓] $domain - "$N$W"is in the list!"$N
-		  sleep 1
-		  echo -n -e $W'[+] Want to whitelist the domain?'$N $Y'[y/n]:'$N
-		  read answer
-		  if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
-		    echo "[+] Applying $domain as whitelist..."
-		    grep -Fvx "$curip$domain" $HOST > $TEMP
-		    truncate -s 0 $HOST
-		    mv -f $TEMP $HOST
-		    echo -e $W"[✓] "$N$Y"$domain "$N$W"- whitelisted."$N
-		    echo "$domain" >> $WHITELIST
-		    echo -e $W'[+] Done'$N
-		    echo -n -e $W'[+] Check Again?'$N $Y'[y/n]:'$N
-		    read answer
-		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
-		      break
-		    fi
-		    clear
-		  else
-		    echo -n -e $W'[+] Check Again?'$N $Y'[y/n]:'$N
-		    read answer
-		    if [[ "$answer" == "N" || "$answer" == "n" ]]; then
-		      break
-		    fi
-		    clear
-		    echo -n -e $W'[+] RETURNING...'$N
-		  fi
-		fi
-		done
-		;;
-		# Quit
-		# ----------------------------------------
-		q) break
-		clear
-		reset
-		;;
-		*)  echo -e $R"$divider"$N
-			echo -e $R"----------- I N V A L I D  I N P U T ! ----------"$N
-			echo -e $R"$divider"$N
-			sleep 2
-		;;
-	esac
-	if [ $DIR ]; then
-		echo ""
-		sleep 0.1
-		wget --no-check-certificate -O $SHOST https://github.com/EnergizedProtection/block/raw/$DIR
-		gzip -d -c $SHOST > $HOST
-		rm -f $SHOST
-		echo ""
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e $G'[+] Done Applying!'$N
-		sleep 0.5
-		echo -e $Y"$divider"$N
-		sleep 0.1
-		echo -e $W'[+] Make sure to reboot once after applying.'$N
-		sleep 0.1
-		echo -e $Y"$divider"$N
-		sleep 0.3
-		echo -e $Y'[+] If you loved our work, consider donating.'$N
-		
-		  wget --no-check-certificate -q -O $TREADME https://github.com/EnergizedProtection/block/raw/master/VERSION.md
-		  grep -q "Version Code" $TREADME
-		  cp $TREADME $BREADME
-		  grep "Version Code" $TREADME > $FILTER 2>/dev/null
-		
-		sleep 2
-		echo -e $W'[+] Returning...'$N
-		sleep 0.5
-		clear
-	fi
-	DIR=""
-	COUNT=$((COUNT+1))
-	clear
-	reset
-done
-rm -f $TREADME
-echo "[+] Done!"
-# Script Ends
+	grep "$currentIP" "$hosts" > $atemp
+	sed -i "s/$currentIP $currentIP//g" $atemp
+	awk '!visited[$0]++' $atemp > $btemp
+	totalDomainsNum=$(awk 'END{print NR}' $btemp)
+	totalDomains=$(awk '!/^#/ && !/^$/{c++}END{print c}' $btemp | awk '{ len=length($0); res=""; for (i=0;i<=len;i++) { res=substr($0,len-i+1,1) res; if (i > 0 && i < len && i % 3 == 0) { res = "," res } }; print res }')
+	cleanupTemp;
+}
 # ----------------------------------------
-clear
-sleep 0.3
-echo -e $Y"$divider"$N
-sleep 0.1
-echo -e $Y'--------------- T H A N K   Y O U ---------------'$N
-sleep 0.1
-echo -e $Y"$divider"$N
-echo ''
-sleep 0.1
-echo -e $Y'           Avinash - @AvinashReddy3108'$N
-sleep 0.1
-echo -e $Y'           badmojr - @badmojr'$N
-sleep 0.1
-echo -e $Y'           Jason Y - @jasonsyoung'$N
-sleep 0.1
-echo -e $Y'           Romain. - @romain280'$N
-sleep 1.5
-clear
-echo -e $Y"$divider"$N
-sleep 0.1
-echo -n -e $Y"---------- "$N$W'S '$N; sleep 0.1;
-echo -n -e $W'T '$N; sleep 0.1;
-echo -n -e $W'A '$N; sleep 0.1;
-echo -n -e $W'Y '$N; sleep 0.1;
-echo -n -e $W' E '$N; sleep 0.1;
-echo -n -e $W'N '$N; sleep 0.1;
-echo -n -e $W'E '$N; sleep 0.1;
-echo -n -e $W'R '$N; sleep 0.1;
-echo -n -e $W'G '$N; sleep 0.1;
-echo -n -e $W'I '$N; sleep 0.1;
-echo -n -e $W'Z '$N; sleep 0.1;
-echo -n -e $W'E '$N; sleep 0.1;
-echo -n -e $W'D '$N; sleep 0.1;
-echo -n -e $Y'ϟ '$N
-echo -e $Y'---------'$N;
-sleep 0.1
-echo -e $Y"$divider"$N
-echo ""
-sleep 1
+
+# ----------------------------------------
+# Remove duplicates
+# ----------------------------------------
+removeDuplicates() {
+	cleanupTemp;
+	mv "$hosts" $temp
+	awk '!visited[$0]++' $temp > $atemp
+	truncate -s 0 "$hosts"
+	cat $atemp > "$hosts"
+	cleanupTemp;
+}
+# ----------------------------------------
+
+# ----------------------------------------
+# Print version
+# ----------------------------------------
+printVersion() {
+	echo -e $W"\n> Module Version : "$N$Y"$version"$N
+	hostsVersion=$(grep "# Version: " $hosts | sed 's/# Version: //')
+	if [ ! -z "$hostsVersion" ]; then
+	   echo -e $W"> Hosts Version  : "$N$Y"$hostsVersion\n"$N
+	else
+	   echo ''
+	fi   
+}
+# ----------------------------------------
+
+case ${1:-} in
+  -b|--black) instantBlacklistCli "$@";;
+  -B|--blacklist) doBlacklist;;
+  -c|--clear) clearHosts;;
+  -C|--config-file) openConfig "$@";;
+  -e|--extension) addExtension "$@";;
+  -h|--help) printHelp;;
+  -i|--info) showInfo;;
+  -m|--menu) showMenu;;
+  -o|--open) openHosts;;
+  -p|--pack) downloadPack "$@";;
+  -r|--redirect) doRedirect;;
+  -u|--update) updateHWBE;;
+  -w|--white) instantWhitelistCli "$@";;
+  -W|--whitelist) doWhitelist;;
+  -bp|--backup) backupHosts;;
+  -ck|--check) checkBlacklistDomainCli "$@";;
+  -ip|--redirect-ip) redirectIPCli "$@";;
+  -ir|--instant-redirect) instantRedirectCli "$@";;
+  -re|--restore) restoreHosts;;
+  -tg|--telegram) visitTelegram;;
+  -un|--uninstall) uninstall;;
+  -v|--version) printVersion;;
+  *) printUnknown $@;;
+esac

@@ -4,10 +4,13 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-4.9-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-1.2.5-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
+  <!-- Magisk -->
+    <img src="https://img.shields.io/badge/Magisk-20.4-green.svg?longCache=true&style=flat-square"
+      alt="Version" />  
   <!-- Last Updated -->
-    <img src="https://img.shields.io/badge/Updated-Feb 23, 2020-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Updated-May 24, 2020-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
   <!-- Status -->
     <img src="https://img.shields.io/badge/Status-Stable-green.svg?longCache=true&style=flat-square"
@@ -30,11 +33,11 @@
     </a>
     <span> | </span>
     <a href="http://go.energized.pro/github">
-      Energized Repo
+      block Repo
     </a>
     <span> | </span>
     <a href="https://energized.pro/check/">
-      Check Energized
+      Check
     </a>
     <span> | </span>
     <a href="http://go.energized.pro/telegram">
@@ -61,295 +64,181 @@
 - __saves expense:__ greatly decreases data consumption `saving` expense.
 - __clean:__ no `extra` abracadabra! 
 
-## Usage: 
 
-#### Feature Details
+Requirements
+------
+ - Use Magisk v20.4 for better compatibility.
 
-- `1-6` : Energized Packs - Energized `main` blocking packs.
-- `p/pl/rl/s/x` : Extensions - Porn, Porn Lite, Regional, Social and Xtreme Extensions, to apply with the `main` pack.
-- `o` : Open Hosts File - Open the `hosts` file.
-- `c` : Clear Hosts - this will clear your `hosts` file to default hosts. Also, clears filters.
-- `w` : Apply Whitelist - use this to apply `whitelisted` domains.
-- `iw` : Instant Whitelist - when you have to instantly whitelist `one` domain.
-- `b` : Apply Blacklist - use this to apply `blacklisted` domains.
-- `ib` : Instant Blacklist - when you have to instantly blacklist `one` domain.
-- `re` : Redirect Domains - `redirect` domains in `redirectlist` to an IP.
-- `ir` : Instant Redirect - when you have to instantly redirect `one` domain.
-- `u` : Update H&WB - this will update your current pack, and auto apply your whitelist and blacklist. Use this when you have to update.
-- `ck` : Check Domain - check a domain whether it's `already` blocked or not!
-- `bp` : Backup Hosts - makes a backup of your `current` hosts.
-- `rs` : Restore Hosts - restores the hosts you made a `backup` before.
-- `i` : Web & Info - Website and Infos.
-- `ip` : Redirection IP - to change the default `0.0.0.0` ip to your own.
-- `in` : Instructions - type for detailed instructions.
-- `si` : Submit Issue - submit any issue via `web` app.
-- `q` : Quit - exit` the script.
-
-#### Extras
-
-- `Magisk` : Opens up Magisk Manager.
-- `Telegram` : Takes you to our awesome Telegram group!
-- `Thx` : You are welcome! <3
-
-
-#### Requirements
- - Install the `Busybox For Android NDK` Busybox Module from Magisk Manager.
-
-#### Run
+Run
+------
  - First Enable Systemless Hosts in Magisk Manager
  - Open terminal then type:  
  ```
  su  
- energized
+ ep -h
  ```
-  *`Energized` would also work.*
- - Then follow the prompts to install host file of choice
+ or
+ ```
+ su -c ep -h
+ ```
 
-#### Whitelist (0.0.0.0) Instructions:
- - Find text file on sdcard called `whitelist` in `sdcard/EnergizedProtection/`
- - Add the domain with redirecting IP to whitelist the exact domain. Ex. `0.0.0.0 abcd.com`
- - Run hosts script and choose whitelist `w` option.
+Usage: 
+------
+### Script arguments 
+```
+Usage: ep [options...]
+ -b, --black <domain(s)> 
+       >> Instantly add the domain(s) to hosts.
+       > e.g., ep -b example.com new.example.com www.example.com
+ -B, --blacklist 
+       >> Add the domains in blacklist file to hosts.
+       >> blacklist file in /sdcard/EnergizedProtection directory.
+       > e.g., ep -B
+ -c, --clear 
+       >> Clear the hosts file and revert back to stock. 
+       > e.g., ep -c
+ -C, --config-file 
+       >> Open and edit the config file.
+       > e.g., ep -C 
+ -e, --extension 
+       >> Add extension pack(s) to the hosts.
+       > e.g., 
+         ep -e <porn-lite|pornlite>
+         ep -e porn
+         ep -e regional
+         ep -e xtreme
+         ep -e social
+ -h, --help 
+       >> Print help. 
+ -i, --info
+       >> Print all the information.
+ -m, --menu 
+       >> Show the full menu with more information.
+       > e.g., ep -m 
+ -o, --open 
+       >> Open the hosts file.
+       > e.g., ep -o
+ -p, --pack <pack name> [-e|--extension] <extension pack name> 
+       >> Download the pack and extension of your choice.
+       > e.g., 
+         ep -p spark
+         ep -p blugo -e xtreme
+         ep -p blu -e regional social  
+ -r, --redirect
+       >> Redirect the domains in redirectlist file to specific IPV4/V6.
+       >> redirectlist file in /sdcard/EnergizedProtection directory.
+       > e.g., ep -r
+ -u, --update
+       >> Update currently applied hosts pack and extension(s). 
+       >> Also whitelist, blacklist and redirect domains to current IP.
+       > e.g., ep -u
  
-#### Whitelist (DOMAIN) Instructions:
- - Find text file on sdcard called `whitelist` in `sdcard/EnergizedProtection/`
- - Add the domain name only, to the whitelist. Ex. `abcd.com`
- - Run hosts script and choose whitelist `w` option.
+ -w, --white <domain(s)> 
+       >> Instantly whitelist the domain(s) from hosts.
+       > e.g., ep -w example.com new.example.com www.example.com
+ -W, --whitelist 
+       >> Whitelist the domains in whitelist file to hosts.
+       >> whitelist file in /sdcard/EnergizedProtection directory.
+       > e.g., ep -W 
+ -bp, --backup
+        >> Backup the current hosts setup.
+        > e.g., ep -bp
+ -ck, --check <domain>
+        >> Check whether the domain is in the list.
+        > e.g., ep -ck example.com
+ -ip, --redirect-ip [-4|-v4|-6|-v6] <ipv4/ipv6>
+        >> Change current redirection IP.
+        > e.g., 
+          ep -ip -4 127.0.0.1
+          ep -ip -6 ::1  
+ -ir, --instant-redirect [-4|-v4|-6|-v6] <domain(s)>
+        >> Instantly redirect the domain(s) to specific IPV4/V6.
+        > e.g., 
+          ep -ir -4 127.0.0.1 example.com new.example.com
+          ep -ir -6 ::1 example.com new.example.com
+ -re, --restore
+        >> Restore the backed up hosts setup.
+        > e.g., ep -re
+ -un, --uninstall
+        >> Uninstall the module setup.
+        > e.g., ep -un
+ -v, --version
+        >> Print version. 
+```
 
-#### Whitelist (REGEX) Instructions:
- - Find text file on sdcard called `whitelist` in `sdcard/EnergizedProtection/`
- - Add the regex to whitelist. Ex. `.*abcd.*` and now all domains with `abcd` in it will be whitelisted.
- - Run hosts script and choose whitelist `w` option.
 
-#### Altogether Whitelist
-- `All Three Formats` of whitelisting can be done by `w` only too.
+  *`Energized`, `energized` `Ep` & `epro` would also work, as symlink.*
+ - Then follow the on screen prompts.
 
-#### Instant Whitelist
- - To instantly whitelist a domain, select `iw` and then type your domain.
- - Type `Y` and press enter.
+Config Setup
+------
+Only use true/false to enable/disable features.
 
-#### Blacklist Instructions:
- - Find text file on sdcard called `blacklist` in `sdcard/EnergizedProtection/`
- - Add exact lines you want to remove it (do not include the `0.0.0.0` -> so for example: `abcd.com`)
- - Run hosts script and choose blacklist `b` option.
+```
+# Check for hosts update on startup
+checkHostsUpdate=true
+```
+`Note.` _More options will be available shortly._
 
-#### Instant Blacklist
- - To instantly blacklist a domain, select `ib` and then type your domain.
- - Type `Y/y` and press enter.
+Uninstall 
+------
+ - Run Uninstall option via main menu `un` or `ep -un` 
  
-#### Redirect Domains
- - Find text file on sdcard called `redirectlist` in `sdcard/EnergizedProtection/`
- - Add the domain name only, to the redirectlist. Ex. `abcd.com`
- - Run hosts script and choose whitelist `ri` option.
- - Type your `IP` and type `Y/y`
- - Hit enter.
- 
-#### Instant Redirect
- - To instantly redirect a domain, select `ir` and then type your domain.
- - Type `Y/y` & hit enter.
- - Type your IPv4/v6 and press enter.
- - Type `Y/y` & wait for the script to finish redirecting.
+Changelog
+------
 
-#### Finishing
- - Reboot once after applying hosts/whitelist/blacklist/redirectionlist.
- 
-#### To Remove Whitelist/Blacklist/Redirectionlist
- - Just run hosts script and reinstall host file of choice without selecting whitelist/blacklist/redirectionlist.
+v.1.2.5
+- Added CLI Flag support.
+- No more separate busybox required. Magisk Busybox will be used by default.
+- Updated Magisk Template to v20.0+. No more support for Magisk <v20.0.
+- Added user config support.
+- Improved blacklist, whitelist and redirectlist functions.
+- Improved instant blacklist, whitelist and redirectlist functions.
+- Updated download links.
+- Improved current pack, extension and IP detection.
+- Added intelligent domain and IPV4 detection support.
+- Updated Redirection IP function.
+- Added more functions. Use `ep -h` or `ep --help` for more info.
+- Updated H&WB function to support automatic extension and current IP detection.
+- Improved and updated almost all of the functions to match new changes.
+- Fixed domain counting awk segmentation fault error.
+- UI revamped. A lot of things have been updated.
+- Beautify the module scripts.
+- Updated sleep parameters.
+- Script was re-written and lot of new patches have been applied.
+- Fixed new change related issues so far.
+- Script improvement and fix patches applied.
 
-#### Uninstall Hosts
- - Run Clear Hosts by typing `c` and enter. It will clear your hosts file to stock state.
- 
-## Changelog
 
-v.4.9
- - Added Magisk Canary support.
- - Magisk 15-18 Support has been dropped. (Should or shouldn't work)
- - Last update of old script. Newer and updated version is on the way, with improved features.
+[_*Previous Changes_](https://gist.github.com/AdroitAdorKhan/fb81c83b0339e89913bc9f252e2f313d) | [_**Beta Builds and Changes_](https://github.com/EnergizedProtection/magisk/releases)
 
-v.éclairs
- - Added Magisk 20.0 Compatibility.
- - Fixed Magisk Version Detection.
- - Fixed Symlink. Now you can type `Energized` also to run the script.
- - Updated Check Function.
- - Script Optimization & Improvement Patches Applied.
+## Check Energized
+------
+Check whether Energized Protection is working or not! Check via our checking page [here](https://energized.pro/check).
 
-v.pluot
- - Fixed shell check.
- - Fixed instant whitelist.
- - Fixed redirection IP change method.
- - Fixed current IP check service.
- - Fixed domain check issue.
- - Improved update check service.
- - Script optimization.
-
-v.dynamo
- - Added Terminal Detection.
- - New Symlink Added. Like you can type  `Energized` or `ENERGIZED` to run the script.
- - Updated Download Links.
- - Improved Busybox Detection.
- - Improved Busybox Support & Compatibility. 
- - UI Revamped.
- - Added Better Extension Detection Support.
- - Improved Blacklist, Whitelist & Redirectlist Detection.
- - Hosts Update Checking Service Should be Fixed Forever.
- - Updated Sleep Parameters.
- - Script Optimization & Improvement Patches Applied.
- - Fixed Known Bugs so far.
-
-v.pewds
- - Added Magisk 19.0 Compatibility.
- - Added Busybox Magisk Module Check to Prevent grep & wget Error(s) Message(s).
- - *Do your part! Let's subscribe to PewDiePie! :D* 
-
-v.flaky
- - Added Magisk 18.0+ Systemless Hosts Support.
- - Fixed Update Checking Issue.
- - Improved Script Quality.
- 
-v.flake
- - Added Magisk 17.4+ Systemless Hosts Support.
- - Updated to `sh` Posix Compliance.
- - Added `Open Hosts File` Option.
- - Renamed `Current-O-Update` to `Update H&WB` (Update Hosts & Whitelist-Blacklist).
- - Removed `Delta Patchset` Service. [DEPRECATED]
- - Retouched UI and Rearranged few Options.
- - Fixed Bugs.
- - Script Optimization.
- 
-v.canelé
- - Added Regional Extension Pack.
- - Fixed Update Checking Issue.
- - Script Optimization.
- 
-v.milo
- - Improved `instant` Whitelist, Blacklist and Redirect Domain Features.
- - Improved Domain Check Feature.
- - Improved Delta Patch and Update Check Services.
- - Improved Detection Methods.
- - Added `xtreme` extension.
- - Added small letter `y/n` support for Instant Features.
- - Improved UI.
- - Updated Core Sources and URLs.
- - Fixed Few Previous Issues.
- - Overall Script Improvement Patches Applied.
- 
-v. mars
- - Replaced `hosts` format to `hosts.gz` format to download. Packs size reduced while downloading. Reduced upto 1/5 of each pack's size.
- - Improved Delta Patch and Update Check Features.
- - Fixed Backup Hosts Restoring.
- - Improved Backup and Restore Features.
- - Improved Current-O-Update Feature.
- - Script Improvement and Optimizations. 
-
-v. quinoa
- - Fixed Blacklist Applying Date Gap Issue.
- - Added Pack Name Input Support. (Ex. Typing `spark` will also apply The Spark Pack.)
- - Script Improvement and Optimizations.
-
-v. edamame
- - Reworked script. Totally re-written to improve the script quality.
- - Added `Redirect Domains`, `Instant Redirect`, `Backup & Restore` & `Domain Check` Features.
- - Re-written `Whitelist` & `Blacklist` work-flow. Fixed issues.
- - Added blacklist `Log` to check already blacklisted domains.
- - Added whitelist `Log` to check already whitelisted domains.
- - Improved blacklisting features (Blacklist & Instant Blacklist) to `remove` duplicates.
- - Improved `Current-O-Patch`, `Delta Patch` & `Redirection IP` Features.
- - `Redesigned` Script UI.
- - Added Magisk Manager opener activity, via script.
- - Improved sleep parameters.
- - Improved adblocker detection. Thanks to `Romain.`
- - Added full Porn pack as extension.
- - Patched other fixes.
- - Improved Script.
- 
-__Note__: After installing new update, it will show an update is available, due to directory change.
- 
-v4.0
- - Reworked Script.
- - Added `Delta Patchset` & `Current-O-Update` Features. (Check uppee details for more info)
- - Improved hosts clearing.
- - Added warning before applying large hosts.
- - Moved temp location to `sdcard/EnergizedProtection`.
- - Patches to fix whitelist and blacklist issues on few devices.
- - Added `Instructions` and `Web Info` options.
- - Improved `Instant` Whitelist and Blacklist.
- - Overall Script Improvements.
-
-v3.6
- - Added New Energized Pack, `Spark - True Lite Hosts`.
- - Fixed Minor Issues related to hosts `download`.
- - Fixed Script `info` Showing. You don't have to re-run script, to check changes.
- - Improved `sleep` Parameters.
- - Improved Script.
-
-v3.5
- - Fixed minor Update Checking Issue.
- - Fixed Whitelisting Issue using `w`.
-
-v3.2
- - Added `instant blacklist` and `instant whitelist`.
- - Re-written Script.
- - Added Custom `Redirection IP` Support.
- - Improved Script Quality.
- - Improved layout.
- - Improved `sleep` parameters.
- - Beautified Script and Outputs.
- - Fixed Blacklisting Issue.
- - Improved `sleep` parameters.
- - Improved Energized `pack` detection.
- - Version Bumped with Newer Energized Setup.
-
-v2.5
- - Added Extension Support. 
- - Improved Overall Script Quality. 
- 
-v2.2
- - Improved whitelisting. All three formats (`0.0.0.0`, `domain` & `regex`) can be whitelisted using `w` only. 
- - Improved Energized Package Detection.
- - Improved other adblocker detection.
- - Improved hosts size detection.
-
-v2.0
- - Added Systemless Hosts Warning. If systemless hosts is disabled, script will exit!
- - Added one more whitelist support. Now it is possible to whitelist domains only using `d`.
- - Changed whitelisting regex input to `r`.
- - Hosts can be cleared using `c` to default.
- - Read more about the packages typing `i` and it will open up readme in browser.
- - It will warn, if any other adblocker is installed to avoid any conflict.
- - Now shows the Energized Pack you are using.
-
-v1.6
- - Fixed 'No Hosts Applied' issue after every update.
- - Stores Files to '/sdcard/EnergizedProtection' now.
-
-v1.5
- - Now Creates Energized Directory in '/sdcard/EnergizedProtection'
- - More Detailed Applying Info.
- - Improved Error Detection.
-
-v1.2
- - Fixed Few Issues.
- - Version Bumped.
-
-v1.1
- - Fixed Permission Denied Issue.
- - Fixed Config Prints.
-
-v1.0
- - Initial release.
- 
-## Disclaimer
-Energized Hosts are basically `hosts` files to block access to domains. If you don't know how it works, then please try this at your own risk. I won't be responsible for any damage or loss. Never forget to make backups.
 
 ## Support
-[SUPPORT THE DEVELOPMENT](https://opencollective.com/energizedprotection)
+------
+Maintaining a quality blocking project takes a lot of time. Energized Protection is completely independently funded. We fight for our users. This does mean
+however that we also have to spend our owns to pay the bills. This is where you can help: by chipping in you can ensure more time is spent improving Energized rather than dealing with distractions.
+
+This donation is for our services, not for any pack, resource or any other mean. Your support will help us keep the project running and provide you quality service. 
+
+<a href="https://paypal.me/shadmansaleh" target="_blank"><img src="https://www.paypalobjects.com/webstatic/mktg/logo/bdg_now_accepting_pp_2line_w.png"></a>
+
+
+## Disclaimer
+------
+Energized Protection Block Lists are basically `blacklists` files to block access to domains. If you don't know how it works, then please try this at your own risk. I won't be responsible for any damage or loss. Never forget to make backup.
+
 
 ## License
-[MIT](https://github.com/EnergizedProtection/block/blob/master/LICENSE)
+------
+The content of this project itself is licensed under the [MIT](https://github.com/EnergizedProtection/magisk/blob/master/LICENSE) license, and the underlying source code used to format and display that content is licensed under the [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) license.
 
 ---
 
 <div align="center">
   <h2>Let's make an annoyance free better open internet, altogether!</h2>
+  <sub>A project by <a href="https://nayemador.com" target="_blank">Ador</a> with ❤<pub>
 </div>
-
-<p align="center"><sub>A project by <a href="https://nayemador.com" target="_blank">Ador</a> with ❤<p>

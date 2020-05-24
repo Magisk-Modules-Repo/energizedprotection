@@ -122,18 +122,20 @@ REPLACE="
 # Set what you want to display when installing your module
 
 print_modname() {
-  ui_print "================================="
-  ui_print "      Energized Protection       "
-  ui_print "---------------------------------"
-  ui_print "    ad.porn.malware blocking.    "
-  ui_print "          energized.pro          "
-  ui_print "---------------------------------"
-  ui_print " Instructions:                   "
-  ui_print " - Open Terminal                 "
-  ui_print " - Type su & tap enter           "
-  ui_print " - Type energized & tap enter    "
-  ui_print " - Follow on screen options.     "
-  ui_print "---------------------------------"
+  ui_print "=================================="
+  ui_print "       Energized Protection       "
+  ui_print "----------------------------------"
+  ui_print "     ad.porn.malware blocking.    "
+  ui_print "          energized.pro           "
+  ui_print "----------------------------------"
+  ui_print " Instructions:                    "
+  ui_print " - Open Terminal                  "
+  ui_print " - Type su & tap enter            "
+  ui_print " - Type ep -h & tap enter         "
+  ui_print " - Follow on screen options.      "
+  ui_print "----------------------------------"
+  ui_print " *For further assistance > ep -tg"
+  ui_print "=================================="
 }
 
 # Copy/extract your module files into $MODPATH in on_install.
@@ -147,6 +149,10 @@ on_install() {
   # Symbolic link for lowercase/UPPERCASE support in terminal
   [ -d "$MODPATH/system/bin/" ] || mkdir -p "$MODPATH/system/bin/"
   ln -sf energized "$MODPATH/system/bin/Energized"
+  ln -sf energized "$MODPATH/system/bin/ep"
+  ln -sf energized "$MODPATH/system/bin/EP"
+  ln -sf energized "$MODPATH/system/bin/Ep"
+  ln -sf energized "$MODPATH/system/bin/epro"
 }
 
 # Only some special files require specific permissions
@@ -157,6 +163,10 @@ set_permissions() {
   # The following is the default rule, DO NOT remove
   set_perm_recursive $MODPATH 0 0 0755 0644
   set_perm  $MODPATH/system/bin/energized  0  0  0777
+  # permissions for executables
+  for file in $MODPATH/system/bin/*.sh; do
+    [ -f $file ] && set_perm $file  0  0  0700
+  done
 
   # Here are some examples:
   # set_perm_recursive  $MODPATH/system/lib       0     0       0755      0644
