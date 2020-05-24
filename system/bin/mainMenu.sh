@@ -207,7 +207,7 @@ showMenu() {
     echo ''
     echo -e $Y"      P   R   O   T   E   C   T   I   O   N"$N; sleep 0.05;
     echo -e $W"$divider"$N; sleep 0.05;
-    echo "     Version: $version | Updated: $releaseDate"; sleep 0.05;
+    echo "      Version: $version | Updated: $releaseDate"; sleep 0.05;
     echo -e $W"$divider"$N; sleep 0.05;
     echo ""; sleep 0.05;
     echo -e $Y'                  energized.pro'$N; sleep 0.05;

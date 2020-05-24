@@ -7,13 +7,18 @@ checkMagisk() {
     printMagiskVersion=$(magisk -c | cut -d':' -f1)
     magiskVersion=$(magisk -V)
     case "$magiskVersion" in
-        '20'[0-9a-zA-Z]*) # Version 20.x
+        '20'[0-3a-zA-Z]*) # Version 20.0-20.3
+            hosts=/sbin/.magisk/img/hosts/system/etc/hosts
+            busyboxPath=/sbin/.magisk/img/busybox-ndk
+            return 1
+            ;;
+        '20'[4-9a-zA-Z]*) # Version 20.4+
             hosts=/data/adb/modules/hosts/system/etc/hosts
             busyboxPath=/data/adb/magisk
             return 1
             ;;
         *)
-            echo -e $R"Unknown Version: $printMagiskVersion"$N; sleep 5;
+            echo -e "\n >Version: $printMagiskVersion - not supported.\n > Exiting..."
             exit
             return 0
             ;;
@@ -25,8 +30,8 @@ checkMagisk() {
 # Check busybox
 # ----------------------------------------
 checkBusybox() {
-    #busybox=$(ls "$busyboxPath/system/bin/busybox" || ls "$busyboxPath/system/xbin/busybox" || ls "$busyboxPath/busybox") 2>/dev/null
-    busybox=$(ls "$busyboxPath/busybox") 2>/dev/null
+    busybox=$(ls "$busyboxPath/system/bin/busybox" || ls "$busyboxPath/system/xbin/busybox" || ls "$busyboxPath/busybox") 2>/dev/null
+    #busybox=$(ls "$busyboxPath/busybox") 2>/dev/null
     busyboxAuto=$(ls /system/bin/busybox || ls /system/sbin/busybox || ls /system/xbin/busybox || ls /sbin/busybox) 2>/dev/null
     busyboxManualGzip=$(ls /system/bin/gzip || ls /system/sbin/gzip || ls /system/xbin/gzip || ls /sbin/gzip) 2>/dev/null
     busyboxManualWget=$(ls /system/bin/wget || ls /system/sbin/wget || ls /system/xbin/wget || ls /sbin/wget) 2>/dev/null

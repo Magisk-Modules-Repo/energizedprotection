@@ -4,10 +4,10 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-1.2.5-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-1.3.0-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Magisk -->
-    <img src="https://img.shields.io/badge/Magisk-20.4-green.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Magisk-20.0+-green.svg?longCache=true&style=flat-square"
       alt="Version" />  
   <!-- Last Updated -->
     <img src="https://img.shields.io/badge/Updated-May 24, 2020-orange.svg?longCache=true&style=flat-square"
@@ -68,6 +68,7 @@
 Requirements
 ------
  - Use Magisk v20.4 for better compatibility.
+ - Magisk v20.0 - 20.3 users are required to install `Busybox for Android NDK` module, unless the module won't work.
 
 Run
 ------
@@ -187,9 +188,16 @@ Uninstall
 Changelog
 ------
 
+v.1.3.0
+- Added back Magisk v20.0 - 20.3 support.
+
+ _***Magisk v20.4+ users won't require seperate busybox module.**_
+ 
+ _***Magisk v20.0-20.3 users will have to install Busybox for Android NDK module.**_
+
 v.1.2.5
 - Added CLI Flag support.
-- No more separate busybox required. Magisk Busybox will be used by default.
+- No more separate busybox required for Magisk v20.4+. Magisk Busybox will be used by default.
 - Updated Magisk Template to v20.0+. No more support for Magisk <v20.0.
 - Added user config support.
 - Improved blacklist, whitelist and redirectlist functions.
