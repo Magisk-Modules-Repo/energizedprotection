@@ -8,14 +8,6 @@
 # ========================================
 
 # ----------------------------------------
-# Define Energized Protection directory
-# ----------------------------------------
-directory="/sdcard/EnergizedProtection"
-# Create directory
-if [ ! -d $directory ]; then
-    mkdir -p $directory;
-fi
-# ----------------------------------------
 # Load setup files and strings
 modPath="/sbin/.magisk/modules/energizedprotection/system/bin"
 . $modPath/setupFiles.sh
@@ -24,6 +16,15 @@ modPath="/sbin/.magisk/modules/energizedprotection/system/bin"
 
 alias wget="$busybox wget"
 alias awk="$busybox awk"
+
+# ----------------------------------------
+# Define Energized Protection directory
+# ----------------------------------------
+directory="/sdcard/EnergizedProtection"
+# Create directory
+if [ ! -d $directory ]; then
+    mkdir -p $directory;
+fi
 
 # ----------------------------------------
 # Config
@@ -96,8 +97,8 @@ currentIP=$(grep -o -m 1 '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}
 # ----------------------------------------
 # Versioning & Date
 # ----------------------------------------
-version=$Y'1.3.0'$N > /dev/null 2>&1
-releaseDate=$G'May 24, 2020'$N > /dev/null 2>&1
+version=$Y'1.3.2'$N > /dev/null 2>&1
+releaseDate=$G'May 25, 2020'$N > /dev/null 2>&1
 date=$(date "+%d.%m.%Y %H:%M:%S")
 # ----------------------------------------
 

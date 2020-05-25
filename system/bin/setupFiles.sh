@@ -1,4 +1,15 @@
 # ----------------------------------------
+# Colors
+# ----------------------------------------
+R='\e[01;91m' > /dev/null 2>&1; # Red
+G='\e[01;92m' > /dev/null 2>&1; # Green
+Y='\e[01;93m' > /dev/null 2>&1; # Yellow
+W='\e[01;97m' > /dev/null 2>&1; # White
+N='\e[0m' > /dev/null 2>&1; # No color
+NC='\033[0m' > /dev/null 2>&1; # printf No color
+# ----------------------------------------
+
+# ----------------------------------------
 # Check Magisk support
 # ----------------------------------------
 checkMagisk() {
@@ -61,6 +72,7 @@ alias echo="$busybox echo"
 alias cat="$busybox cat"
 alias clear="$busybox clear"
 alias cp="$busybox cp"
+alias cut="$busybox cut"
 alias grep="$busybox grep"
 alias gunzip="$busybox gunzip"
 alias gzip="$busybox gzip"
@@ -84,7 +96,7 @@ alias wget="$busybox wget"
 # ----------------------------------------
 checkSystemlessHosts() {
     if [ ! -f $hosts ]; then
-        checkSystemlessHostsPrint=$R" × "$N$W"Systemless Hosts is disabled."$N$R"\n   - Enable in 'Magisk Manager>Settings'.\n   - Reboot and re-run the script.\n   - Quitting Script..."$N
+        echo -e $R" × "$N$W"Systemless Hosts is disabled."$N$R"\n   - Enable in 'Magisk Manager>Settings'.\n   - Reboot and re-run the script.\n   - Quitting Script..."$N
         sleep 3
         exit 0
     else
