@@ -93,7 +93,7 @@ Usage: ep [options...]
        > e.g., ep -b example.com new.example.com www.example.com
  -B, --blacklist 
        >> Add the domains in blacklist file to hosts.
-       >> blacklist file in /sdcard/EnergizedProtection directory.
+       >> blacklist file in /sdcard/Documents/EnergizedProtection directory.
        > e.g., ep -B
  -c, --clear 
        >> Clear the hosts file and revert back to stock. 
@@ -127,7 +127,7 @@ Usage: ep [options...]
          ep -p blu -e regional social  
  -r, --redirect
        >> Redirect the domains in redirectlist file to specific IPV4/V6.
-       >> redirectlist file in /sdcard/EnergizedProtection directory.
+       >> redirectlist file in /sdcard/Documents/EnergizedProtection directory.
        > e.g., ep -r
  -u, --update
        >> Update currently applied hosts pack and extension(s). 
@@ -139,7 +139,7 @@ Usage: ep [options...]
        > e.g., ep -w example.com new.example.com www.example.com
  -W, --whitelist 
        >> Whitelist the domains in whitelist file to hosts.
-       >> whitelist file in /sdcard/EnergizedProtection directory.
+       >> whitelist file in /sdcard/Documents/EnergizedProtection directory.
        > e.g., ep -W 
  -bp, --backup
         >> Backup the current hosts setup.

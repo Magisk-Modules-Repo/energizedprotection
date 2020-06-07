@@ -42,7 +42,7 @@ printHelp() {
     echo "     > e.g., $sym -b abc.com x.abc.com"
     echo -e $Y" -B, --blacklist"$N
     echo "     >> Add the domains in blacklist file to hosts."
-    echo "     >> blacklist file in \n     /sdcard/Energized Protection directory."
+    echo "     >> blacklist file in \n     /sdcard/Documents/EnergizedProtection directory."
     echo "     > e.g., $sym -B"
     echo -e $Y" -c, --clear"$N
     echo "     >> Clear the hosts file and revert back to stock."
@@ -76,7 +76,7 @@ printHelp() {
     echo "       $sym -p blu -e regional social"
     echo -e $Y" -r, --redirect"$N
     echo "     >> Redirect the domains in \n     redirectlist file to specific IPV4/V6."
-    echo "     >> redirectlist file in \n     /sdcard/EnergizedProtection directory."
+    echo "     >> redirectlist file in \n     /sdcard/Documents/EnergizedProtection directory."
     echo "     > e.g., $sym -r"
     echo -e $Y" -u, --update"$N
     echo "     >> Update currently applied hosts and \n     extensions. Also whitelist, blacklist and \n     redirect domains to current IP."
@@ -86,7 +86,7 @@ printHelp() {
     echo "     > e.g., $sym -w abc.com x.abc.com"
     echo -e $Y" -W, --whitelist"$N
     echo "     >> Whitelist the domains in \n     whitelist file to hosts."
-    echo "     >> whitelist file in \n     /sdcard/EnergizedProtection directory."
+    echo "     >> whitelist file in \n     /sdcard/Documents/EnergizedProtection directory."
     echo "     > e.g., $sym -W"
     echo -e $Y" -bp, --backup"$N
     echo "     >> Backup the current hosts setup."
