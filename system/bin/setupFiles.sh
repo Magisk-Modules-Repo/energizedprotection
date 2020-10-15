@@ -28,6 +28,11 @@ checkMagisk() {
             busyboxPath=/data/adb/magisk
             return 1
             ;;
+        '21'[0-9a-zA-Z]*) # Version 21.x
+            hosts=/data/adb/modules/hosts/system/etc/hosts
+            busyboxPath=/data/adb/magisk
+            return 1
+            ;;
         *)
             echo -e "\n >Version: $printMagiskVersion - not supported.\n > Exiting..."
             exit

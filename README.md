@@ -4,13 +4,13 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-1.3.2-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-1.3.3-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Magisk -->
     <img src="https://img.shields.io/badge/Magisk-20.0+-green.svg?longCache=true&style=flat-square"
       alt="Version" />  
   <!-- Last Updated -->
-    <img src="https://img.shields.io/badge/Updated-May 25, 2020-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Updated-Oct 15, 2020-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
   <!-- Status -->
     <img src="https://img.shields.io/badge/Status-Stable-green.svg?longCache=true&style=flat-square"
@@ -187,6 +187,12 @@ Uninstall
  
 Changelog
 ------
+
+v.1.3.3
+- Added support for Android 11 and Magisk 21.x!
+- Updated user-agent for downloading hosts.
+- The `hitWeb` function shouldn't make you wait for long now.
+
 
 v.1.3.2
 - Added missing cut alias. (Which was breaking domain verifying functions.)

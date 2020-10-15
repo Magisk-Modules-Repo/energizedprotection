@@ -8,8 +8,19 @@
 # ========================================
 
 # ----------------------------------------
+# Determine the Magisk binary's location
+# ----------------------------------------
+
+if [ -d "/sbin/.magisk" ]; then
+    magisk_sbin="/sbin/.magisk"
+elif [ -d "$(magisk --path)/.magisk" ]; then
+    magisk_sbin="$(magisk --path)/.magisk"
+fi
+
+# ----------------------------------------
 # Load setup files and strings
-modPath="/sbin/.magisk/modules/energizedprotection/system/bin"
+# ----------------------------------------
+modPath="$magisk_sbin/modules/energizedprotection/system/bin"
 . $modPath/setupFiles.sh
 . $modPath/mainMenu.sh
 . $modPath/strings.sh
@@ -54,7 +65,7 @@ N='\e[0m' > /dev/null 2>&1; # No color
 NC='\033[0m' > /dev/null 2>&1; # printf No color
 # ----------------------------------------
 
-hitWeb() { curl -sf http://go.energized.pro/web > /dev/null 2>&1; }
+hitWeb() { curl --connect-timeout 5 -sf http://go.energized.pro/web > /dev/null 2>&1; }
 
 # ----------------------------------------
 # Mount and unmount system
@@ -70,7 +81,7 @@ unmountSystem(){
 # ----------------------------------------
 # Variables
 # ----------------------------------------
-userAgent='Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0'
+userAgent='Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0'
 hostsGZ=$directory/hosts.gz
 versionInfo=$directory/cache/version.md
 versionBackup=$directory/cache/version.md.bck
@@ -97,8 +108,8 @@ currentIP=$(grep -o -m 1 '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}
 # ----------------------------------------
 # Versioning & Date
 # ----------------------------------------
-version=$Y'1.3.2'$N > /dev/null 2>&1
-releaseDate=$G'May 25, 2020'$N > /dev/null 2>&1
+version=$Y'1.3.3'$N > /dev/null 2>&1
+releaseDate=$G'Oct 15, 2020'$N > /dev/null 2>&1
 date=$(date "+%d.%m.%Y %H:%M:%S")
 # ----------------------------------------
 
