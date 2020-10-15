@@ -81,7 +81,7 @@ unmountSystem(){
 # ----------------------------------------
 # Variables
 # ----------------------------------------
-userAgent='Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0'
+userAgent='Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0'
 hostsGZ=$directory/hosts.gz
 versionInfo=$directory/cache/version.md
 versionBackup=$directory/cache/version.md.bck
