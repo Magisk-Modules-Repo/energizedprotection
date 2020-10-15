@@ -65,7 +65,7 @@ N='\e[0m' > /dev/null 2>&1; # No color
 NC='\033[0m' > /dev/null 2>&1; # printf No color
 # ----------------------------------------
 
-hitWeb() { curl -sf http://go.energized.pro/web > /dev/null 2>&1; }
+hitWeb() { curl --connect-timeout 5 -sf http://go.energized.pro/web > /dev/null 2>&1; }
 
 # ----------------------------------------
 # Mount and unmount system
