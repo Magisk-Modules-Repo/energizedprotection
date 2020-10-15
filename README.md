@@ -188,6 +188,12 @@ Uninstall
 Changelog
 ------
 
+v.1.3.3
+- Added support for Android 11 and Magisk 21.x!
+- Updated user-agent for downloading hosts.
+- The `hitWeb` function shouldn't make you wait for long now.
+
+
 v.1.3.2
 - Added missing cut alias. (Which was breaking domain verifying functions.)
 - Fixed missing systemless hosts print.
