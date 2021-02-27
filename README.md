@@ -4,13 +4,13 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-1.3.3-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-1.3.4-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Magisk -->
     <img src="https://img.shields.io/badge/Magisk-20.0+-green.svg?longCache=true&style=flat-square"
       alt="Version" />  
   <!-- Last Updated -->
-    <img src="https://img.shields.io/badge/Updated-Oct 15, 2020-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Updated-Feb 27, 2021-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
   <!-- Status -->
     <img src="https://img.shields.io/badge/Status-Stable-green.svg?longCache=true&style=flat-square"
@@ -67,8 +67,8 @@
 
 Requirements
 ------
- - Use Magisk v20.4 for better compatibility.
- - Magisk v20.0 - 20.3 users are required to install `Busybox for Android NDK` module, unless the module won't work.
+ - Use Magisk v20.4+ for better compatibility.
+ - Magisk v20.0 - 20.3 users are required to install `Busybox for Android NDK` module, for the module to work properly.
 
 Run
 ------
@@ -187,6 +187,9 @@ Uninstall
  
 Changelog
 ------
+
+v.1.3.4
+- Added support for Magisk 22.x!
 
 v.1.3.3
 - Added support for Android 11 and Magisk 21.x!

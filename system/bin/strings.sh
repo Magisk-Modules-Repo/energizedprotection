@@ -31,7 +31,7 @@ printHelp() {
     echo -e $W"> Github : "$N$Y"github.com/EnergizedProtection/magisk"$N
     echo -e $W"> License: "$N$Y"CC-BY-NC-SA 4.0"$N
     echo -e $W"> Version: "$N$Y"$version"$N
-    echo -e $W"Copyright (c) 2018-2020, Energized Protection"$N
+    echo -e $W"Copyright (c) 2018-2021, Energized Protection"$N
     echo ''
     echo -e $Y"Symlinks: "$N$C"<energized|Energized|ep|EP|epro>"$N
     echo ">> Use any of the symlinks to run Energized Protection module."
