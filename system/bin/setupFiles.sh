@@ -48,10 +48,15 @@ checkMagisk() {
             busyboxPath=/data/adb/magisk
             return 1
             ;;
-        *)
-            echo -e "\n >Version: $printMagiskVersion - not supported.\n > Exiting..."
-            exit
-            return 0
+        *) # Canary?
+            if ( [ ! -f /data/adb/modules/hosts/system/etc/hosts ] && [ ! -d /data/adb/magisk ] ); then
+                echo -e "\n >Version: $printMagiskVersion - not supported.\n > Exiting..."
+                exit
+                return 0
+            fi
+            hosts=/data/adb/modules/hosts/system/etc/hosts
+            busyboxPath=/data/adb/magisk
+            return 1
             ;;
     esac
 }
