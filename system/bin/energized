@@ -31,7 +31,7 @@ alias awk="$busybox awk"
 # ----------------------------------------
 # Define Energized Protection directory
 # ----------------------------------------
-directory="/sdcard/EnergizedProtection"
+directory="/sdcard/Documents/EnergizedProtection"
 # Create directory
 if [ ! -d $directory ]; then
     mkdir -p $directory;
@@ -2033,7 +2033,7 @@ uninstall(){
 	   # Restore stock settings
 	   restoreStockSettings;
 	   # Uninstall
-	   rm -rf '/system/bin/energized' '/system/bin/ENERGIZED' '/data/adb/modules/energizedprotection' '/sbin/.magisk/modules/energizedprotection' '/sdcard/EnergizedProtection' > /dev/null 2>&1;
+	   rm -rf '/system/bin/energized' '/system/bin/ENERGIZED' '/data/adb/modules/energizedprotection' '/sbin/.magisk/modules/energizedprotection' '/sdcard/Documents/EnergizedProtection' > /dev/null 2>&1;
 	   clear
 	   echo -e "$W""\nIt's sad to see you go!""$N"
 	   echo -e "$W""But ""$N""$Y""https://energized.pro""$N""$W"" is always there for you!""$N"
