@@ -4,13 +4,13 @@
 
 <div align="center">
   <!-- Version -->
-    <img src="https://img.shields.io/badge/Version-1.3.5-blue.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Version-1.3.6-blue.svg?longCache=true&style=flat-square"
       alt="Version" />
   <!-- Magisk -->
     <img src="https://img.shields.io/badge/Magisk-20.0+-green.svg?longCache=true&style=flat-square"
       alt="Version" />  
   <!-- Last Updated -->
-    <img src="https://img.shields.io/badge/Updated-May 13, 2021-orange.svg?longCache=true&style=flat-square"
+    <img src="https://img.shields.io/badge/Updated-Feb 05, 2022-orange.svg?longCache=true&style=flat-square"
       alt="_time_stamp_" />
   <!-- Status -->
     <img src="https://img.shields.io/badge/Status-Stable-green.svg?longCache=true&style=flat-square"
@@ -187,6 +187,9 @@ Uninstall
  
 Changelog
 ------
+
+v.1.3.6
+- Added support for Magisk 24.x! (+ basic support for Canary versions)
 
 v.1.3.5
 - Added support for Magisk 23.x!
