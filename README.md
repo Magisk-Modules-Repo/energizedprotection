@@ -1,4 +1,4 @@
-![Cover](https://energized.pro/assets/cover/energized_cover.svg)
+![cover](https://github.com/xemulat/energizedprotection/assets/98595166/d20e3b22-fd6e-47bf-b535-ab1e30a8f83f)
 
 <h1 align="center">Energized Protection - Magisk ⚡</h1>
 
